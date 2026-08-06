@@ -27,6 +27,7 @@ import PrepView from './components/PrepView';
 import RecipeModal from './components/RecipeModal';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import RegionSwitcher from './components/RegionSwitcher';
+import Footer from './components/Footer';
 import { RegionProvider } from './regions/context';
 
 type Tab = 'setup' | 'week' | 'shopping' | 'prep';
@@ -285,6 +286,7 @@ export default function App() {
           {tab === 'prep' && plan && (
             <PrepView plan={plan} profile={profile} onOpenRecipe={openRecipe} />
           )}
+          <Footer />
         </main>
 
         <nav className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-[var(--color-line)] bg-[var(--color-surface)] md:hidden">

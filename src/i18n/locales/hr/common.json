@@ -81,5 +81,10 @@
     "cooking": "Kuhaš",
     "cookingFactor": "{{factor}}×",
     "cookingFor": "za {{label}} — porcije ispod su tvoje"
+  },
+  "footer": {
+    "builtBy": "Izradio",
+    "links": "Poveznice",
+    "note": "Bez računa i bez servera — sve ostaje u tvom pregledniku."
   }
 }

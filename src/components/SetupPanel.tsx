@@ -16,6 +16,7 @@ import { useDayNames, useNumberFormat } from '../i18n/hooks';
 import { regionOf } from '../regions/registry';
 import type { WeightEntry } from '../lib/storage';
 import { Field, NumberField, SegmentedControl, SegmentedTabs, Toggle } from './ui';
+import ChainMark from './ChainMark';
 
 type DietKey =
   | 'diet.vegetarian'
@@ -445,6 +446,7 @@ function ChainPicker({
           options={region.chains.map((c) => ({
             value: c.id,
             label: c.name,
+            icon: <ChainMark chainId={c.id} name={c.name} />,
             hint: c.searchUrl ? undefined : t('chain.noSearch'),
           }))}
         />

@@ -8,6 +8,7 @@ import { useCurrencyFormat, useHouseholdLabel, useLanguage, useNumberFormat } fr
 import { useShoppingFormat } from '../i18n/useShoppingFormat';
 import { useRegion } from '../regions/context';
 import { StoreLink, Pill } from './ui';
+import ChainMark from './ChainMark';
 
 export default function ShoppingView({
   plan,
@@ -64,7 +65,10 @@ export default function ShoppingView({
       <section className="card mb-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-base font-bold">{chain.name}</h2>
+            <h2 className="flex items-center gap-2 text-base font-bold">
+              <ChainMark chainId={chain.id} name={chain.name} className="size-5 text-[11px]" />
+              {chain.name}
+            </h2>
             <p className="text-xs text-[var(--color-muted)]">{chain.area}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Pill tone="accent">{t('approxTotal', { amount: money(list.total) })}</Pill>

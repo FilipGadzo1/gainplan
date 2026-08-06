@@ -80,5 +80,10 @@
     "cooking": "Cooking",
     "cookingFactor": "{{factor}}×",
     "cookingFor": "for {{label}} — portions below are yours"
+  },
+  "footer": {
+    "builtBy": "Built by",
+    "links": "Links",
+    "note": "No account, no server — everything lives in your browser."
   }
 }

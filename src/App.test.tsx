@@ -125,3 +125,34 @@ describe('switching country', () => {
     expect(screen.getAllByRole('button', { name: /^Vecka$/ })[0]).toBeTruthy();
   });
 });
+
+describe('footer', () => {
+  it('credits the author and links out, in every language', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByText('Filip Gadžo')).toBeTruthy();
+    expect(screen.getByRole('link', { name: /GitHub/ }).getAttribute('href')).toBe(
+      'https://github.com/FilipGadzo1/gainplan',
+    );
+    expect(screen.getByRole('link', { name: /LinkedIn/ }).getAttribute('href')).toBe(
+      'https://www.linkedin.com/in/filip-gadzo/',
+    );
+
+    // The name is a name; it does not get translated, but the wording round it does.
+    await user.click(screen.getAllByRole('button', { name: /var du handlar/i })[0]);
+    await user.click(screen.getByRole('option', { name: /kroatien/i }));
+    expect(screen.getByText('Filip Gadžo')).toBeTruthy();
+    expect(screen.getByText(/Izradio/)).toBeTruthy();
+  });
+
+  it('opens both links safely in a new tab', () => {
+    render(<App />);
+    for (const name of [/GitHub/, /LinkedIn/]) {
+      const link = screen.getByRole('link', { name });
+      expect(link.getAttribute('target')).toBe('_blank');
+      // Without noopener the opened page can reach back through window.opener.
+      expect(link.getAttribute('rel')).toContain('noopener');
+    }
+  });
+});

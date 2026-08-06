@@ -154,20 +154,19 @@ describe('chain search URLs keep the parameter each site expects', () => {
     expect(url.searchParams.get('q')).toBeNull();
   });
 
-  it('sends Kaufland q', () => {
-    const url = new URL(chainNamed('kaufland')!.searchUrl!('mlijeko'));
-    expect(url.pathname).toBe('/pretrazivanje.html');
-    expect(url.searchParams.get('q')).toBe('mlijeko');
+  it('gives Kaufland no search URL, because it has no product search', () => {
+    // /pretrazivanje.html answers the same bytes for the products tab and the
+    // recipes tab — they are rendered client-side — so a link there lands on a
+    // mixed list. Better no link than a link somewhere unhelpful.
+    expect(chainNamed('kaufland')!.searchUrl).toBeUndefined();
   });
 
-  it('lists only chains an ingredient can actually be looked up in', () => {
-    // Plodine and Spar were dropped for this reason: both render client-side
-    // and carry no search term in the address, so neither could connect an
-    // ingredient to the thing you put in the trolley.
+  it('leaves every region at least one chain that can look an ingredient up', () => {
     for (const region of regions) {
-      for (const chain of region.chains) {
-        expect(chain.searchUrl, `${region.id}/${chain.id}`).toBeDefined();
-      }
+      expect(
+        region.chains.some((c) => c.searchUrl),
+        `${region.id} has no searchable chain`,
+      ).toBe(true);
     }
   });
 });

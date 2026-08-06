@@ -3,7 +3,11 @@
 A weekly meal planner for people who lift. You enter your numbers, it works out your
 calorie and macro targets, fills seven days with high-protein meals **scaled to hit
 those targets**, batches what can be batched, and turns the week into one shopping list
-sorted the way you walk **ICA Kvantum Uppsala (Gränby Centrum)**.
+sorted the way you walk your actual shop.
+
+Two regions: **Sweden** (ICA Kvantum Uppsala, Gränby Centrum) and **Croatia** (Konzum or
+Kaufland). Picking a country switches the food, the recipes, the prices, the aisle order
+and the language together, and each country keeps its own week.
 
 No account, no backend, no API keys. Everything runs in the browser and is stored in
 `localStorage`.
@@ -11,7 +15,7 @@ No account, no backend, no API keys. Everything runs in the browser and is store
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 167 tests
+npm test         # 232 tests
 npm run build    # static site in dist/
 ```
 
@@ -71,29 +75,53 @@ dependencies beyond React.
 ```
 src/
   types.ts              Domain types
-  data/ingredients.ts   ~85 ICA products: macros per 100 g, SEK/kg, pack size, department
-  data/recipes.ts       65 recipes, quantities per single serving
+  regions/              What differs by country
+    index.ts            Region and Chain shapes, plus assertRegion
+    registry.ts         Every region by id, and the lookup
+    se.ts               Sweden: ICA, SEK, Swedish aisle order
+    hr/                 Croatia: Konzum and Kaufland, EUR, 51 recipes
+  data/ingredients.ts   88 ICA products: macros per 100 g, SEK/kg, pack size, department
+  data/recipes.ts       65 Swedish recipes, quantities per single serving
   lib/nutrition.ts      BMR, TDEE, targets, macro maths
   lib/planner.ts        Selection, leftovers, portion optimisation, batch grouping
-  lib/shopping.ts       Aggregation, pack rounding, ICA store details
-  lib/storage.ts        localStorage persistence
+  lib/shopping.ts       Aggregation, pack rounding, chain deep links
+  lib/storage.ts        localStorage persistence, namespaced per region
   components/           UI
-scripts/sample.ts       Prints a generated week to the terminal (npx vite-node scripts/sample.ts)
+scripts/sample.ts       Prints a generated week to the terminal
+                        (npx vite-node scripts/sample.ts [se|hr])
 ```
 
-## The ICA integration, honestly
+Ingredient and recipe ids are unique across regions — Croatian rows carry an `hr-`
+prefix — because the two registries in `data/` are shared and the region only filters
+them. A test enforces it.
 
-ICA has no public API, and the online store requires a login and blocks scraping. So
-GainPlan does not read live prices or push a cart. What it does instead:
+## The store integrations, honestly
 
-- Groups your list by real ICA store departments so you shop in one pass.
-- Uses typical shelf prices to estimate the weekly cost — **an estimate, not a receipt.**
-  Prices drift; treat the total as a planning figure.
-- Deep-links to ICA Handla Online for store `1003871` (ICA Kvantum Uppsala, Marknadsgatan 1,
-  Gränby Centrum) and gives you the list as copyable text.
+No chain here is integrated in the sense of an API. Prices are hand-typed shelf
+estimates in both countries — **an estimate, not a receipt.** They drift; treat the
+total as a planning figure.
 
-If you want real prices later, `src/lib/shopping.ts` is the only file that would need to
-change.
+What the app does do is group your list by that shop's real departments in walking
+order, and link each ingredient into the chain's own product search where the chain
+has one that a URL can reach.
+
+Which chains can be deep-linked, and why:
+
+| Chain | Deep link | Why |
+|---|---|---|
+| ICA | yes | Search results only — ICA publishes no "add to basket" URL |
+| Konzum | yes | `search[term]`, taken from their own search form |
+| Kaufland | no | Only a site-wide search; it answers with recipes and news too |
+
+Croatian ingredient names were checked against Konzum's live catalogue by counting the
+products each query actually returns; 25 rows carry a `storeQuery` override where the
+display name finds nothing on the shelf.
+
+**Croatia is where real prices are actually possible.** Government decision NN 75/2025
+requires every chain to publish daily price lists in machine-readable form, and
+[cijene.dev](https://cijene.dev/) aggregates them. Wiring that up means a build-time
+fetch rather than a runtime one, since an API key cannot live in a static site. The
+enriched product data is CC BY-NC-SA 4.0, which is worth reading before relying on it.
 
 ## Known limits
 

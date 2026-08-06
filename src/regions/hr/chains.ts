@@ -25,21 +25,28 @@ export const KONZUM: Chain = {
     `https://www.konzum.hr/web/search?search%5Bterm%5D=${encodeURIComponent(term)}`,
 };
 
+/**
+ * No searchUrl. Kaufland's /pretrazivanje.html takes a `q`, but it is a
+ * site-wide search: the response is identical whether you ask for the products
+ * tab or the recipes tab, because the tabs are rendered client-side. Linking an
+ * ingredient there lands you on a mixed list of recipes and news articles, so
+ * the chain is listed for its prices and aisle order and its ingredients render
+ * as plain text.
+ */
 export const KAUFLAND: Chain = {
   id: 'kaufland',
   name: 'Kaufland',
   area: 'Hrvatska',
   onlineUrl: 'https://www.kaufland.hr/',
-  searchUrl: (term) => `https://www.kaufland.hr/pretrazivanje.html?q=${encodeURIComponent(term)}`,
 };
 
 /**
- * Konzum first: widest reach, and its catalogue is what the ingredient names
- * and `storeQuery` overrides in ./ingredients.ts were checked against.
+ * Konzum first: widest reach, the only Croatian chain that can deep-link a
+ * product, and the catalogue the ingredient names and `storeQuery` overrides in
+ * ./ingredients.ts were checked against.
  *
- * Plodine and Spar were here briefly and are gone. Neither exposes a URL that
- * carries a search term — both render client-side — so neither could link an
- * ingredient to the thing you actually put in the trolley, which is the only
- * reason to name a chain at all.
+ * Plodine and Spar were here briefly and are gone. Both render client-side and
+ * put nothing searchable in the address, and unlike Kaufland they were not
+ * asked to stay.
  */
 export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND];

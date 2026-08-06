@@ -213,9 +213,9 @@ export function StoreLink({
   const href = chainSearchUrl(chain, ingredient);
   const name = ingredientName(ingredient, language);
 
-  // Not every chain has a searchable URL — Spar and Plodine render client-side
-  // and carry no search term in the address. Those get plain text rather than a
-  // link onto a page that has never heard of the ingredient.
+  // Not every chain can deep-link a product — Kaufland's only search is
+  // site-wide and answers with recipes and news alongside groceries. Those get
+  // plain text rather than a link that lands you somewhere unhelpful.
   if (!href) return <span className={className}>{name}</span>;
 
   // Names truncate in the narrow week and prep columns, so the tooltip carries
@@ -297,7 +297,8 @@ export function SegmentedControl<T extends string | number>({
   onChange,
   columns,
 }: {
-  options: { value: T; label: string; hint?: string }[];
+  /** `icon` renders before the label, for options that carry a mark. */
+  options: { value: T; label: string; hint?: string; icon?: ReactNode }[];
   value: T;
   onChange: (v: T) => void;
   columns?: string;
@@ -318,7 +319,10 @@ export function SegmentedControl<T extends string | number>({
                 : 'border-[var(--color-line)] bg-[var(--color-raised)] hover:border-[var(--color-muted)]'
             }`}
           >
-            <span className={`block text-sm font-semibold ${active ? 'text-[var(--color-accent)]' : ''}`}>
+            <span
+              className={`flex items-center gap-1.5 text-sm font-semibold ${active ? 'text-[var(--color-accent)]' : ''}`}
+            >
+              {o.icon}
               {o.label}
             </span>
             {o.hint && <span className="block text-[11px] leading-tight text-[var(--color-muted)]">{o.hint}</span>}

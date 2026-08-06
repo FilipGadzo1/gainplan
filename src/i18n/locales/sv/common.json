@@ -80,5 +80,10 @@
     "cooking": "Lagar",
     "cookingFactor": "{{factor}}×",
     "cookingFor": "för {{label}} — portionerna nedan är dina"
+  },
+  "footer": {
+    "builtBy": "Byggd av",
+    "links": "Länkar",
+    "note": "Ingen inloggning, ingen server — allt ligger i din webbläsare."
   }
 }
