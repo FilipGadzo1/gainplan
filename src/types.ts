@@ -34,7 +34,7 @@ export type DietTag =
 
 export interface Ingredient {
   id: string;
-  /** Swedish name, matching how it is labelled at ICA. */
+  /** Name in the region's own language, matching how it is labelled on the shelf. */
   name: string;
   /** English name, shown as a subtitle. */
   en: string;
@@ -44,11 +44,14 @@ export interface Ingredient {
   protein: number;
   carbs: number;
   fat: number;
-  /** Approximate ICA shelf price in SEK per kg/litre. */
+  /** Approximate shelf price in the region's currency, per kg/litre. */
   pricePerKg: number;
   /** Grams in the pack size you actually buy. */
   packSize: number;
-  /** How the pack is described on the shelf, in Swedish, e.g. "påse 1 kg". */
+  /**
+   * How the pack is described on the shelf, in the region's own language,
+   * e.g. "påse 1 kg".
+   */
   packName: string;
   /** The same pack description in English, e.g. "bag 1 kg". */
   packNameEn: string;
@@ -57,11 +60,12 @@ export interface Ingredient {
   /** Pantry item — you probably already have it, and one pack lasts months. */
   staple?: boolean;
   /**
-   * Search term for the ICA Handla Online deep link. Defaults to `name`, which
-   * is usually right — set it where the display name is more specific than what
-   * ICA's search wants ("Kvarg naturell 0,2%" finds nothing, "kvarg" finds it).
+   * Search term for the chain's online-store deep link. Defaults to `name`,
+   * which is usually right — set it where the display name is more specific
+   * than what the store's search wants ("Kvarg naturell 0,2%" finds nothing at
+   * ICA, "kvarg" finds it).
    */
-  icaQuery?: string;
+  storeQuery?: string;
   tags: DietTag[];
 }
 
@@ -77,7 +81,7 @@ export interface RecipeIngredient {
 
 export interface Recipe {
   id: string;
-  /** Swedish title, shown as the primary name. */
+  /** Title in the region's own language, shown as the primary name. */
   name: string;
   /** English title, shown underneath it. */
   en: string;
@@ -90,13 +94,16 @@ export interface Recipe {
   ingredients: RecipeIngredient[];
   /** Method in English. Reach for these through `recipeSteps()`, not directly. */
   steps: string[];
-  /** Method in Swedish, same number of steps as `steps`. */
-  stepsSv: string[];
   /**
-   * The ICA recipe page this dish is based on, where one exists. Ours are
-   * rewritten around gram-accurate macros, so treat it as "the same dish at
-   * ICA", not as the source of these quantities. Most recipes have no match and
-   * simply leave it unset.
+   * Method in the region's own language, same number of steps as `steps`.
+   * Reach for these through `recipeSteps()`, not directly.
+   */
+  stepsLocal: string[];
+  /**
+   * The published recipe page this dish is based on, where one exists. Ours are
+   * rewritten around gram-accurate macros, so treat it as "the same dish, as
+   * the chain makes it", not as the source of these quantities. Most recipes
+   * have no match and simply leave it unset.
    */
   sourceUrl?: string;
 }

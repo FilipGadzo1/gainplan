@@ -45,8 +45,8 @@ describe('data integrity', () => {
 
   it('every recipe has a method in both languages, step for step', () => {
     for (const r of RECIPES) {
-      expect(r.stepsSv.length, r.id).toBe(r.steps.length);
-      for (const step of r.stepsSv) expect(step.length, r.id).toBeGreaterThan(2);
+      expect(r.stepsLocal.length, r.id).toBe(r.steps.length);
+      for (const step of r.stepsLocal) expect(step.length, r.id).toBeGreaterThan(2);
     }
   });
 
@@ -331,7 +331,7 @@ describe('ICA deep links', () => {
     );
   });
 
-  it('prefers icaQuery where the shelf name is broader than ours', () => {
+  it('prefers storeQuery where the shelf name is broader than ours', () => {
     // "Nötfärs 5%" finds nothing in ICA's search; "nötfärs" finds the shelf.
     expect(icaSearchUrl(getIngredient('notfars5'))).toBe(
       `${ICA_STORE.onlineUrl}/search?q=n%C3%B6tf%C3%A4rs`,
@@ -351,7 +351,7 @@ describe('ICA deep links', () => {
       const url = new URL(icaSearchUrl(ingredient));
       expect(url.origin, ingredient.id).toBe(new URL(ICA_STORE.onlineUrl).origin);
       expect(url.searchParams.get('q'), ingredient.id).toBe(
-        ingredient.icaQuery ?? ingredient.name,
+        ingredient.storeQuery ?? ingredient.name,
       );
     }
   });

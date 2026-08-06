@@ -7,36 +7,42 @@ import type { Language } from './index';
  * accessors are the only place that knows which field holds which language —
  * components ask for "the name in the current language" and never touch
  * `.name` / `.en` / `.steps` directly.
+ *
+ * Every data file holds two languages: its region's own (`name`, `stepsLocal`,
+ * `packName`) and English (`en`, `steps`, `packNameEn`). So the test is always
+ * "English or not", never "Swedish or not" — Croatian data reads through these
+ * same accessors without a schema change.
  */
 
 export function recipeName(recipe: Recipe, lang: Language): string {
-  return lang === 'sv' ? recipe.name : recipe.en;
+  return lang === 'en' ? recipe.en : recipe.name;
 }
 
 /** The name in the *other* language, shown as a subtitle beneath the title. */
 export function recipeSubtitle(recipe: Recipe, lang: Language): string {
-  return lang === 'sv' ? recipe.en : recipe.name;
+  return lang === 'en' ? recipe.name : recipe.en;
 }
 
 export function recipeSteps(recipe: Recipe, lang: Language): string[] {
-  return lang === 'sv' ? recipe.stepsSv : recipe.steps;
+  return lang === 'en' ? recipe.steps : recipe.stepsLocal;
 }
 
 export function ingredientName(ingredient: Ingredient, lang: Language): string {
-  return lang === 'sv' ? ingredient.name : ingredient.en;
+  return lang === 'en' ? ingredient.en : ingredient.name;
 }
 
 /**
  * The other language's name. Kept visible in both directions on purpose: an
  * English reader still has to find "Kycklingfilé" on the shelf at ICA, and a
- * Swedish reader benefits from the English name when checking a macro table.
+ * local-language reader benefits from the English name when checking a macro
+ * table.
  */
 export function ingredientSubtitle(ingredient: Ingredient, lang: Language): string {
-  return lang === 'sv' ? ingredient.en : ingredient.name;
+  return lang === 'en' ? ingredient.name : ingredient.en;
 }
 
 export function packName(ingredient: Ingredient, lang: Language): string {
-  return lang === 'sv' ? ingredient.packName : ingredient.packNameEn;
+  return lang === 'en' ? ingredient.packNameEn : ingredient.packName;
 }
 
 /**

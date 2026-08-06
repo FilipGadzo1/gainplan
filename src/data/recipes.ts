@@ -29,7 +29,7 @@ export const RECIPES: Recipe[] = [
       'Top with blueberries and honey.',
       'Refrigerate overnight. Keeps 3 days, so make the whole batch at once.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Rör ihop havregryn, kvarg och chiafrön i en burk.',
       'Toppa med blåbär och honung.',
       'Ställ i kylen över natten. Håller 3 dagar, så gör hela satsen på en gång.',
@@ -50,7 +50,7 @@ export const RECIPES: Recipe[] = [
       { id: 'mandlar', g: 15 },
     ],
     steps: ['Spoon yoghurt into a bowl.', 'Top with muesli, raspberries and chopped almonds.'],
-    stepsSv: [
+    stepsLocal: [
       'Lägg upp yoghurten i en skål.',
       'Toppa med musli, hallon och hackad mandel.',
     ],
@@ -74,7 +74,7 @@ export const RECIPES: Recipe[] = [
       'Scramble over low heat, stirring constantly — pull off while still glossy.',
       'Serve on toast with sliced avocado.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Vispa ihop hela ägg och äggvita med salt och peppar.',
       'Gör äggröra på låg värme under ständig omrörning — ta av medan den fortfarande är blank.',
       'Servera på rostat bröd med skivad avokado.',
@@ -99,7 +99,7 @@ export const RECIPES: Recipe[] = [
       'Fry small pancakes in a dry non-stick pan, ~2 min per side.',
       'Top with the rest of the banana. Cold pancakes reheat fine.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Mixa havregryn, äggvita, ägg, halva bananen och proteinpulvret till en slät smet.',
       'Stek små pannkakor i torr non-stick-panna, ca 2 min per sida.',
       'Toppa med resten av bananen. Kalla pannkakor går bra att värma igen.',
@@ -124,7 +124,7 @@ export const RECIPES: Recipe[] = [
       'Pour into a hot buttered pan, scatter ham and spinach over one half.',
       'When almost set, add cheese and fold.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Vispa äggen med salt och peppar.',
       'Häll i het smörad panna och strö skinka och spenat över ena halvan.',
       'Lägg på osten när omeletten nästan stannat och vik ihop.',
@@ -145,7 +145,7 @@ export const RECIPES: Recipe[] = [
       { id: 'kryddor', g: 1, fixed: true },
     ],
     steps: ['Dice the apple.', 'Layer with cottage cheese, walnuts, honey and a good pinch of cinnamon.'],
-    stepsSv: [
+    stepsLocal: [
       'Tärna äpplet.',
       'Varva med keso, valnötter, honung och en rejäl nypa kanel.',
     ],
@@ -168,7 +168,7 @@ export const RECIPES: Recipe[] = [
       'Swirl in peanut butter off the heat.',
       'Top with sliced banana.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka havregrynen i mjölken i 4–5 minuter under omrörning.',
       'Rör ner jordnötssmöret utanför värmen.',
       'Toppa med skivad banan.',
@@ -190,7 +190,7 @@ export const RECIPES: Recipe[] = [
       { id: 'havregryn', g: 30 },
     ],
     steps: ['Blend everything with a few ice cubes until smooth.', 'Drink within the hour — it thickens fast.'],
-    stepsSv: [
+    stepsLocal: [
       'Mixa allt med några isbitar tills det är slätt.',
       'Drick inom en timme — den tjocknar snabbt.',
     ],
@@ -213,7 +213,7 @@ export const RECIPES: Recipe[] = [
       'Spread cottage cheese on crispbread, top with sliced egg and cucumber.',
       'Boil a dozen eggs at once — they keep a week in the fridge.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka äggen i 8 minuter och kyl dem under kallt vatten.',
       'Bred keso på knäckebrödet och toppa med skivat ägg och gurka.',
       'Koka ett dussin ägg på en gång — de håller en vecka i kylen.',
@@ -241,7 +241,7 @@ export const RECIPES: Recipe[] = [
       'Make wells, crack in the eggs, cover and cook until whites set.',
       'Crumble feta over the top.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs lök och paprika i olja tills de mjuknat, 6–8 minuter.',
       'Tillsätt krossade tomater, spiskummin och paprikapulver. Låt puttra 5 minuter.',
       'Gör gropar, knäck i äggen, lägg på lock och låt vitan stanna.',
@@ -267,7 +267,7 @@ export const RECIPES: Recipe[] = [
       'Crisp the bacon, remove, fry potatoes and onion in the fat.',
       'Fry the eggs alongside.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka eller mikra potatisen och tärna den sedan.',
       'Stek baconet krispigt, ta upp det och stek potatis och lök i fettet.',
       'Stek äggen vid sidan om.',
@@ -293,7 +293,7 @@ export const RECIPES: Recipe[] = [
       'Fry with pepper, turmeric and paprika until the edges catch.',
       'Fold in spinach, serve on toast.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Smula tofun och krama ur överflödigt vatten.',
       'Stek med peppar, gurkmeja och paprikapulver tills kanterna får färg.',
       'Vänd ner spenaten och servera på rostat bröd.',
@@ -318,7 +318,7 @@ export const RECIPES: Recipe[] = [
       'Mash avocado onto the bread with lemon and salt.',
       'Pile on egg and shrimp.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka äggen och skiva dem.',
       'Mosa avokado på brödet med citron och salt.',
       'Lägg på ägg och räkor.',
@@ -343,7 +343,7 @@ export const RECIPES: Recipe[] = [
       'Stir the whey in off the heat so it does not clump.',
       'Top with raisins and almonds. This one is for bulking days.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka havregrynen i proteinmjölk i 5 minuter.',
       'Rör ner proteinpulvret utanför värmen så att det inte klumpar sig.',
       'Toppa med russin och mandel. Den här är för bulkdagar.',
@@ -372,7 +372,7 @@ export const RECIPES: Recipe[] = [
       'Steam the broccoli 4 minutes so it stays green.',
       'Box it up. The classic for a reason — scales to any number of days.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka riset.',
       'Krydda och stek kycklingen 5–6 min per sida, låt vila och skiva sedan.',
       'Ångkoka broccolin i 4 minuter så att den behåller färgen.',
@@ -399,7 +399,7 @@ export const RECIPES: Recipe[] = [
       'Add the chicken for the last 15 minutes.',
       'Wilt spinach into the hot tray at the end.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Tärna sötpotatisen, vänd den i olja och paprikapulver och rosta i 220°C i 25 min.',
       'Lägg i kycklingen de sista 15 minuterna.',
       'Vänd ner spenaten i den heta plåten på slutet.',
@@ -425,7 +425,7 @@ export const RECIPES: Recipe[] = [
       'Fry onion and garlic, add tomatoes, simmer 8 minutes.',
       'Fold in drained tuna at the very end so it stays chunky.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka pastan.',
       'Fräs lök och vitlök, tillsätt tomaterna och låt puttra 8 minuter.',
       'Vänd ner den avrunna tonfisken allra sist så att den håller ihop.',
@@ -451,7 +451,7 @@ export const RECIPES: Recipe[] = [
       'Mix crème fraiche with sriracha.',
       'Load the tortillas and roll tight. Wrap in foil for transport.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Stek den strimlade kycklingen med salt, peppar och paprikapulver.',
       'Blanda crème fraiche med sriracha.',
       'Fyll tortillabröden och rulla hårt. Slå in i folie för transport.',
@@ -476,7 +476,7 @@ export const RECIPES: Recipe[] = [
       'Brown the mince hard so it gets colour, add onion and soy.',
       'Stir peas straight in from frozen for the last minute.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka riset.',
       'Bryn färsen hårt så att den får färg, tillsätt lök och soja.',
       'Rör ner ärtorna direkt från frysen den sista minuten.',
@@ -502,7 +502,7 @@ export const RECIPES: Recipe[] = [
       'Roast the salmon at 200°C for 12-14 min, flake it.',
       'Toss everything with olive oil and lemon.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka quinoan i 15 minuter, skölj och låt svalna.',
       'Ugnsbaka laxen i 200°C i 12–14 min och dela den i bitar.',
       'Blanda allt med olivolja och citron.',
@@ -528,7 +528,7 @@ export const RECIPES: Recipe[] = [
       'Add sweet potato, tomatoes and a splash of water. Simmer 20 min.',
       'Stir in chickpeas and coconut milk, warm through.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs löken med spiskummin och currypulver.',
       'Tillsätt sötpotatis, tomater och en skvätt vatten. Låt puttra 20 min.',
       'Rör ner kikärter och kokosmjölk och värm igenom.',
@@ -550,7 +550,7 @@ export const RECIPES: Recipe[] = [
       { id: 'olivolja', g: 10 },
     ],
     steps: ['Boil the eggs 8 minutes.', 'Pile everything into a bowl.', 'Dress with olive oil, salt and pepper.'],
-    stepsSv: [
+    stepsLocal: [
       'Koka äggen i 8 minuter.',
       'Lägg upp allt i en skål.',
       'Ringla över olivolja, salt och peppar.',
@@ -576,7 +576,7 @@ export const RECIPES: Recipe[] = [
       'Fry chicken and courgette in oil until both have colour.',
       'Crumble feta over the top.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Häll kokande buljong över couscousen, lägg på lock i 5 minuter och rör upp den.',
       'Stek kyckling och zucchini i olja tills båda fått färg.',
       'Smula fetaost över.',
@@ -601,7 +601,7 @@ export const RECIPES: Recipe[] = [
       'Bake cod at 200°C for 12-15 min — it is done when it flakes.',
       'Melt butter with mustard and spoon over. Peas on the side.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka potatisen.',
       'Ugnsbaka torsken i 200°C i 12–15 min — den är klar när den flagar sig.',
       'Smält smör med senap och ringla över. Ärtor vid sidan om.',
@@ -628,7 +628,7 @@ export const RECIPES: Recipe[] = [
       'Add lentils, tomatoes, stock and 3 dl water.',
       'Simmer 20-25 minutes until the lentils collapse. Better the next day.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs lök och morot i olja.',
       'Tillsätt linser, tomater, buljong och 3 dl vatten.',
       'Låt puttra 20–25 minuter tills linserna faller isär. Godare dagen efter.',
@@ -654,7 +654,7 @@ export const RECIPES: Recipe[] = [
       'Fry garlic, add crème fraiche and a splash of pasta water.',
       'Fold in spinach and shrimp off the heat — shrimp only need warming.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka pastan och spara en kopp av kokvattnet.',
       'Fräs vitlöken, tillsätt crème fraiche och en skvätt pastavatten.',
       'Vänd ner spenat och räkor utanför värmen — räkorna behöver bara bli varma.',
@@ -676,7 +676,7 @@ export const RECIPES: Recipe[] = [
       { id: 'citron', g: 10, fixed: true },
     ],
     steps: ['Cook the quinoa.', 'Fry halloumi slices dry until deeply golden.', 'Build the bowl, finish with oil and lemon.'],
-    stepsSv: [
+    stepsLocal: [
       'Koka quinoan.',
       'Stek halloumiskivorna torrt tills de är rejält gyllene.',
       'Bygg bowlen och avsluta med olja och citron.',
@@ -701,7 +701,7 @@ export const RECIPES: Recipe[] = [
       'Stir-fry turkey strips on high heat.',
       'Add frozen veg and soy, cook until the water has steamed off.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka fullkornsriset (det tar ca 25 min, börja här).',
       'Wokstek kalkonstrimlorna på hög värme.',
       'Tillsätt frysta grönsaker och soja och stek tills vattnet kokat bort.',
@@ -723,7 +723,7 @@ export const RECIPES: Recipe[] = [
       { id: 'kryddor', g: 3, fixed: true },
     ],
     steps: ['Brown the mince with cumin, paprika and chilli.', 'Warm the tortillas.', 'Fill with mince, salad, cheese and sriracha.'],
-    stepsSv: [
+    stepsLocal: [
       'Bryn färsen med spiskummin, paprikapulver och chili.',
       'Värm tortillabröden.',
       'Fyll med färs, sallad, ost och sriracha.',
@@ -743,7 +743,7 @@ export const RECIPES: Recipe[] = [
       { id: 'senap', g: 8, fixed: true },
     ],
     steps: ['Spread mustard on the bread.', 'Pile on mackerel and cucumber. Ninety seconds, big omega-3 hit.'],
-    stepsSv: [
+    stepsLocal: [
       'Bred senap på brödet.',
       'Lägg på makrill och gurka. Nittio sekunder, rejält med omega-3.',
     ],
@@ -768,7 +768,7 @@ export const RECIPES: Recipe[] = [
       'Fry and slice the chicken.',
       'Dress with crème fraiche, mustard, red onion and dill.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka potatisen, låt svalna och dela den i halvor.',
       'Stek och skiva kycklingen.',
       'Blanda med crème fraiche, senap, rödlök och dill.',
@@ -796,7 +796,7 @@ export const RECIPES: Recipe[] = [
       'Brown mince with pepper and spices.',
       'Layer rice, beans, corn, mince. Sriracha over the top.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka riset med en nypa spiskummin.',
       'Bryn färsen med paprika och kryddor.',
       'Varva ris, bönor, majs och färs. Sriracha över.',
@@ -828,7 +828,7 @@ export const RECIPES: Recipe[] = [
       'Fry onion, add tomatoes and coconut milk, simmer 10 min, return chicken.',
       'Serve with rice. Tastes better on day two.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Marinera tärnad kyckling i yoghurt, garam masala, vitlök och ingefära — minst 20 min.',
       'Bryn kycklingen hårt och ta upp den.',
       'Fräs löken, tillsätt tomater och kokosmjölk, låt puttra 10 min och lägg tillbaka kycklingen.',
@@ -855,7 +855,7 @@ export const RECIPES: Recipe[] = [
       'Add salmon for the final 12 min.',
       'Steam broccoli. Finish with butter and lemon.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Rosta halverad potatis i 220°C i 25 min.',
       'Lägg i laxen de sista 12 minuterna.',
       'Ångkoka broccolin. Avsluta med smör och citron.',
@@ -883,7 +883,7 @@ export const RECIPES: Recipe[] = [
       'Add crushed tomatoes, simmer 20 min minimum.',
       'Double the sauce and freeze half.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Bryn färsen i omgångar — en överfull panna kokar den i stället.',
       'Tillsätt riven morot, lök, vitlök och tomatpuré och fräs 2 min.',
       'Tillsätt krossade tomater och låt puttra minst 20 min.',
@@ -910,7 +910,7 @@ export const RECIPES: Recipe[] = [
       'Rub the pork with mustard, sear all over, then roast 12-15 min to 65°C inside.',
       'Rest 5 minutes before slicing.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Vänd potatis- och morotsbitar i olja och timjan och rosta 25 min i 220°C.',
       'Gnid in fläskfilén med senap, bryn den runt om och rosta sedan 12–15 min till 65°C i mitten.',
       'Låt vila 5 minuter innan du skivar.',
@@ -936,7 +936,7 @@ export const RECIPES: Recipe[] = [
       'Fry curry paste and ginger, add coconut milk.',
       'Return chicken, add vegetables, simmer 12 min. Serve with rice.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Bryn lårfiléerna och ta upp dem.',
       'Fräs currypastan och ingefäran och tillsätt kokosmjölken.',
       'Lägg tillbaka kycklingen, tillsätt grönsakerna och låt puttra 12 min. Servera med ris.',
@@ -962,7 +962,7 @@ export const RECIPES: Recipe[] = [
       'Put cod in a dish with tomatoes and courgette, crumble feta over, drizzle oil.',
       'Bake 15 min.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Rosta potatisen 25 min i 220°C.',
       'Lägg torsken i en form med tomater och zucchini, smula över fetaost och ringla över olja.',
       'Baka 15 min.',
@@ -988,7 +988,7 @@ export const RECIPES: Recipe[] = [
       'Brown the mince, add garlic, then vegetables.',
       'Soy at the end. Serve over rice.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Se till att pannan är ordentligt het innan något åker i.',
       'Bryn färsen, tillsätt vitlök och därefter grönsakerna.',
       'Soja på slutet. Servera över ris.',
@@ -1014,7 +1014,7 @@ export const RECIPES: Recipe[] = [
       'Put chicken in an oven dish, cover with sauce and parmesan.',
       'Bake 20 min at 200°C. Serve with pasta.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Låt tomaterna puttra med basilika och salt i 10 min.',
       'Lägg kycklingen i en ugnsform, täck med sås och parmesan.',
       'Baka 20 min i 200°C. Servera med pasta.',
@@ -1041,7 +1041,7 @@ export const RECIPES: Recipe[] = [
       'Add cumin, chilli, oregano — fry the spices 30 seconds.',
       'Tomatoes and beans in, simmer 25 min. Freezes perfectly.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Bryn färsen med lök och paprika.',
       'Tillsätt spiskummin, chili och oregano — fräs kryddorna 30 sekunder.',
       'Tomater och bönor i, låt puttra 25 min. Fryser perfekt.',
@@ -1068,7 +1068,7 @@ export const RECIPES: Recipe[] = [
       'Whisk peanut butter, soy, ginger and hot water into a sauce.',
       'Stir-fry vegetables, add tofu and sauce. Serve with rice.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Pressa tofun, tärna den och stek tills den är krispig runt om.',
       'Vispa ihop jordnötssmör, soja, ingefära och hett vatten till en sås.',
       'Wokstek grönsakerna och tillsätt tofu och sås. Servera med ris.',
@@ -1090,7 +1090,7 @@ export const RECIPES: Recipe[] = [
       { id: 'olivolja', g: 10 },
     ],
     steps: ['Fry chicken and halloumi.', 'Build the salad.', 'Dress with olive oil, lemon, salt.'],
-    stepsSv: [
+    stepsLocal: [
       'Stek kyckling och halloumi.',
       'Bygg salladen.',
       'Ringla över olivolja, citron och salt.',
@@ -1117,7 +1117,7 @@ export const RECIPES: Recipe[] = [
       'Roll into balls, fry until cooked through.',
       'Mash boiled potatoes with hot milk. Peas alongside.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Mal kalkonen i matberedare med lök, ägg och kryddor.',
       'Rulla bullar och stek dem genomstekta.',
       'Mosa kokt potatis med het mjölk. Ärtor vid sidan om.',
@@ -1143,7 +1143,7 @@ export const RECIPES: Recipe[] = [
       'Warm garlic gently in olive oil — do not brown it.',
       'Add shrimp and spinach for one minute only, finish with lemon.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Koka riset.',
       'Värm vitlöken försiktigt i olivolja — låt den inte ta färg.',
       'Tillsätt räkor och spenat i bara en minut och avsluta med citron.',
@@ -1170,7 +1170,7 @@ export const RECIPES: Recipe[] = [
       'Add lentils, sweet potato, stock and water. Simmer 20 min.',
       'Coconut milk and spinach in at the end.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs löken med curry och spiskummin.',
       'Tillsätt linser, sötpotatis, buljong och vatten. Låt puttra 20 min.',
       'Kokosmjölk och spenat i på slutet.',
@@ -1196,7 +1196,7 @@ export const RECIPES: Recipe[] = [
       'Add diced chicken, cook 8 min.',
       'Peas last. Season hard — soup needs more salt than you think.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Låt tärnad potatis och morot puttra i buljongen i 15 min.',
       'Tillsätt tärnad kyckling och koka 8 min.',
       'Ärtor sist. Krydda rejält — soppa behöver mer salt än man tror.',
@@ -1222,7 +1222,7 @@ export const RECIPES: Recipe[] = [
       'Fry mushrooms and onion until the liquid is gone, add tomato purée.',
       'Crème fraiche and a little stock in, return the pork, simmer 5 min.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Bryn den skivade fläskfilén och ta upp den.',
       'Stek svamp och lök tills vätskan kokat bort och tillsätt tomatpuré.',
       'Crème fraiche och lite buljong i, lägg tillbaka fläskfilén och låt puttra 5 min.',
@@ -1249,7 +1249,7 @@ export const RECIPES: Recipe[] = [
       'Soak couscous in hot stock 5 min.',
       'Combine, crumble feta over.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Rosta kyckling och grönsaker tillsammans i 220°C, 20–25 min.',
       'Låt couscousen svälla i het buljong i 5 min.',
       'Blanda ihop och smula fetaost över.',
@@ -1276,7 +1276,7 @@ export const RECIPES: Recipe[] = [
       'Add soy mince from frozen and let the water cook off.',
       'Tomatoes in, simmer 15 min, season generously.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs lök, morot och vitlök i olja.',
       'Tillsätt sojafärsen fryst och låt vattnet koka bort.',
       'Tomater i, låt puttra 15 min och krydda generöst.',
@@ -1303,7 +1303,7 @@ export const RECIPES: Recipe[] = [
       'Add coconut milk, simmer 5 min.',
       'Lower in the cod, poach 6-8 min, spinach at the end.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Fräs currypulver och ingefära i olja i 30 sekunder.',
       'Tillsätt kokosmjölken och låt puttra 5 min.',
       'Lägg ner torsken och låt den sjuda 6–8 min, spenat på slutet.',
@@ -1329,7 +1329,7 @@ export const RECIPES: Recipe[] = [
       'Rub chicken with paprika and sriracha, roast for the last 20 min.',
       'Split the potato, fill with cottage cheese and chives.',
     ],
-    stepsSv: [
+    stepsLocal: [
       'Baka hela potatisar i 200°C i 50–60 min.',
       'Gnid in kycklingen med paprikapulver och sriracha och rosta den de sista 20 minuterna.',
       'Dela potatisen och fyll med keso och gräslök.',
@@ -1350,7 +1350,7 @@ export const RECIPES: Recipe[] = [
       { id: 'honung', g: 10 },
     ],
     steps: ['Stir together. Frozen raspberries thaw into it in a couple of minutes.'],
-    stepsSv: [
+    stepsLocal: [
       'Rör ihop. Frysta hallon tinar ner i kvargen på ett par minuter.',
     ],
   },
@@ -1366,7 +1366,7 @@ export const RECIPES: Recipe[] = [
       { id: 'mjolk', g: 300 },
     ],
     steps: ['Shake. The post-session default.'],
-    stepsSv: [
+    stepsLocal: [
       'Skaka. Standardvalet efter passet.',
     ],
   },
@@ -1383,7 +1383,7 @@ export const RECIPES: Recipe[] = [
       { id: 'banan', g: 100 },
     ],
     steps: ['Spread and top with banana slices. Good 45 minutes before training.'],
-    stepsSv: [
+    stepsLocal: [
       'Bred på och toppa med bananskivor. Bra 45 minuter före träning.',
     ],
   },
@@ -1400,7 +1400,7 @@ export const RECIPES: Recipe[] = [
       { id: 'senap', g: 5, fixed: true },
     ],
     steps: ['Boil eggs 8 minutes.', 'Serve on crispbread with mustard and salt.'],
-    stepsSv: [
+    stepsLocal: [
       'Koka äggen i 8 minuter.',
       'Servera på knäckebröd med senap och salt.',
     ],
@@ -1417,7 +1417,7 @@ export const RECIPES: Recipe[] = [
       { id: 'mandlar', g: 20 },
     ],
     steps: ['Cottage cheese, almonds, black pepper. Slow protein before bed.'],
-    stepsSv: [
+    stepsLocal: [
       'Keso, mandlar, svartpeppar. Långsamt protein före läggdags.',
     ],
   },
@@ -1434,7 +1434,7 @@ export const RECIPES: Recipe[] = [
       { id: 'gurka', g: 60 },
     ],
     steps: ['Roll cheese and cucumber sticks inside the ham slices.'],
-    stepsSv: [
+    stepsLocal: [
       'Rulla ost och gurkstavar i skinkskivorna.',
     ],
   },
@@ -1451,7 +1451,7 @@ export const RECIPES: Recipe[] = [
       { id: 'gurka', g: 50 },
     ],
     steps: ['Drain the tuna, mash with pepper.', 'Pile onto crispbread with cucumber.'],
-    stepsSv: [
+    stepsLocal: [
       'Häll av tonfisken och mosa den med peppar.',
       'Lägg upp på knäckebröd med gurka.',
     ],
@@ -1470,7 +1470,7 @@ export const RECIPES: Recipe[] = [
       { id: 'honung', g: 12 },
     ],
     steps: ['Whip everything together until smooth. Dessert that happens to be 40 g of protein.'],
-    stepsSv: [
+    stepsLocal: [
       'Vispa ihop allt tills det är slätt. Efterrätt som råkar innehålla 40 g protein.',
     ],
   },
@@ -1487,7 +1487,7 @@ export const RECIPES: Recipe[] = [
       { id: 'proteinmjolk', g: 300 },
     ],
     steps: ['Blend with ice.'],
-    stepsSv: [
+    stepsLocal: [
       'Mixa med is.',
     ],
   },
@@ -1504,7 +1504,7 @@ export const RECIPES: Recipe[] = [
       { id: 'honung', g: 10 },
     ],
     steps: ['Yoghurt, walnuts, honey.'],
-    stepsSv: [
+    stepsLocal: [
       'Yoghurt, valnötter, honung.',
     ],
   },
@@ -1522,7 +1522,7 @@ export const RECIPES: Recipe[] = [
       { id: 'blabar', g: 80 },
     ],
     steps: ['Whisk chia, milk and whey.', 'Refrigerate at least 2 hours.', 'Blueberries on top.'],
-    stepsSv: [
+    stepsLocal: [
       'Vispa ihop chiafrön, mjölk och proteinpulver.',
       'Ställ i kylen minst 2 timmar.',
       'Blåbär på toppen.',
@@ -1542,7 +1542,7 @@ export const RECIPES: Recipe[] = [
       { id: 'kryddor', g: 1, fixed: true },
     ],
     steps: ['Toast the bread.', 'Cottage cheese, tomato, salt, olive oil.'],
-    stepsSv: [
+    stepsLocal: [
       'Rosta brödet.',
       'Keso, tomat, salt, olivolja.',
     ],
@@ -1560,7 +1560,7 @@ export const RECIPES: Recipe[] = [
       { id: 'kvarg', g: 150 },
     ],
     steps: ['Slice the apple and dip. Portable, no fridge needed for an hour or two.'],
-    stepsSv: [
+    stepsLocal: [
       'Skiva äpplet och doppa. Portabelt, klarar sig utan kyl en timme eller två.',
     ],
   },

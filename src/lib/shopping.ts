@@ -18,7 +18,7 @@ export const ICA_STORE = {
  * take you — from there it is one tap to the cart.
  */
 export function icaSearchUrl(ingredient: Ingredient): string {
-  const term = ingredient.icaQuery ?? ingredient.name;
+  const term = ingredient.storeQuery ?? ingredient.name;
   return `${ICA_STORE.onlineUrl}/search?q=${encodeURIComponent(term)}`;
 }
 

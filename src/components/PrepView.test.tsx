@@ -88,7 +88,7 @@ describe('PrepView', () => {
     expect(screen.getByText('Laga så här mycket')).toBeTruthy();
     expect(screen.getByText('Tillvägagångssätt')).toBeTruthy();
     // Its method steps are on screen, not just the title.
-    expect(screen.getByText(getRecipe(first.recipeId).stepsSv[0])).toBeTruthy();
+    expect(screen.getByText(getRecipe(first.recipeId).stepsLocal[0])).toBeTruthy();
   });
 
   it('switches the detail panel when another session is picked', async () => {
@@ -101,7 +101,7 @@ describe('PrepView', () => {
     const second = getRecipe(tasks[1].recipeId);
     await user.click(screen.getByRole('button', { name: new RegExp(second.name, 'i') }));
 
-    expect(screen.getByText(second.stepsSv[0])).toBeTruthy();
+    expect(screen.getByText(second.stepsLocal[0])).toBeTruthy();
   });
 
   it('has no checkboxes in the schedule', () => {

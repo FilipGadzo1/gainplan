@@ -100,7 +100,7 @@ describe('content accessors', () => {
 
     expect(recipeName(recipe, 'sv')).toBe(recipe.name);
     expect(recipeName(recipe, 'en')).toBe(recipe.en);
-    expect(recipeSteps(recipe, 'sv')).toEqual(recipe.stepsSv);
+    expect(recipeSteps(recipe, 'sv')).toEqual(recipe.stepsLocal);
     expect(recipeSteps(recipe, 'en')).toEqual(recipe.steps);
   });
 
