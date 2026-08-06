@@ -131,6 +131,47 @@ describe('every region can still feed a restricted eater', () => {
   }
 });
 
+/**
+ * Search URLs are the one thing here that depends on a third party's routing,
+ * and they fail silently: Konzum answers 200 and renders its whole page for any
+ * query string, so a wrong parameter name looks exactly like a working link
+ * until you notice every result list is empty. That is what shipped, using ?q=
+ * where their form posts search[term].
+ *
+ * These assert the parameter names taken from each chain's own search form.
+ * They cannot prove the search works — only the live site does that, and the
+ * names in ingredients.ts were checked against it by counting returned products
+ * — but they do stop the shape being changed by accident.
+ */
+describe('chain search URLs keep the parameter each site expects', () => {
+  const chainNamed = (id: string) =>
+    regions.flatMap((r) => r.chains).find((c) => c.id === id);
+
+  it('sends Konzum search[term], not q', () => {
+    const url = new URL(chainNamed('konzum')!.searchUrl!('mlijeko'));
+    expect(url.pathname).toBe('/web/search');
+    expect(url.searchParams.get('search[term]')).toBe('mlijeko');
+    expect(url.searchParams.get('q')).toBeNull();
+  });
+
+  it('sends Kaufland q', () => {
+    const url = new URL(chainNamed('kaufland')!.searchUrl!('mlijeko'));
+    expect(url.pathname).toBe('/pretrazivanje.html');
+    expect(url.searchParams.get('q')).toBe('mlijeko');
+  });
+
+  it('lists only chains an ingredient can actually be looked up in', () => {
+    // Plodine and Spar were dropped for this reason: both render client-side
+    // and carry no search term in the address, so neither could connect an
+    // ingredient to the thing you put in the trolley.
+    for (const region of regions) {
+      for (const chain of region.chains) {
+        expect(chain.searchUrl, `${region.id}/${chain.id}`).toBeDefined();
+      }
+    }
+  });
+});
+
 describe('the registry', () => {
   it('has an entry for every declared region id', () => {
     for (const id of REGION_IDS) expect(REGIONS[id]?.id, id).toBe(id);

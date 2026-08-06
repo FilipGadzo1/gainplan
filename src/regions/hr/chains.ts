@@ -1,20 +1,19 @@
 import type { Chain } from '../index';
 
 /**
- * The four chains GainPlan supports in Croatia, at chain level rather than per
- * store: prices are the nationally published figures, so naming a single branch
- * would imply a precision the data does not carry.
+ * The Croatian chains GainPlan supports, at chain level rather than per store:
+ * prices are the nationally published figures, so naming a single branch would
+ * imply a precision the data does not carry.
  *
- * Only two of the four expose a URL that carries a search term. Both were
- * checked against the live sites rather than guessed:
+ * Both search URLs were taken from the chains' own search forms and checked
+ * against the live sites by counting the product links the response actually
+ * contains — not by whether the page loads. Konzum's search page returns HTTP
+ * 200 and renders its chrome for any query string you give it, so "the URL
+ * works" is not evidence that the search does.
  *
- * - Konzum  /web/search?q=…        returns real products
- * - Kaufland /pretrazivanje.html?q=… taken from the input name on their own form
- *
- * Spar and Plodine render their sites client-side and put nothing searchable in
- * the address bar, so they get no searchUrl and their ingredients render as
- * plain text. A link that lands on a page which has never heard of the
- * ingredient is worse than no link.
+ * Konzum's parameter is `search[term]`, from the name attribute on the input in
+ * their #search_form. It is emphatically not `q`: that returns the search page
+ * with an empty result list, which is a broken link wearing a 200.
  */
 
 export const KONZUM: Chain = {
@@ -22,7 +21,8 @@ export const KONZUM: Chain = {
   name: 'Konzum',
   area: 'Hrvatska',
   onlineUrl: 'https://www.konzum.hr/',
-  searchUrl: (term) => `https://www.konzum.hr/web/search?q=${encodeURIComponent(term)}`,
+  searchUrl: (term) =>
+    `https://www.konzum.hr/web/search?search%5Bterm%5D=${encodeURIComponent(term)}`,
 };
 
 export const KAUFLAND: Chain = {
@@ -33,19 +33,13 @@ export const KAUFLAND: Chain = {
   searchUrl: (term) => `https://www.kaufland.hr/pretrazivanje.html?q=${encodeURIComponent(term)}`,
 };
 
-export const PLODINE: Chain = {
-  id: 'plodine',
-  name: 'Plodine',
-  area: 'Hrvatska',
-  onlineUrl: 'https://www.plodine.hr/',
-};
-
-export const SPAR: Chain = {
-  id: 'spar',
-  name: 'Spar',
-  area: 'Hrvatska',
-  onlineUrl: 'https://www.spar.hr/',
-};
-
-/** Konzum first: widest reach, and the only one with a verified product search. */
-export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND, PLODINE, SPAR];
+/**
+ * Konzum first: widest reach, and its catalogue is what the ingredient names
+ * and `storeQuery` overrides in ./ingredients.ts were checked against.
+ *
+ * Plodine and Spar were here briefly and are gone. Neither exposes a URL that
+ * carries a search term — both render client-side — so neither could link an
+ * ingredient to the thing you actually put in the trolley, which is the only
+ * reason to name a chain at all.
+ */
+export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND];
