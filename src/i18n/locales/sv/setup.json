@@ -1,0 +1,147 @@
+{
+  "intro": {
+    "title": "Ställ in dina siffror och bygg sedan veckan.",
+    "body": "GainPlan räknar ut dina kalori- och makromål, fyller sju dagar med proteinrika måltider skalade för att träffa dem, satsvislagar det som går och gör alltihop till en inköpslista sorterad så som du går genom ICA Kvantum i Gränby."
+  },
+  "tabs": {
+    "body": "Kropp",
+    "targets": "Mål",
+    "food": "Mat & kök"
+  },
+  "food": {
+    "title": "Mat",
+    "hint": "Hur dagen delas upp, och vad som aldrig hamnar på menyn."
+  },
+  "hero": {
+    "dailyTarget": "Dagligt mål",
+    "summaryLabel": "Sammanfattning av dagligt mål",
+    "bmr": "BMR {{bmr}} · Underhåll {{maintenance}}",
+    "cooking": " · lagar {{factor}}×"
+  },
+  "measurements": {
+    "title": "Mått",
+    "hint": "Det som kaloriberäkningen utgår från.",
+    "sex": "Kön",
+    "sexHint": "Används bara av BMR-formeln.",
+    "male": "Man",
+    "female": "Kvinna",
+    "age": "Ålder",
+    "height": "Längd (cm)",
+    "weight": "Vikt (kg)"
+  },
+  "activity": {
+    "label": "Aktivitet",
+    "hint": "Allt utanför gymmet — jobb, steg, vardag.",
+    "sedentary": { "label": "Stillasittande", "hint": "Kontorsjobb, ingen träning" },
+    "light": { "label": "Lätt", "hint": "Träning 1–3 ggr i veckan" },
+    "moderate": { "label": "Måttlig", "hint": "Träning 3–5 ggr i veckan" },
+    "high": { "label": "Hög", "hint": "Träning 6–7 ggr i veckan" },
+    "athlete": { "label": "Mycket hög", "hint": "Två pass om dagen eller fysiskt jobb" }
+  },
+  "goal": {
+    "title": "Målsättning",
+    "hint": "Sätter kaloriavvikelsen från underhåll.",
+    "cut": { "label": "Deff", "hint": "−20 % — tappa fett, behåll muskler" },
+    "maintain": { "label": "Behålla", "hint": "Stanna där du är" },
+    "lean-bulk": { "label": "Lean bulk", "hint": "+10 % — långsam, ren ökning" },
+    "bulk": { "label": "Bulk", "hint": "+20 % — maximal tillväxt" }
+  },
+  "trainingDays": {
+    "label": "Träningsdagar",
+    "hint": "Styr kaloripåslaget på träningsdagar."
+  },
+  "cycling": {
+    "label": "Kaloricykling",
+    "hintDefault": "Mer kolhydrater på träningsdagar, färre på vilodagar. Samma veckototal.",
+    "hintDetail": "{{training}} kcal på träningsdagar, {{rest}} på vilodagar."
+  },
+  "macroSplit": {
+    "title": "Makrofördelning",
+    "hint": "Protein är låst per kg; kolhydrater tar det som blir kvar.",
+    "proteinLabel": "Protein — {{value}} g/kg",
+    "proteinHint": "1,6–2,2 g/kg täcker forskningen för muskeltillväxt. Högre i intervallet när du deffar.",
+    "fatLabel": "Fett — {{pct}} % av kalorierna",
+    "fatHint": "Under 20 % börjar kosta dig hormoner och mättnad.",
+    "manualLabel": "Manuell kaloriöverstyrning",
+    "manualHint": "Lämna tomt för att använda det beräknade målet."
+  },
+  "meals": {
+    "title": "Måltidsstruktur",
+    "hint": "Hur dagens kalorier fördelas.",
+    "perDay": "Måltider per dag",
+    "hint3": "F / L / M",
+    "hint4": "+ 1 mellanmål",
+    "hint5": "+ 2 mellanmål"
+  },
+  "diet": {
+    "title": "Det du inte äter",
+    "hint": "Recept med detta föreslås aldrig.",
+    "vegetarian": "Vegetariskt",
+    "noPork": "Utan fläsk",
+    "noFish": "Utan fisk",
+    "noDairy": "Utan mejeri",
+    "lowLactose": "Laktosfritt",
+    "noEgg": "Utan ägg",
+    "glutenFree": "Glutenfritt",
+    "noNuts": "Utan nötter",
+    "noSoy": "Utan soja"
+  },
+  "blocked": {
+    "suffix_one": "recept blockerat enskilt",
+    "suffix_other": "recept blockerade enskilt",
+    "unblockAll": "Avblockera alla"
+  },
+  "kitchen": {
+    "title": "Så lagar du",
+    "hint": "Filtrerar receptpoolen och planerar dina satser.",
+    "maxTimeLabel": "Max tillagningstid — {{minutes}} min",
+    "maxTimeHint": "Recept som tar längre tid plockas bort ur poolen.",
+    "leftoversLabel": "Laga en gång, ät två",
+    "leftoversHint": "Gör satsvänliga middagar till nästa dags lunch."
+  },
+  "cookingFor": {
+    "title": "Lagar mat åt",
+    "hint": "Skalar inköp och satsmängder. Dina makron ändras aldrig.",
+    "you": "Du",
+    "youShare": "100 % · {{kcal}} kcal/dag",
+    "personPlaceholder": "Person {{number}}",
+    "remove": "Ta bort {{name}}",
+    "fallbackName": "person {{number}}",
+    "portionSize": "Portionsstorlek",
+    "portionShare": "{{pct}} %",
+    "portionKcal": "~{{kcal}} kcal/dag",
+    "portionSliderLabel": "Portionsstorlek för {{name}}",
+    "add": "+ Lägg till någon",
+    "cookingNotePrefix": "Lagar",
+    "cookingNoteSuffix": "av varje måltid."
+  },
+  "weighIn": {
+    "title": "Invägning",
+    "hint": "På morgonen, efter toaletten, före mat. Det är trenden som räknas, inte ett enskilt värde.",
+    "placeholder": "kg",
+    "logToday": "Logga i dag",
+    "empty": "Logga fyra dagar eller fler så säger den här om du bör flytta ditt kalorimål, och hur mycket.",
+    "entries_one": "{{count}} post",
+    "entries_other": "{{count}} poster",
+    "latest": "senast",
+    "clear": "Rensa",
+    "perWeek": "{{value}} kg/vecka",
+    "trendLabel": "Vikttrend"
+  },
+  "trend": {
+    "cutSlow": "— går ner långsammare än en deff kräver. Sänk målet med ca 150 kcal.",
+    "cutFast": "— går ner så snabbt att det kostar muskler. Lägg på ca 200 kcal.",
+    "cutGood": "— det är rätt takt för en deff. Låt målet vara.",
+    "bulkNone": "— ökar inte. Lägg på ca 200 kcal och kolla igen om två veckor.",
+    "bulkFast": "— ökar så snabbt att mycket blir fett. Dra av ca 150 kcal.",
+    "bulkGood": "— bra ökningstakt. Ligg kvar här.",
+    "stable": "— stabilt, vilket är målet.",
+    "driftingUp": "— glider uppåt. Dra av ca 150 kcal.",
+    "driftingDown": "— glider nedåt. Lägg på ca 150 kcal."
+  },
+  "poolWarning_one": "Bara {{count}} recept matchar dina restriktioner och tidsgräns. Veckan kommer att upprepa sig — lätta på något om du vill ha variation.",
+  "poolWarning_other": "Bara {{count}} recept matchar dina restriktioner och tidsgräns. Veckan kommer att upprepa sig — lätta på något om du vill ha variation.",
+  "rebuildWeek": "Bygg om veckan med de här inställningarna",
+  "resetAll": "Nollställ allt",
+  "resetConfirm": "Radera din profil, plan och invägningar från den här webbläsaren?"
+}

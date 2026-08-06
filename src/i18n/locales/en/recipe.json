@@ -1,0 +1,18 @@
+{
+  "portion": "{{pct}}% portion",
+  "batchFriendly": "Batch friendly",
+  "approxCost": "approx {{sek}} kr of ingredients",
+  "costIngredients": "{{sek}} kr of ingredients",
+  "costPacks": "{{sek}} kr in whole packs",
+  "costNote": "The first is what the food on the plate is worth. The second is what the till charges if you buy for this meal alone, since packs cannot be split — the rest of each pack goes to other meals in the week, which is why the shopping list totals packs across all seven days.",
+  "kcalInYourPortion": "kcal in your portion",
+  "ingredients": "Ingredients",
+  "method": "Method",
+  "yourPortion": "Your portion",
+  "householdTab": "{{label}} ({{factor}}×)",
+  "sameDishAtIca": "The same dish at ICA ↗",
+  "sameDishSuffix": "— their version, with their quantities.",
+  "householdNote": "Amounts above are the whole pan for {{label}}. The macros at the top are still only your share of it.",
+  "blockRecipe": "Never suggest this again",
+  "unblockRecipe": "Allow this recipe again"
+}

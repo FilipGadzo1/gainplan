@@ -1,0 +1,21 @@
+{
+  "scope": {
+    "yourPlate": "Your plate",
+    "household": "{{label}} · {{factor}}×"
+  },
+  "rebalance": "Rebalance portions",
+  "slots": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack"
+  },
+  "trainingDay": "Training day",
+  "ingredients": "Ingredients",
+  "cookWholePan": "Cook (whole pan)",
+  "smallerPortion": "Smaller portion",
+  "biggerPortion": "Bigger portion",
+  "swap": "Swap",
+  "lock": "Lock",
+  "recipe": "Recipe"
+}

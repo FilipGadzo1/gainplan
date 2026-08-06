@@ -1,0 +1,27 @@
+{
+  "approxTotal": "ca {{sek}} kr",
+  "items_one": "{{count}} vara",
+  "items_other": "{{count}} varor",
+  "perDay": "{{sek}} kr/dag",
+  "portions": "{{label}} · {{factor}}× portioner",
+  "inBasket": "i korgen",
+  "openIcaOnline": "Öppna ICA Handla Online ↗",
+  "copyList": "Kopiera listan",
+  "copied": "Kopierad ✓",
+  "showPantry": "Visa skafferivaror",
+  "hidePantry": "Dölj skafferivaror",
+  "uncheckAll": "Avmarkera alla",
+  "disclaimer": "Priserna är typiska hyllpriser hos ICA, inte aktuella — se totalen som en uppskattning, inte ett kvitto. Mängderna avrundas upp till hela förpackningar, så du får en del över.",
+  "checkAtHome": "kolla hemma",
+  "searchAt": "sök på {{store}}",
+  "quantity": {
+    "staple": "{{pack}} — behöver ca {{grams}}",
+    "packs": "{{count}} × {{pack}}",
+    "units": "{{pack}} — ca {{pieces}}",
+    "needs": "{{pack}} — behöver {{grams}}"
+  },
+  "text": {
+    "header": "Inköpslista — {{store}} ({{area}})",
+    "subtitle": "{{who}} · ca {{sek}} kr, {{items}}"
+  }
+}

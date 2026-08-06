@@ -1,0 +1,21 @@
+{
+  "scope": {
+    "yourPlate": "Din tallrik",
+    "household": "{{label}} · {{factor}}×"
+  },
+  "rebalance": "Balansera om portioner",
+  "slots": {
+    "breakfast": "Frukost",
+    "lunch": "Lunch",
+    "dinner": "Middag",
+    "snack": "Mellanmål"
+  },
+  "trainingDay": "Träningsdag",
+  "ingredients": "Ingredienser",
+  "cookWholePan": "Laga (hela pannan)",
+  "smallerPortion": "Mindre portion",
+  "biggerPortion": "Större portion",
+  "swap": "Byt",
+  "lock": "Lås",
+  "recipe": "Recept"
+}

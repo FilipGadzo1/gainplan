@@ -1,0 +1,66 @@
+import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { ShoppingItem, ShoppingList } from '../types';
+import { ICA_STORE, unitCount } from '../lib/shopping';
+import { ingredientName, ingredientSubtitle, packName, deptLabel } from './content';
+import { useLanguage, useQuantityFormat } from './hooks';
+
+/**
+ * The shopping list's language-dependent strings: the "how much to buy" line
+ * under each item, and the plain-text export that goes to the clipboard.
+ */
+export function useShoppingFormat(): {
+  quantity: (item: ShoppingItem) => string;
+  listText: (list: ShoppingList, forWhom: string) => string;
+} {
+  const { t } = useTranslation('shopping');
+  const { language } = useLanguage();
+  const fmt = useQuantityFormat();
+
+  const quantity = useCallback(
+    (item: ShoppingItem) => {
+      const { ingredient, packs, grams } = item;
+      const pack = packName(ingredient, language);
+
+      // Pack names already carry their own count ("2 st", "påse 1 kg"), so a
+      // staple must not get a "1 " glued in front of it.
+      if (ingredient.staple) return t('quantity.staple', { pack, grams: fmt.grams(grams) });
+
+      const packLabel = packs === 1 ? pack : t('quantity.packs', { count: packs, pack });
+
+      const units = unitCount(item);
+      if (units !== null) {
+        return t('quantity.units', { pack: packLabel, pieces: fmt.pieces(units) });
+      }
+      return t('quantity.needs', { pack: packLabel, grams: fmt.grams(grams) });
+    },
+    [t, language, fmt],
+  );
+
+  const listText = useCallback(
+    (list: ShoppingList, forWhom: string) => {
+      const lines = [
+        t('text.header', { store: ICA_STORE.name, area: ICA_STORE.area }),
+        t('text.subtitle', {
+          who: forWhom,
+          sek: list.totalSek,
+          items: t('items', { count: list.itemCount }),
+        }),
+        '',
+      ];
+      for (const group of list.groups) {
+        lines.push(deptLabel(group.dept, language).toUpperCase());
+        for (const item of group.items) {
+          const name = ingredientName(item.ingredient, language);
+          const other = ingredientSubtitle(item.ingredient, language);
+          lines.push(`- ${name} (${other}) — ${quantity(item)}`);
+        }
+        lines.push('');
+      }
+      return lines.join('\n').trim();
+    },
+    [t, language, quantity],
+  );
+
+  return useMemo(() => ({ quantity, listText }), [quantity, listText]);
+}

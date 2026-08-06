@@ -1,0 +1,84 @@
+{
+  "app": {
+    "tagline": "Uppsala · ICA Gränby",
+    "documentTitle": "GainPlan — veckans måltidsplan för dig som lyfter",
+    "description": "Proteinrika veckoplaner byggda kring ditt kalorimål, med inköpslista för ICA Gränby."
+  },
+  "nav": {
+    "setup": "Inställningar",
+    "week": "Vecka",
+    "shopping": "Inköp",
+    "prep": "Förberedelse"
+  },
+  "actions": {
+    "buildWeek": "Bygg min vecka",
+    "regenerateWeek": "Gör om veckan",
+    "print": "Skriv ut",
+    "close": "Stäng"
+  },
+  "days": {
+    "mon": "Måndag",
+    "tue": "Tisdag",
+    "wed": "Onsdag",
+    "thu": "Torsdag",
+    "fri": "Fredag",
+    "sat": "Lördag",
+    "sun": "Söndag"
+  },
+  "daysShort": {
+    "mon": "Mån",
+    "tue": "Tis",
+    "wed": "Ons",
+    "thu": "Tors",
+    "fri": "Fre",
+    "sat": "Lör",
+    "sun": "Sön"
+  },
+  "daysMin": {
+    "mon": "Må",
+    "tue": "Ti",
+    "wed": "On",
+    "thu": "To",
+    "fri": "Fr",
+    "sat": "Lö",
+    "sun": "Sö"
+  },
+  "units": {
+    "kcal": "kcal",
+    "gram": "g",
+    "kilogram": "kg",
+    "minutes": "min",
+    "sek": "kr",
+    "pieces": "st"
+  },
+  "macros": {
+    "protein": "Protein",
+    "carbs": "Kolhydrater",
+    "fat": "Fett",
+    "proteinShort": "P",
+    "carbsShort": "K",
+    "fatShort": "F"
+  },
+  "language": {
+    "label": "Språk",
+    "sv": "Svenska",
+    "en": "English"
+  },
+  "household": {
+    "you": "Du",
+    "youPlusName": "Du + {{name}}",
+    "youPlusOne": "Du + en till",
+    "youPlusMany": "Du + {{count}} andra"
+  },
+  "summary": {
+    "average": "Snitt",
+    "kcalPerDay": "kcal/dag",
+    "target": "(mål {{kcal}})",
+    "proteinPerKg": "({{value}} g/kg)",
+    "poolSize_one": "{{count}} recept i din pool",
+    "poolSize_other": "{{count}} recept i din pool",
+    "cooking": "Lagar",
+    "cookingFactor": "{{factor}}×",
+    "cookingFor": "för {{label}} — portionerna nedan är dina"
+  }
+}

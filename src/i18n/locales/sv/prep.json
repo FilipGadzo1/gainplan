@@ -1,0 +1,32 @@
+{
+  "empty": {
+    "title": "Inget att satsvislaga den här veckan",
+    "body": "Inget recept återkommer tillräckligt ofta inom ett fyradagarsfönster i kylen, så allt lagas färskt. Slå på ”Laga en gång, ät två” under Inställningar, eller höj max tillagningstid för att få tillbaka de större satsrecepten i poolen."
+  },
+  "cookSessions_one": "tillagningstillfälle",
+  "cookSessions_other": "tillagningstillfällen",
+  "mealsCovered": "måltider täckta",
+  "minutesTotal": "minuter totalt",
+  "startWith": "Börja med",
+  "startWithSuffix": "— det är längst med ~{{minutes}} min.",
+  "schedule": "Förberedelseschema",
+  "cookOn": "Laga på {{day}}",
+  "meals_one": "{{count}} måltid",
+  "meals_other": "{{count}} måltider",
+  "approxMinutes": "~{{minutes}} min",
+  "fullRecipe": "Fullständigt recept",
+  "icaSource": "{{recipe}} på ica.se",
+  "servings": "{{meals}} × {{portions}}",
+  "portionsFactor": "{{factor}} portioner",
+  "portionsSingle": "1 portion",
+  "kcalInPan": "{{kcal}} kcal i pannan",
+  "eatenOn": "Äts på",
+  "cookThisMuch": "Laga så här mycket",
+  "cookQuantities": "Tillagningsmängder",
+  "method": "Tillvägagångssätt",
+  "storage": {
+    "fish": "Fisk — ät inom 2 dagar. Tänj inte på den här.",
+    "saucy": "Håller 3–4 dagar och går bra att frysa. Ofta godare dag två.",
+    "default": "Håller 3–4 dagar i kylen. Låt svalna innan locket åker på."
+  }
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GainPlan">
+  <!--
+    Tab icons are read at 16px, so this is three solid shapes and no detail that
+    would turn to mush at that size. The dark tile carries its own background so
+    the mark holds up against both light and dark browser chrome, and the azure
+    is the app's own accent (--color-accent).
+  -->
+  <rect width="64" height="64" rx="14" fill="#080b0f" />
+  <g fill="#57aefa">
+    <rect x="11" y="19" width="9" height="26" rx="4" />
+    <rect x="20.5" y="28.5" width="23" height="7" rx="3" />
+    <rect x="44" y="19" width="9" height="26" rx="4" />
+  </g>
+</svg>

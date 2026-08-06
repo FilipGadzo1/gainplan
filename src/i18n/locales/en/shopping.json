@@ -1,0 +1,27 @@
+{
+  "approxTotal": "approx {{sek}} kr",
+  "items_one": "{{count}} item",
+  "items_other": "{{count}} items",
+  "perDay": "{{sek}} kr/day",
+  "portions": "{{label}} · {{factor}}× portions",
+  "inBasket": "in the basket",
+  "openIcaOnline": "Open ICA Handla Online ↗",
+  "copyList": "Copy list",
+  "copied": "Copied ✓",
+  "showPantry": "Show pantry items",
+  "hidePantry": "Hide pantry items",
+  "uncheckAll": "Uncheck all",
+  "disclaimer": "Prices are typical ICA shelf prices, not live ones — treat the total as an estimate, not a receipt. Quantities are rounded up to whole packs, so you will have some left over.",
+  "checkAtHome": "check at home",
+  "searchAt": "search at {{store}}",
+  "quantity": {
+    "staple": "{{pack}} — need approx {{grams}}",
+    "packs": "{{count}} × {{pack}}",
+    "units": "{{pack}} — approx {{pieces}}",
+    "needs": "{{pack}} — need {{grams}}"
+  },
+  "text": {
+    "header": "Shopping list — {{store}} ({{area}})",
+    "subtitle": "{{who}} · approx {{sek}} kr, {{items}}"
+  }
+}

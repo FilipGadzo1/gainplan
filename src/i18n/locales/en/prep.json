@@ -1,0 +1,32 @@
+{
+  "empty": {
+    "title": "Nothing to batch this week",
+    "body": "No recipe repeats often enough inside a four-day fridge window, so everything is cooked fresh. Turn on “Cook once, eat twice” in Setup, or raise the max cooking time to bring the bigger batch recipes back into the pool."
+  },
+  "cookSessions_one": "cook session",
+  "cookSessions_other": "cook sessions",
+  "mealsCovered": "meals covered",
+  "minutesTotal": "minutes total",
+  "startWith": "Start with",
+  "startWithSuffix": "— it is the longest at ~{{minutes}} min.",
+  "schedule": "Prep schedule",
+  "cookOn": "Cook on {{day}}",
+  "meals_one": "{{count}} meal",
+  "meals_other": "{{count}} meals",
+  "approxMinutes": "~{{minutes}} min",
+  "fullRecipe": "Full recipe",
+  "icaSource": "{{recipe}} at ica.se",
+  "servings": "{{meals}} × {{portions}}",
+  "portionsFactor": "{{factor}} portions",
+  "portionsSingle": "1 portion",
+  "kcalInPan": "{{kcal}} kcal in the pan",
+  "eatenOn": "Eaten on",
+  "cookThisMuch": "Cook this much",
+  "cookQuantities": "Cook quantities",
+  "method": "Method",
+  "storage": {
+    "fish": "Fish — eat within 2 days. Do not stretch this one further.",
+    "saucy": "Keeps 3-4 days and freezes well. Often better on day two.",
+    "default": "Keeps 3-4 days in the fridge. Cool it before the lid goes on."
+  }
+}

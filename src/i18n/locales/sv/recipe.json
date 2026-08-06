@@ -1,0 +1,18 @@
+{
+  "portion": "{{pct}} % portion",
+  "batchFriendly": "Satsvänligt",
+  "approxCost": "ca {{sek}} kr råvaror",
+  "costIngredients": "{{sek}} kr råvaror",
+  "costPacks": "{{sek}} kr i hela förpackningar",
+  "costNote": "Det första är vad maten på tallriken är värd. Det andra är vad kassan tar om du handlar enbart till den här måltiden, eftersom förpackningar inte går att dela — resten av varje förpackning går till andra måltider i veckan, och det är därför inköpslistan räknar förpackningar över alla sju dagarna.",
+  "kcalInYourPortion": "kcal i din portion",
+  "ingredients": "Ingredienser",
+  "method": "Tillvägagångssätt",
+  "yourPortion": "Din portion",
+  "householdTab": "{{label}} ({{factor}}×)",
+  "sameDishAtIca": "Samma rätt hos ICA ↗",
+  "sameDishSuffix": "— deras version, med deras mängder.",
+  "householdNote": "Mängderna ovan är hela pannan för {{label}}. Makrona högst upp är fortfarande bara din andel av den.",
+  "blockRecipe": "Föreslå aldrig det här igen",
+  "unblockRecipe": "Tillåt det här receptet igen"
+}
