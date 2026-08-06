@@ -5,6 +5,7 @@ import { DAY_NAMES } from './_shared';
 import { getRecipe } from '../src/data/recipes';
 import { recipeMacros } from '../src/lib/nutrition';
 import { buildShoppingList } from '../src/lib/shopping';
+import { SWEDEN } from '../src/regions/se';
 
 const profile = DEFAULT_PROFILE;
 const plan = generatePlan(profile, { seed: 2026 });
@@ -29,7 +30,7 @@ for (const day of plan.days) {
 
 const week = plan.days.reduce((s, d) => s + dayMacros(d).kcal, 0);
 const protein = plan.days.reduce((s, d) => s + dayMacros(d).protein, 0);
-const list = buildShoppingList(plan);
+const list = buildShoppingList(plan, SWEDEN);
 
 console.log(
   `\nWeek avg: ${Math.round(week / 7)} kcal/day, ${Math.round(protein / 7)} g protein ` +

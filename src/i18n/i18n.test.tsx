@@ -7,6 +7,7 @@ import { generatePlan } from '../lib/planner';
 import { buildShoppingList } from '../lib/shopping';
 import { RECIPES } from '../data/recipes';
 import { INGREDIENTS, getIngredient } from '../data/ingredients';
+import { SWEDEN } from '../regions/se';
 import i18n, { DEFAULT_LANGUAGE, LANGUAGES, resources, type Language } from './index';
 import { deptLabel, packName, recipeName, recipeSteps, recipeSubtitle } from './content';
 import { useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
@@ -115,14 +116,19 @@ describe('content accessors', () => {
     expect(packName(egg, 'sv')).toBe('kartong 12 st');
     expect(packName(egg, 'en')).toBe('carton of 12');
 
-    expect(deptLabel('Frukt & Grönt', 'sv')).toBe('Frukt & Grönt');
-    expect(deptLabel('Frukt & Grönt', 'en')).toBe('Fruit & Veg');
+    expect(deptLabel('produce', 'sv', SWEDEN)).toBe('Frukt & Grönt');
+    expect(deptLabel('produce', 'en', SWEDEN)).toBe('Fruit & Veg');
   });
 
-  it('has an English department name for every department in use', () => {
+  it('has both a Swedish and an English name for every department in use', () => {
     for (const ing of Object.values(INGREDIENTS)) {
-      expect(deptLabel(ing.dept, 'en'), ing.dept).not.toBe('');
-      expect(deptLabel(ing.dept, 'en'), ing.dept).not.toBe(ing.dept);
+      const sv = deptLabel(ing.dept, 'sv', SWEDEN);
+      const en = deptLabel(ing.dept, 'en', SWEDEN);
+      expect(sv, ing.dept).not.toBe('');
+      expect(en, ing.dept).not.toBe('');
+      // Neither label may leak the id through as its own display text.
+      expect(sv, ing.dept).not.toBe(ing.dept);
+      expect(en, ing.dept).not.toBe(ing.dept);
     }
   });
 });
@@ -174,7 +180,7 @@ describe('household label', () => {
 });
 
 describe('shopping list export', () => {
-  const list = () => buildShoppingList(generatePlan(profile(), { seed: 35 }), 1.65);
+  const list = () => buildShoppingList(generatePlan(profile(), { seed: 35 }), SWEDEN, 1.65);
 
   it('writes the header, departments and quantities in Swedish', async () => {
     const { result } = await withLanguage('sv', () => useShoppingFormat());

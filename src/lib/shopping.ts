@@ -1,25 +1,11 @@
-import type { Dept, Ingredient, ShoppingItem, ShoppingList, WeekPlan } from '../types';
-import { DEPT_ORDER } from '../types';
+import type { DeptId, Ingredient, ShoppingItem, ShoppingList, WeekPlan } from '../types';
+import type { Chain, Region } from '../regions';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
 
-/** ICA Kvantum Uppsala (Gränby Centrum, Marknadsgatan 1) in ICA's own store ids. */
-export const ICA_STORE = {
-  id: '1003871',
-  name: 'ICA Kvantum Uppsala',
-  area: 'Gränby Centrum, Marknadsgatan 1',
-  onlineUrl: 'https://handlaprivatkund.ica.se/stores/1003871',
-  infoUrl: 'https://www.ica.se/butiker/kvantum/uppsala/ica-kvantum-uppsala-1003871/',
-} as const;
-
-/**
- * Deep link into the store's own search for one ingredient. ICA has no public
- * "add to basket" URL, so landing on the search results is as far as we can
- * take you — from there it is one tap to the cart.
- */
-export function icaSearchUrl(ingredient: Ingredient): string {
-  const term = ingredient.storeQuery ?? ingredient.name;
-  return `${ICA_STORE.onlineUrl}/search?q=${encodeURIComponent(term)}`;
+/** Deep link into a chain's own search for one ingredient. */
+export function chainSearchUrl(chain: Chain, ingredient: Ingredient): string {
+  return chain.searchUrl(ingredient.storeQuery ?? ingredient.name);
 }
 
 /**
@@ -48,9 +34,13 @@ export function ingredientTotals(plan: WeekPlan, factor = 1): Map<string, number
  * walk the store. Staples are capped at one pack — you are not buying 2 kg of
  * cumin because seven recipes each want a teaspoon.
  */
-export function buildShoppingList(plan: WeekPlan, factor = 1): ShoppingList {
+export function buildShoppingList(
+  plan: WeekPlan,
+  region: Region,
+  factor = 1,
+): ShoppingList {
   const totals = ingredientTotals(plan, factor);
-  const byDept = new Map<Dept, ShoppingItem[]>();
+  const byDept = new Map<DeptId, ShoppingItem[]>();
   let totalSek = 0;
 
   for (const [id, grams] of totals) {
@@ -66,7 +56,7 @@ export function buildShoppingList(plan: WeekPlan, factor = 1): ShoppingList {
     byDept.set(ingredient.dept, list);
   }
 
-  const groups = DEPT_ORDER.filter((d) => byDept.has(d)).map((dept) => ({
+  const groups = region.deptOrder.filter((d) => byDept.has(d)).map((dept) => ({
     dept,
     items: byDept.get(dept)!.sort((a, b) => b.costSek - a.costSek),
   }));

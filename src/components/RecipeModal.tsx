@@ -5,7 +5,7 @@ import { getRecipe } from '../data/recipes';
 import { macrosForGrams, recipeCostSek, recipePackCostSek, recipeMacros } from '../lib/nutrition';
 import { ingredientSubtitle, recipeName, recipeSteps, recipeSubtitle } from '../i18n/content';
 import { useLanguage, useNumberFormat, useQuantityFormat } from '../i18n/hooks';
-import { IcaLink, MacroBar, Pill } from './ui';
+import { StoreLink, MacroBar, Pill } from './ui';
 
 export default function RecipeModal({
   recipeId,
@@ -122,7 +122,7 @@ export default function RecipeModal({
               return (
                 <li key={ri.id} className="flex items-baseline justify-between gap-3 py-2">
                   <div className="min-w-0">
-                    <IcaLink ingredient={ing} className="text-sm font-medium" />
+                    <StoreLink ingredient={ing} className="text-sm font-medium" />
                     <span className="block text-[11px] text-[var(--color-muted)] italic">
                       {ingredientSubtitle(ing, language)}
                     </span>

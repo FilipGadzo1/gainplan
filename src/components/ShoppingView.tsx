@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Profile, WeekPlan } from '../types';
 import { householdFactor } from '../lib/nutrition';
-import { ICA_STORE, buildShoppingList } from '../lib/shopping';
+import { buildShoppingList } from '../lib/shopping';
 import { deptLabel, ingredientName, ingredientSubtitle } from '../i18n/content';
 import { useHouseholdLabel, useLanguage, useNumberFormat } from '../i18n/hooks';
 import { useShoppingFormat } from '../i18n/useShoppingFormat';
-import { IcaLink, Pill } from './ui';
+import { useRegion } from '../regions/hooks';
+import { StoreLink, Pill } from './ui';
 
 export default function ShoppingView({
   plan,
@@ -25,10 +26,11 @@ export default function ShoppingView({
   const nf = useNumberFormat();
   const householdLabel = useHouseholdLabel();
   const { quantity, listText } = useShoppingFormat();
+  const { region, chain } = useRegion();
 
   const factor = householdFactor(profile);
   const whom = householdLabel(profile);
-  const list = useMemo(() => buildShoppingList(plan, factor), [plan, factor]);
+  const list = useMemo(() => buildShoppingList(plan, region, factor), [plan, region, factor]);
   const [hideStaples, setHideStaples] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -61,8 +63,8 @@ export default function ShoppingView({
       <section className="card mb-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-base font-bold">{ICA_STORE.name}</h2>
-            <p className="text-xs text-[var(--color-muted)]">{ICA_STORE.area}</p>
+            <h2 className="text-base font-bold">{chain.name}</h2>
+            <p className="text-xs text-[var(--color-muted)]">{chain.area}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Pill tone="accent">{t('approxTotal', { sek: list.totalSek })}</Pill>
               <Pill>{t('items', { count: list.itemCount })}</Pill>
@@ -83,7 +85,7 @@ export default function ShoppingView({
 
         <div className="no-print mt-4 flex flex-wrap gap-2">
           <a
-            href={ICA_STORE.onlineUrl}
+            href={chain.onlineUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary"
@@ -122,7 +124,7 @@ export default function ShoppingView({
         {visibleGroups.map((group) => (
           <section key={group.dept} className="card overflow-hidden">
             <h3 className="border-b border-[var(--color-line)] bg-[var(--color-raised)] px-4 py-2 text-xs font-bold tracking-wide uppercase">
-              {deptLabel(group.dept, language)}
+              {deptLabel(group.dept, language, region)}
             </h3>
             <ul className="divide-y divide-[var(--color-line)]">
               {group.items.map((item) => {
@@ -143,7 +145,7 @@ export default function ShoppingView({
                     />
                     <span className={`min-w-0 flex-1 ${isChecked ? 'opacity-40' : ''}`}>
                       <span className="block text-sm font-semibold">
-                        <IcaLink ingredient={item.ingredient} />
+                        <StoreLink ingredient={item.ingredient} />
                         {item.ingredient.staple && (
                           <span className="ml-2 text-[10px] font-medium text-[var(--color-muted)]">
                             {t('checkAtHome')}

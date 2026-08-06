@@ -1,24 +1,24 @@
 /** Core domain types. Macros are always grams; energy always kcal. */
 
-/** ICA store departments, in the order you physically walk the store. */
-export type Dept =
-  | 'Frukt & Grönt'
-  | 'Kött & Chark'
-  | 'Fisk'
-  | 'Mejeri & Ägg'
-  | 'Bröd'
-  | 'Skafferi'
-  | 'Fryst';
+/**
+ * Store departments, as ids rather than labels. Every chain sells the same
+ * seven kinds of thing; what differs is what each is called and the order you
+ * walk them in, and both of those belong to a region, not to the type.
+ *
+ * `DEPT_IDS` exists so a region can be checked for completeness at runtime —
+ * see `assertRegion` in src/regions/index.ts.
+ */
+export const DEPT_IDS = [
+  'produce',
+  'meat',
+  'fish',
+  'dairy',
+  'bread',
+  'pantry',
+  'frozen',
+] as const;
 
-export const DEPT_ORDER: Dept[] = [
-  'Frukt & Grönt',
-  'Kött & Chark',
-  'Fisk',
-  'Mejeri & Ägg',
-  'Bröd',
-  'Fryst',
-  'Skafferi',
-];
+export type DeptId = (typeof DEPT_IDS)[number];
 
 /** Restrictions a user can switch on. A recipe is excluded if it contains any flagged tag. */
 export type DietTag =
@@ -38,7 +38,7 @@ export interface Ingredient {
   name: string;
   /** English name, shown as a subtitle. */
   en: string;
-  dept: Dept;
+  dept: DeptId;
   /** Per 100 g (or per 100 ml for liquids). */
   kcal: number;
   protein: number;
@@ -199,7 +199,7 @@ export interface ShoppingItem {
 }
 
 export interface ShoppingList {
-  groups: { dept: Dept; items: ShoppingItem[] }[];
+  groups: { dept: DeptId; items: ShoppingItem[] }[];
   totalSek: number;
   itemCount: number;
 }

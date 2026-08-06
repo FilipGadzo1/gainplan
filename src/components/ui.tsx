@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Ingredient, Macros } from '../types';
-import { ICA_STORE, icaSearchUrl } from '../lib/shopping';
+import { chainSearchUrl } from '../lib/shopping';
 import { ingredientName } from '../i18n/content';
 import { useLanguage } from '../i18n/hooks';
+import { useRegion } from '../regions/hooks';
 
 /**
  * A number input you can actually type into.
@@ -195,11 +196,11 @@ export function Pill({ children, tone = 'default' }: { children: ReactNode; tone
 }
 
 /**
- * An ingredient name that opens ICA Handla Online's search for it. Shared by the
- * shopping list, the week and the prep view so the affordance looks the same
+ * An ingredient name that opens the chain's own online search for it. Shared by
+ * the shopping list, the week and the prep view so the affordance looks the same
  * wherever an ingredient is named. The arrow is dropped from print output.
  */
-export function IcaLink({
+export function StoreLink({
   ingredient,
   className = '',
 }: {
@@ -208,14 +209,15 @@ export function IcaLink({
 }) {
   const { t } = useTranslation('shopping');
   const { language } = useLanguage();
+  const { chain } = useRegion();
 
   // Names truncate in the narrow week and prep columns, so the tooltip carries
-  // the full Swedish and English name as well as where the link goes. The
-  // search itself is always the Swedish term — that is what ICA indexes.
-  const title = `${ingredient.name} — ${ingredient.en} · ${t('searchAt', { store: ICA_STORE.name })}`;
+  // the full local and English name as well as where the link goes. The search
+  // itself always uses the local term — that is what the chain indexes.
+  const title = `${ingredient.name} — ${ingredient.en} · ${t('searchAt', { store: chain.name })}`;
   return (
     <a
-      href={icaSearchUrl(ingredient)}
+      href={chainSearchUrl(chain, ingredient)}
       target="_blank"
       rel="noopener noreferrer"
       title={title}

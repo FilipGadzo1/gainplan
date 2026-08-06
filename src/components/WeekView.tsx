@@ -13,7 +13,7 @@ import {
   useNumberFormat,
   useQuantityFormat,
 } from '../i18n/hooks';
-import { IcaLink, MacroBar, Pill, SegmentedTabs, TargetDelta } from './ui';
+import { StoreLink, MacroBar, Pill, SegmentedTabs, TargetDelta } from './ui';
 
 const SLOT_KEY = {
   breakfast: 'slots.breakfast',
@@ -251,7 +251,7 @@ function MealCard({
         <ul className="mt-1 flex flex-col">
           {ingredients.map(({ ing, grams }) => (
             <li key={ing.id} className="flex items-baseline justify-between gap-2 py-0.5 text-[11px]">
-              <IcaLink ingredient={ing} className="truncate" />
+              <StoreLink ingredient={ing} className="truncate" />
               <span className="tnum shrink-0 font-semibold">
                 {ing.unitWeight && grams / ing.unitWeight >= 0.8
                   ? fmt.pieces(grams / ing.unitWeight)

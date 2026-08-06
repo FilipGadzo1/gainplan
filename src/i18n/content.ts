@@ -1,4 +1,5 @@
-import type { Dept, Ingredient, Recipe } from '../types';
+import type { DeptId, Ingredient, Recipe } from '../types';
+import type { Region } from '../regions';
 import type { Language } from './index';
 
 /**
@@ -46,19 +47,20 @@ export function packName(ingredient: Ingredient, lang: Language): string {
 }
 
 /**
- * Department names double as the `Dept` union's values, so the Swedish form is
- * the identity and only English needs a lookup.
+ * English department names. Unlike the local ones these are not region
+ * property: a Croatian shop's fish counter is still "Fish" in English, so one
+ * map serves every region and only the local labels vary.
  */
-const DEPT_EN: Record<Dept, string> = {
-  'Frukt & Grönt': 'Fruit & Veg',
-  'Kött & Chark': 'Meat & Deli',
-  Fisk: 'Fish',
-  'Mejeri & Ägg': 'Dairy & Eggs',
-  Bröd: 'Bread',
-  Skafferi: 'Pantry',
-  Fryst: 'Frozen',
+const DEPT_EN: Record<DeptId, string> = {
+  produce: 'Fruit & Veg',
+  meat: 'Meat & Deli',
+  fish: 'Fish',
+  dairy: 'Dairy & Eggs',
+  bread: 'Bread',
+  pantry: 'Pantry',
+  frozen: 'Frozen',
 };
 
-export function deptLabel(dept: Dept, lang: Language): string {
-  return lang === 'sv' ? dept : DEPT_EN[dept];
+export function deptLabel(dept: DeptId, lang: Language, region: Region): string {
+  return lang === 'en' ? DEPT_EN[dept] : region.deptLabels[dept];
 }

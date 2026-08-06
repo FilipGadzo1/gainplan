@@ -13,7 +13,7 @@ import {
   useNumberFormat,
   useQuantityFormat,
 } from '../i18n/hooks';
-import { IcaLink, Pill } from './ui';
+import { StoreLink, Pill } from './ui';
 
 const taskKey = (t: PrepTask) => `${t.recipeId}-${t.dayIndex}`;
 
@@ -248,7 +248,7 @@ function SessionDetail({
               >
                 <span className="min-w-0">
                   <span className="block truncate text-[13px] font-medium">
-                    <IcaLink ingredient={ing} />
+                    <StoreLink ingredient={ing} />
                   </span>
                   <span className="block truncate text-[10px] text-[var(--color-muted)] italic">
                     {ingredientSubtitle(ing, language)}

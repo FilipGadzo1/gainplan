@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ShoppingItem, ShoppingList } from '../types';
-import { ICA_STORE, unitCount } from '../lib/shopping';
+import { unitCount } from '../lib/shopping';
 import { ingredientName, ingredientSubtitle, packName, deptLabel } from './content';
 import { useLanguage, useQuantityFormat } from './hooks';
+import { useRegion } from '../regions/hooks';
 
 /**
  * The shopping list's language-dependent strings: the "how much to buy" line
@@ -16,6 +17,7 @@ export function useShoppingFormat(): {
   const { t } = useTranslation('shopping');
   const { language } = useLanguage();
   const fmt = useQuantityFormat();
+  const { region, chain } = useRegion();
 
   const quantity = useCallback(
     (item: ShoppingItem) => {
@@ -40,7 +42,7 @@ export function useShoppingFormat(): {
   const listText = useCallback(
     (list: ShoppingList, forWhom: string) => {
       const lines = [
-        t('text.header', { store: ICA_STORE.name, area: ICA_STORE.area }),
+        t('text.header', { store: chain.name, area: chain.area }),
         t('text.subtitle', {
           who: forWhom,
           sek: list.totalSek,
@@ -49,7 +51,7 @@ export function useShoppingFormat(): {
         '',
       ];
       for (const group of list.groups) {
-        lines.push(deptLabel(group.dept, language).toUpperCase());
+        lines.push(deptLabel(group.dept, language, region).toUpperCase());
         for (const item of group.items) {
           const name = ingredientName(item.ingredient, language);
           const other = ingredientSubtitle(item.ingredient, language);
@@ -59,7 +61,7 @@ export function useShoppingFormat(): {
       }
       return lines.join('\n').trim();
     },
-    [t, language, quantity],
+    [t, language, quantity, region, chain],
   );
 
   return useMemo(() => ({ quantity, listText }), [quantity, listText]);

@@ -14,7 +14,10 @@ import {
   recipeTags,
 } from './nutrition';
 import { dayMacros, eligibleRecipes, generatePlan, mealMacros, prepPlan } from './planner';
-import { ICA_STORE, buildShoppingList, icaSearchUrl, ingredientTotals } from './shopping';
+import { buildShoppingList, chainSearchUrl, ingredientTotals } from './shopping';
+import { SWEDEN } from '../regions/se';
+
+const ICA = SWEDEN.chains[0];
 
 const profile = (over: Partial<Profile> = {}): Profile => ({ ...DEFAULT_PROFILE, ...over });
 
@@ -245,7 +248,7 @@ describe('shopping list', () => {
   it('covers every ingredient the plan uses, and nothing else', () => {
     const plan = generatePlan(profile(), { seed: 17 });
     const totals = ingredientTotals(plan);
-    const list = buildShoppingList(plan);
+    const list = buildShoppingList(plan, SWEDEN);
     const listed = new Set(list.groups.flatMap((g) => g.items.map((i) => i.ingredient.id)));
 
     expect(listed.size).toBe(totals.size);
@@ -254,7 +257,7 @@ describe('shopping list', () => {
 
   it('always buys at least as much as the plan needs', () => {
     const plan = generatePlan(profile({ goal: 'bulk', manualKcal: 4000 }), { seed: 18 });
-    for (const group of buildShoppingList(plan).groups) {
+    for (const group of buildShoppingList(plan, SWEDEN).groups) {
       for (const item of group.items) {
         if (item.ingredient.staple) continue;
         expect(item.boughtGrams, item.ingredient.id).toBeGreaterThanOrEqual(item.grams);
@@ -264,7 +267,7 @@ describe('shopping list', () => {
 
   it('caps staples at a single pack', () => {
     const plan = generatePlan(profile(), { seed: 19 });
-    for (const group of buildShoppingList(plan).groups) {
+    for (const group of buildShoppingList(plan, SWEDEN).groups) {
       for (const item of group.items) {
         if (item.ingredient.staple) expect(item.packs).toBe(1);
       }
@@ -272,13 +275,13 @@ describe('shopping list', () => {
   });
 
   it('costs a believable amount for a week of food', () => {
-    const list = buildShoppingList(generatePlan(profile(), { seed: 20 }));
+    const list = buildShoppingList(generatePlan(profile(), { seed: 20 }), SWEDEN);
     expect(list.totalSek).toBeGreaterThan(400);
     expect(list.totalSek).toBeLessThan(3000);
   });
 
   it('groups items into departments in walking order', () => {
-    const list = buildShoppingList(generatePlan(profile(), { seed: 22 }));
+    const list = buildShoppingList(generatePlan(profile(), { seed: 22 }), SWEDEN);
     expect(list.groups.length).toBeGreaterThan(3);
     expect(list.groups.every((g) => g.items.length > 0)).toBe(true);
   });
@@ -326,15 +329,15 @@ describe('recipe cost', () => {
 
 describe('ICA deep links', () => {
   it('searches the store for the ingredient name by default', () => {
-    expect(icaSearchUrl(getIngredient('banan'))).toBe(
-      `${ICA_STORE.onlineUrl}/search?q=Banan`,
+    expect(chainSearchUrl(ICA, getIngredient('banan'))).toBe(
+      `${ICA.onlineUrl}/search?q=Banan`,
     );
   });
 
   it('prefers storeQuery where the shelf name is broader than ours', () => {
     // "Nötfärs 5%" finds nothing in ICA's search; "nötfärs" finds the shelf.
-    expect(icaSearchUrl(getIngredient('notfars5'))).toBe(
-      `${ICA_STORE.onlineUrl}/search?q=n%C3%B6tf%C3%A4rs`,
+    expect(chainSearchUrl(ICA, getIngredient('notfars5'))).toBe(
+      `${ICA.onlineUrl}/search?q=n%C3%B6tf%C3%A4rs`,
     );
   });
 
@@ -348,8 +351,8 @@ describe('ICA deep links', () => {
 
   it('escapes every ingredient into a same-origin store URL', () => {
     for (const ingredient of Object.values(INGREDIENTS)) {
-      const url = new URL(icaSearchUrl(ingredient));
-      expect(url.origin, ingredient.id).toBe(new URL(ICA_STORE.onlineUrl).origin);
+      const url = new URL(chainSearchUrl(ICA, ingredient));
+      expect(url.origin, ingredient.id).toBe(new URL(ICA.onlineUrl).origin);
       expect(url.searchParams.get('q'), ingredient.id).toBe(
         ingredient.storeQuery ?? ingredient.name,
       );
@@ -393,8 +396,8 @@ describe('household', () => {
 
   it('costs more per extra person, but sub-linearly', () => {
     const plan = generatePlan(profile(), { seed: 32 });
-    const alone = buildShoppingList(plan, 1);
-    const together = buildShoppingList(plan, 1.65);
+    const alone = buildShoppingList(plan, SWEDEN, 1);
+    const together = buildShoppingList(plan, SWEDEN, 1.65);
     const ratio = together.totalSek / alone.totalSek;
 
     // A solo week already over-buys badly — you take home a 2 kg bag of
@@ -407,7 +410,7 @@ describe('household', () => {
 
   it('keeps rising as the household grows', () => {
     const plan = generatePlan(profile(), { seed: 32 });
-    const costs = [1, 1.65, 2.05, 3].map((f) => buildShoppingList(plan, f).totalSek);
+    const costs = [1, 1.65, 2.05, 3].map((f) => buildShoppingList(plan, SWEDEN, f).totalSek);
     for (let i = 1; i < costs.length; i++) {
       expect(costs[i], `factor step ${i}`).toBeGreaterThan(costs[i - 1]);
     }
@@ -416,7 +419,7 @@ describe('household', () => {
   it('wastes less of every pack as the household grows', () => {
     const plan = generatePlan(profile(), { seed: 32 });
     const waste = (f: number) => {
-      const list = buildShoppingList(plan, f);
+      const list = buildShoppingList(plan, SWEDEN, f);
       const items = list.groups.flatMap((g) => g.items);
       const needed = items.reduce((s, i) => s + i.grams, 0);
       const bought = items.reduce((s, i) => s + i.boughtGrams, 0);
@@ -427,15 +430,15 @@ describe('household', () => {
 
   it('feeding a second person costs less than doubling the bill', () => {
     const plan = generatePlan(profile(), { seed: 33 });
-    const together = buildShoppingList(plan, 1.65).totalSek;
-    const doubled = buildShoppingList(plan, 2).totalSek;
+    const together = buildShoppingList(plan, SWEDEN, 1.65).totalSek;
+    const doubled = buildShoppingList(plan, SWEDEN, 2).totalSek;
     expect(together).toBeLessThan(doubled);
   });
 
   it('never buys less than the single-person list', () => {
     const plan = generatePlan(profile(), { seed: 34 });
-    const alone = buildShoppingList(plan, 1);
-    const together = buildShoppingList(plan, 1.65);
+    const alone = buildShoppingList(plan, SWEDEN, 1);
+    const together = buildShoppingList(plan, SWEDEN, 1.65);
 
     const packs = (l: typeof alone) =>
       new Map(l.groups.flatMap((g) => g.items.map((i) => [i.ingredient.id, i.packs] as const)));
