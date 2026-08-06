@@ -20,6 +20,17 @@ export const DEPT_IDS = [
 
 export type DeptId = (typeof DEPT_IDS)[number];
 
+/**
+ * The countries the app knows how to shop in. The descriptor for each — its
+ * chains, catalogue, departments and language — lives in src/regions; only the
+ * id is a domain type, so that `Profile` can name a region without the types
+ * module depending on the data.
+ */
+export const REGION_IDS = ['se'] as const;
+export type RegionId = (typeof REGION_IDS)[number];
+
+export type Currency = 'SEK' | 'EUR';
+
 /** Restrictions a user can switch on. A recipe is excluded if it contains any flagged tag. */
 export type DietTag =
   | 'meat'
@@ -135,6 +146,12 @@ export interface HouseholdMember {
 }
 
 export interface Profile {
+  /**
+   * Where you shop. Picks the catalogue, the recipes, the chains, the currency
+   * and the language — see src/regions. Everything else on this profile is
+   * about your body and is shared across regions.
+   */
+  region: RegionId;
   sex: Sex;
   age: number;
   heightCm: number;

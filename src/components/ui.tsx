@@ -4,7 +4,7 @@ import type { Ingredient, Macros } from '../types';
 import { chainSearchUrl } from '../lib/shopping';
 import { ingredientName } from '../i18n/content';
 import { useLanguage } from '../i18n/hooks';
-import { useRegion } from '../regions/hooks';
+import { useRegion } from '../regions/context';
 
 /**
  * A number input you can actually type into.

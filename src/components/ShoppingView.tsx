@@ -6,7 +6,7 @@ import { buildShoppingList } from '../lib/shopping';
 import { deptLabel, ingredientName, ingredientSubtitle } from '../i18n/content';
 import { useHouseholdLabel, useLanguage, useNumberFormat } from '../i18n/hooks';
 import { useShoppingFormat } from '../i18n/useShoppingFormat';
-import { useRegion } from '../regions/hooks';
+import { useRegion } from '../regions/context';
 import { StoreLink, Pill } from './ui';
 
 export default function ShoppingView({

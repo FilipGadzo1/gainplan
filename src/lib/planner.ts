@@ -1,5 +1,6 @@
 import type { Macros, MealSlot, PlannedDay, PlannedMeal, Profile, Recipe, WeekPlan } from '../types';
-import { RECIPES, getRecipe } from '../data/recipes';
+import { getRecipe } from '../data/recipes';
+import { regionOf } from '../regions/registry';
 import {
   EMPTY_MACROS,
   addMacros,
@@ -29,11 +30,17 @@ function clampScale(s: number): number {
   return Math.min(SCALE_MAX, Math.max(SCALE_MIN, Math.round(s / SCALE_STEP) * SCALE_STEP));
 }
 
-/** Recipes that survive the profile's restrictions and time budget. */
+/**
+ * Recipes that survive the profile's restrictions and time budget.
+ *
+ * The pool starts from the profile's region, not from every recipe the app
+ * ships: a Swedish week must never be planned out of Croatian dishes, however
+ * well their macros fit.
+ */
 export function eligibleRecipes(profile: Profile): Recipe[] {
   const excluded = new Set(profile.exclude);
   const disliked = new Set(profile.dislikedRecipes);
-  return RECIPES.filter((r) => {
+  return regionOf(profile.region).recipes.filter((r) => {
     if (disliked.has(r.id)) return false;
     if (r.minutes > profile.maxMinutes) return false;
     for (const tag of recipeTags(r)) if (excluded.has(tag)) return false;

@@ -1,4 +1,4 @@
-import type { DeptId, Ingredient, Recipe } from '../types';
+import type { Currency, DeptId, Ingredient, Recipe, RegionId } from '../types';
 import { DEPT_IDS } from '../types';
 import type { Language } from '../i18n';
 
@@ -13,11 +13,6 @@ import type { Language } from '../i18n';
  * English. So the accessors in i18n/content.ts only ever ask "English or not",
  * and never have to know which region produced the row they were handed.
  */
-
-export const REGION_IDS = ['se'] as const;
-export type RegionId = (typeof REGION_IDS)[number];
-
-export type Currency = 'SEK' | 'EUR';
 
 /**
  * One supermarket chain. Sweden has a single entry because the app is built

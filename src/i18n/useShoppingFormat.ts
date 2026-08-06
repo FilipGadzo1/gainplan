@@ -4,7 +4,7 @@ import type { ShoppingItem, ShoppingList } from '../types';
 import { unitCount } from '../lib/shopping';
 import { ingredientName, ingredientSubtitle, packName, deptLabel } from './content';
 import { useLanguage, useQuantityFormat } from './hooks';
-import { useRegion } from '../regions/hooks';
+import { useRegion } from '../regions/context';
 
 /**
  * The shopping list's language-dependent strings: the "how much to buy" line
