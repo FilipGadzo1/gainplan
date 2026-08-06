@@ -11,8 +11,8 @@ for (const f of [1, 1.4, 1.65, 2, 2.05, 3]) {
   const needed = [...ingredientTotals(plan, f).values()].reduce((a, b) => a + b, 0);
   const bought = list.groups.flatMap((g) => g.items).reduce((s, i) => s + i.boughtGrams, 0);
   console.log(
-    `factor ${f.toFixed(2)}  ${String(list.totalSek).padStart(5)} kr  ` +
-      `(${(list.totalSek / buildShoppingList(plan, SWEDEN, 1).totalSek).toFixed(2)}× cost)  ` +
+    `factor ${f.toFixed(2)}  ${String(list.total).padStart(5)} kr  ` +
+      `(${(list.total / buildShoppingList(plan, SWEDEN, 1).total).toFixed(2)}× cost)  ` +
       `waste ${Math.round((1 - needed / bought) * 100)}%`,
   );
 }

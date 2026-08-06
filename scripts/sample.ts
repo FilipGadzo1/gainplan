@@ -36,5 +36,5 @@ console.log(
   `\nWeek avg: ${Math.round(week / 7)} kcal/day, ${Math.round(protein / 7)} g protein ` +
     `(${(protein / 7 / profile.weightKg).toFixed(1)} g/kg)`,
 );
-console.log(`Shopping: ${list.itemCount} items, ~${list.totalSek} kr (${Math.round(list.totalSek / 7)} kr/day)`);
+console.log(`Shopping: ${list.itemCount} items, ~${list.total} kr (${Math.round(list.total / 7)} kr/day)`);
 console.log(`Batch sessions: ${prepPlan(plan).length}`);

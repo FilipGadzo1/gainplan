@@ -144,11 +144,11 @@ export function recipeTags(recipe: Recipe): Set<DietTag> {
 /**
  * What the food on the plate is worth: only the grams the recipe actually uses.
  *
- * This is not what the shop charges you — see `recipePackCostSek`. Keeping the
+ * This is not what the shop charges you — see `recipePackCost`. Keeping the
  * two apart matters, because 180 g of turkey is 36 kr of turkey but you cannot
  * buy 180 g of it.
  */
-export function recipeCostSek(recipe: Recipe, scale = 1, factor = 1): number {
+export function recipeCost(recipe: Recipe, scale = 1, factor = 1): number {
   return recipe.ingredients.reduce((sum, ri) => {
     const grams = (ri.fixed ? ri.g : ri.g * scale) * factor;
     const ing = getIngredient(ri.id);
@@ -170,7 +170,7 @@ export function recipeCostSek(recipe: Recipe, scale = 1, factor = 1): number {
  * turkey pack gets eaten by another meal, which is exactly why the shopping
  * list totals packs across the week instead of per meal.
  */
-export function recipePackCostSek(recipe: Recipe, scale = 1, factor = 1): number {
+export function recipePackCost(recipe: Recipe, scale = 1, factor = 1): number {
   return recipe.ingredients.reduce((sum, ri) => {
     const ing = getIngredient(ri.id);
     if (ing.staple) return sum;

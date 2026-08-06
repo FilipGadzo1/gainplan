@@ -4,7 +4,7 @@ import type { Profile, WeekPlan } from '../types';
 import { householdFactor } from '../lib/nutrition';
 import { buildShoppingList } from '../lib/shopping';
 import { deptLabel, ingredientName, ingredientSubtitle } from '../i18n/content';
-import { useHouseholdLabel, useLanguage, useNumberFormat } from '../i18n/hooks';
+import { useCurrencyFormat, useHouseholdLabel, useLanguage, useNumberFormat } from '../i18n/hooks';
 import { useShoppingFormat } from '../i18n/useShoppingFormat';
 import { useRegion } from '../regions/context';
 import { StoreLink, Pill } from './ui';
@@ -25,6 +25,7 @@ export default function ShoppingView({
   const { language } = useLanguage();
   const nf = useNumberFormat();
   const householdLabel = useHouseholdLabel();
+  const money = useCurrencyFormat();
   const { quantity, listText } = useShoppingFormat();
   const { region, chain } = useRegion();
 
@@ -66,9 +67,9 @@ export default function ShoppingView({
             <h2 className="text-base font-bold">{chain.name}</h2>
             <p className="text-xs text-[var(--color-muted)]">{chain.area}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              <Pill tone="accent">{t('approxTotal', { sek: list.totalSek })}</Pill>
+              <Pill tone="accent">{t('approxTotal', { amount: money(list.total) })}</Pill>
               <Pill>{t('items', { count: list.itemCount })}</Pill>
-              <Pill tone="muted">{t('perDay', { sek: Math.round(list.totalSek / 7) })}</Pill>
+              <Pill tone="muted">{t('perDay', { amount: money(list.total / 7) })}</Pill>
               {factor > 1 && (
                 <Pill>{t('portions', { label: whom, factor: nf(factor, 2) })}</Pill>
               )}
@@ -167,7 +168,7 @@ export default function ShoppingView({
                       htmlFor={boxId}
                       className={`tnum shrink-0 cursor-pointer text-sm font-semibold ${isChecked ? 'opacity-40' : ''}`}
                     >
-                      {Math.round(item.costSek)} {tc('units.sek')}
+                      {money(item.cost)}
                     </label>
                   </li>
                 );

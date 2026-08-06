@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Profile } from '../types';
+import type { Currency, Profile } from '../types';
+import { useRegion } from '../regions/context';
 import { DEFAULT_LANGUAGE, isLanguage, type Language } from './index';
 
 /** The active language, narrowed to the two the app actually ships. */
@@ -89,6 +90,28 @@ export function useHouseholdLabel(): (profile: Profile) => string {
       return t('household.youPlusMany', { count: profile.household.length });
     },
     [t],
+  );
+}
+
+/**
+ * Symbols rather than Intl's `style: 'currency'`, which renders SEK as "SEK 850"
+ * in English and "850,00 kr" in Swedish — neither is what the app has always
+ * shown, and both put the currency where a shopper does not read it. Every
+ * currency here happens to suffix, so one shape covers both.
+ */
+const CURRENCY_SYMBOL: Record<Currency, string> = { SEK: 'kr', EUR: '€' };
+
+/**
+ * A money amount in the current region's currency, rounded to whole units. Prices
+ * are shelf estimates to begin with, so decimals would claim a precision the
+ * underlying data does not have.
+ */
+export function useCurrencyFormat(): (amount: number) => string {
+  const { region } = useRegion();
+  const nf = useNumberFormat();
+  return useCallback(
+    (amount: number) => `${nf(Math.round(amount))} ${CURRENCY_SYMBOL[region.currency]}`,
+    [nf, region.currency],
   );
 }
 

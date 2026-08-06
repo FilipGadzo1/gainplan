@@ -8,9 +8,9 @@ import {
   householdFactor,
   kcalForDay,
   mealSplit,
-  recipeCostSek,
+  recipeCost,
   recipeMacros,
-  recipePackCostSek,
+  recipePackCost,
   recipeTags,
 } from './nutrition';
 import { dayMacros, eligibleRecipes, generatePlan, mealMacros, prepPlan } from './planner';
@@ -276,8 +276,8 @@ describe('shopping list', () => {
 
   it('costs a believable amount for a week of food', () => {
     const list = buildShoppingList(generatePlan(profile(), { seed: 20 }), SWEDEN);
-    expect(list.totalSek).toBeGreaterThan(400);
-    expect(list.totalSek).toBeLessThan(3000);
+    expect(list.total).toBeGreaterThan(400);
+    expect(list.total).toBeLessThan(3000);
   });
 
   it('groups items into departments in walking order', () => {
@@ -292,17 +292,17 @@ describe('recipe cost', () => {
 
   it('values the plate at the grams the recipe actually uses', () => {
     // 180g turkey @ 200 + 80g rice @ 45 + 200g veg @ 40 + 10g soy @ 90 + 8g oil @ 40
-    expect(recipeCostSek(turkey)).toBeCloseTo(36 + 3.6 + 8 + 0.9 + 0.32, 2);
+    expect(recipeCost(turkey)).toBeCloseTo(36 + 3.6 + 8 + 0.9 + 0.32, 2);
   });
 
   it('scales with the portion and the household factor', () => {
-    expect(recipeCostSek(turkey, 2)).toBeCloseTo(recipeCostSek(turkey) * 2, 2);
-    expect(recipeCostSek(turkey, 1, 2)).toBeCloseTo(recipeCostSek(turkey) * 2, 2);
+    expect(recipeCost(turkey, 2)).toBeCloseTo(recipeCost(turkey) * 2, 2);
+    expect(recipeCost(turkey, 1, 2)).toBeCloseTo(recipeCost(turkey) * 2, 2);
   });
 
   it('charges whole packs at the till, since a pack cannot be split', () => {
     // 180g of turkey means buying the 400g pack, not 180g of it.
-    expect(recipePackCostSek(turkey)).toBeGreaterThan(recipeCostSek(turkey));
+    expect(recipePackCost(turkey)).toBeGreaterThan(recipeCost(turkey));
   });
 
   it('leaves staples out of the pack price rather than charging a whole bottle', () => {
@@ -310,7 +310,7 @@ describe('recipe cost', () => {
     const staples = turkey.ingredients.filter((ri) => getIngredient(ri.id).staple);
     expect(staples.length).toBeGreaterThan(0);
 
-    const packCost = recipePackCostSek(turkey);
+    const packCost = recipePackCost(turkey);
     for (const ri of staples) {
       const ing = getIngredient(ri.id);
       expect(packCost).toBeLessThan((ing.packSize / 1000) * ing.pricePerKg + packCost - 1);
@@ -322,7 +322,7 @@ describe('recipe cost', () => {
       const used = recipe.ingredients
         .filter((ri) => !getIngredient(ri.id).staple)
         .reduce((sum, ri) => sum + (ri.g / 1000) * getIngredient(ri.id).pricePerKg, 0);
-      expect(recipePackCostSek(recipe), recipe.id).toBeGreaterThanOrEqual(used - 1e-9);
+      expect(recipePackCost(recipe), recipe.id).toBeGreaterThanOrEqual(used - 1e-9);
     }
   });
 });
@@ -398,19 +398,19 @@ describe('household', () => {
     const plan = generatePlan(profile(), { seed: 32 });
     const alone = buildShoppingList(plan, SWEDEN, 1);
     const together = buildShoppingList(plan, SWEDEN, 1.65);
-    const ratio = together.totalSek / alone.totalSek;
+    const ratio = together.total / alone.total;
 
     // A solo week already over-buys badly — you take home a 2 kg bag of
     // potatoes for 260 g of cooking — so a second eater largely absorbs the
     // slack rather than doubling the bill. 1.65x the food is ~1.22x the cost.
-    expect(together.totalSek).toBeGreaterThan(alone.totalSek);
+    expect(together.total).toBeGreaterThan(alone.total);
     expect(ratio).toBeGreaterThan(1.1);
     expect(ratio).toBeLessThan(1.5);
   });
 
   it('keeps rising as the household grows', () => {
     const plan = generatePlan(profile(), { seed: 32 });
-    const costs = [1, 1.65, 2.05, 3].map((f) => buildShoppingList(plan, SWEDEN, f).totalSek);
+    const costs = [1, 1.65, 2.05, 3].map((f) => buildShoppingList(plan, SWEDEN, f).total);
     for (let i = 1; i < costs.length; i++) {
       expect(costs[i], `factor step ${i}`).toBeGreaterThan(costs[i - 1]);
     }
@@ -430,8 +430,8 @@ describe('household', () => {
 
   it('feeding a second person costs less than doubling the bill', () => {
     const plan = generatePlan(profile(), { seed: 33 });
-    const together = buildShoppingList(plan, SWEDEN, 1.65).totalSek;
-    const doubled = buildShoppingList(plan, SWEDEN, 2).totalSek;
+    const together = buildShoppingList(plan, SWEDEN, 1.65).total;
+    const doubled = buildShoppingList(plan, SWEDEN, 2).total;
     expect(together).toBeLessThan(doubled);
   });
 

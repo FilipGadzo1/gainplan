@@ -10,7 +10,7 @@ import { INGREDIENTS, getIngredient } from '../data/ingredients';
 import { SWEDEN } from '../regions/se';
 import i18n, { DEFAULT_LANGUAGE, LANGUAGES, resources, type Language } from './index';
 import { deptLabel, packName, recipeName, recipeSteps, recipeSubtitle } from './content';
-import { useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
+import { useCurrencyFormat, useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
 import { useShoppingFormat } from './useShoppingFormat';
 
 const profile = (over: Partial<Profile> = {}): Profile => ({ ...DEFAULT_PROFILE, ...over });
@@ -176,6 +176,29 @@ describe('household label', () => {
 
     const en = await withLanguage('en', () => useHouseholdLabel());
     expect(en.result.current(profile({ household: [unnamed] }))).toBe('You + one more');
+  });
+});
+
+describe('money', () => {
+  it('suffixes the region currency and rounds to whole units', async () => {
+    const sv = await withLanguage('sv', () => useCurrencyFormat());
+    expect(sv.result.current(849.6)).toBe('850 kr');
+
+    const en = await withLanguage('en', () => useCurrencyFormat());
+    expect(en.result.current(849.6)).toBe('850 kr');
+  });
+
+  it('groups thousands the way the language does', async () => {
+    const sv = await withLanguage('sv', () => useCurrencyFormat());
+    // Swedish groups with a non-breaking space, English with a comma.
+    expect(sv.result.current(1234)).toMatch(/^1[\s ]234 kr$/);
+
+    const en = await withLanguage('en', () => useCurrencyFormat());
+    expect(en.result.current(1234)).toBe('1,234 kr');
+  });
+
+  it('carries the currency on the list itself, not just in the view', () => {
+    expect(buildShoppingList(generatePlan(profile(), { seed: 36 }), SWEDEN).currency).toBe('SEK');
   });
 });
 

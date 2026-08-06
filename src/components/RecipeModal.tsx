@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
-import { macrosForGrams, recipeCostSek, recipePackCostSek, recipeMacros } from '../lib/nutrition';
+import { macrosForGrams, recipeCost, recipePackCost, recipeMacros } from '../lib/nutrition';
 import { ingredientSubtitle, recipeName, recipeSteps, recipeSubtitle } from '../i18n/content';
-import { useLanguage, useNumberFormat, useQuantityFormat } from '../i18n/hooks';
+import { useCurrencyFormat, useLanguage, useNumberFormat, useQuantityFormat } from '../i18n/hooks';
 import { StoreLink, MacroBar, Pill } from './ui';
 
 export default function RecipeModal({
@@ -31,6 +31,7 @@ export default function RecipeModal({
   const { t: tc } = useTranslation('common');
   const { language } = useLanguage();
   const nf = useNumberFormat();
+  const money = useCurrencyFormat();
   const fmt = useQuantityFormat();
 
   const recipe = getRecipe(recipeId);
@@ -79,7 +80,7 @@ export default function RecipeModal({
               {recipe.batchFriendly && <Pill>{t('batchFriendly')}</Pill>}
               <Pill tone="muted">
                 {t('approxCost', {
-                  sek: Math.round(recipeCostSek(recipe, scale, quantityFactor)),
+                  amount: money(recipeCost(recipe, scale, quantityFactor)),
                 })}
               </Pill>
             </div>
@@ -152,7 +153,7 @@ export default function RecipeModal({
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
               <span className="tnum font-semibold">
                 {t('costIngredients', {
-                  sek: Math.round(recipeCostSek(recipe, scale, quantityFactor)),
+                  amount: money(recipeCost(recipe, scale, quantityFactor)),
                 })}
               </span>
               <span aria-hidden className="text-[var(--color-muted)]">
@@ -160,7 +161,7 @@ export default function RecipeModal({
               </span>
               <span className="tnum font-semibold text-[var(--color-muted)]">
                 {t('costPacks', {
-                  sek: Math.round(recipePackCostSek(recipe, scale, quantityFactor)),
+                  amount: money(recipePackCost(recipe, scale, quantityFactor)),
                 })}
               </span>
             </div>

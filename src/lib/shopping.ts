@@ -41,29 +41,30 @@ export function buildShoppingList(
 ): ShoppingList {
   const totals = ingredientTotals(plan, factor);
   const byDept = new Map<DeptId, ShoppingItem[]>();
-  let totalSek = 0;
+  let total = 0;
 
   for (const [id, grams] of totals) {
     if (grams <= 0) continue;
     const ingredient = getIngredient(id);
     const packs = ingredient.staple ? 1 : Math.max(1, Math.ceil(grams / ingredient.packSize));
     const boughtGrams = packs * ingredient.packSize;
-    const costSek = (boughtGrams / 1000) * ingredient.pricePerKg;
+    const cost = (boughtGrams / 1000) * ingredient.pricePerKg;
 
-    totalSek += costSek;
+    total += cost;
     const list = byDept.get(ingredient.dept) ?? [];
-    list.push({ ingredient, grams, packs, boughtGrams, costSek });
+    list.push({ ingredient, grams, packs, boughtGrams, cost });
     byDept.set(ingredient.dept, list);
   }
 
   const groups = region.deptOrder.filter((d) => byDept.has(d)).map((dept) => ({
     dept,
-    items: byDept.get(dept)!.sort((a, b) => b.costSek - a.costSek),
+    items: byDept.get(dept)!.sort((a, b) => b.cost - a.cost),
   }));
 
   return {
     groups,
-    totalSek: Math.round(totalSek),
+    total: Math.round(total),
+    currency: region.currency,
     itemCount: totals.size,
   };
 }

@@ -1,9 +1,9 @@
 {
   "portion": "{{pct}}% portion",
   "batchFriendly": "Batch friendly",
-  "approxCost": "approx {{sek}} kr of ingredients",
-  "costIngredients": "{{sek}} kr of ingredients",
-  "costPacks": "{{sek}} kr in whole packs",
+  "approxCost": "approx {{amount}} of ingredients",
+  "costIngredients": "{{amount}} of ingredients",
+  "costPacks": "{{amount}} in whole packs",
   "costNote": "The first is what the food on the plate is worth. The second is what the till charges if you buy for this meal alone, since packs cannot be split — the rest of each pack goes to other meals in the week, which is why the shopping list totals packs across all seven days.",
   "kcalInYourPortion": "kcal in your portion",
   "ingredients": "Ingredients",

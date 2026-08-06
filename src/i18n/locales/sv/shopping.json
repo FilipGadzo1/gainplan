@@ -1,8 +1,8 @@
 {
-  "approxTotal": "ca {{sek}} kr",
+  "approxTotal": "ca {{amount}}",
   "items_one": "{{count}} vara",
   "items_other": "{{count}} varor",
-  "perDay": "{{sek}} kr/dag",
+  "perDay": "{{amount}}/dag",
   "portions": "{{label}} · {{factor}}× portioner",
   "inBasket": "i korgen",
   "openIcaOnline": "Öppna ICA Handla Online ↗",
@@ -22,6 +22,6 @@
   },
   "text": {
     "header": "Inköpslista — {{store}} ({{area}})",
-    "subtitle": "{{who}} · ca {{sek}} kr, {{items}}"
+    "subtitle": "{{who}} · ca {{amount}}, {{items}}"
   }
 }

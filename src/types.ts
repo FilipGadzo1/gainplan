@@ -212,11 +212,13 @@ export interface ShoppingItem {
   packs: number;
   /** Grams actually purchased (packs x packSize). */
   boughtGrams: number;
-  costSek: number;
+  /** In the region's currency. */
+  cost: number;
 }
 
 export interface ShoppingList {
   groups: { dept: DeptId; items: ShoppingItem[] }[];
-  totalSek: number;
+  total: number;
+  currency: Currency;
   itemCount: number;
 }

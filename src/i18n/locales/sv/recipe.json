@@ -1,9 +1,9 @@
 {
   "portion": "{{pct}} % portion",
   "batchFriendly": "Satsvänligt",
-  "approxCost": "ca {{sek}} kr råvaror",
-  "costIngredients": "{{sek}} kr råvaror",
-  "costPacks": "{{sek}} kr i hela förpackningar",
+  "approxCost": "ca {{amount}} råvaror",
+  "costIngredients": "{{amount}} råvaror",
+  "costPacks": "{{amount}} i hela förpackningar",
   "costNote": "Det första är vad maten på tallriken är värd. Det andra är vad kassan tar om du handlar enbart till den här måltiden, eftersom förpackningar inte går att dela — resten av varje förpackning går till andra måltider i veckan, och det är därför inköpslistan räknar förpackningar över alla sju dagarna.",
   "kcalInYourPortion": "kcal i din portion",
   "ingredients": "Ingredienser",

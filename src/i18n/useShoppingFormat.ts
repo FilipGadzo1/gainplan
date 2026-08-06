@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { ShoppingItem, ShoppingList } from '../types';
 import { unitCount } from '../lib/shopping';
 import { ingredientName, ingredientSubtitle, packName, deptLabel } from './content';
-import { useLanguage, useQuantityFormat } from './hooks';
+import { useCurrencyFormat, useLanguage, useQuantityFormat } from './hooks';
 import { useRegion } from '../regions/context';
 
 /**
@@ -18,6 +18,7 @@ export function useShoppingFormat(): {
   const { language } = useLanguage();
   const fmt = useQuantityFormat();
   const { region, chain } = useRegion();
+  const money = useCurrencyFormat();
 
   const quantity = useCallback(
     (item: ShoppingItem) => {
@@ -45,7 +46,7 @@ export function useShoppingFormat(): {
         t('text.header', { store: chain.name, area: chain.area }),
         t('text.subtitle', {
           who: forWhom,
-          sek: list.totalSek,
+          amount: money(list.total),
           items: t('items', { count: list.itemCount }),
         }),
         '',
@@ -61,7 +62,7 @@ export function useShoppingFormat(): {
       }
       return lines.join('\n').trim();
     },
-    [t, language, quantity, region, chain],
+    [t, language, quantity, region, chain, money],
   );
 
   return useMemo(() => ({ quantity, listText }), [quantity, listText]);

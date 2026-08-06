@@ -1,8 +1,8 @@
 {
-  "approxTotal": "approx {{sek}} kr",
+  "approxTotal": "approx {{amount}}",
   "items_one": "{{count}} item",
   "items_other": "{{count}} items",
-  "perDay": "{{sek}} kr/day",
+  "perDay": "{{amount}}/day",
   "portions": "{{label}} · {{factor}}× portions",
   "inBasket": "in the basket",
   "openIcaOnline": "Open ICA Handla Online ↗",
@@ -22,6 +22,6 @@
   },
   "text": {
     "header": "Shopping list — {{store}} ({{area}})",
-    "subtitle": "{{who}} · approx {{sek}} kr, {{items}}"
+    "subtitle": "{{who}} · approx {{amount}}, {{items}}"
   }
 }
