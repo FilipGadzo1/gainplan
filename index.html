@@ -4,7 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#080b0f" />
+    <!--
+      favicon.ico must exist and must sit at the site root: every browser
+      requests /favicon.ico on its own, and Safari and older engines ignore SVG
+      icons entirely and fall back to it. An SVG-only setup renders as the
+      default globe for all of them.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta
       name="description"
       content="Proteinrika veckoplaner byggda kring ditt kalorimål, med inköpslista för ICA Gränby."
