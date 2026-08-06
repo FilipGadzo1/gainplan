@@ -5,7 +5,7 @@ import { getIngredient } from '../data/ingredients';
  * Only the arithmetic lives here. The labels and hints these ids are shown
  * under are in the `setup` locale namespace, keyed by the same ids.
  */
-export const ACTIVITY: Record<ActivityLevel, { factor: number }> = {
+const ACTIVITY: Record<ActivityLevel, { factor: number }> = {
   sedentary: { factor: 1.2 },
   light: { factor: 1.375 },
   moderate: { factor: 1.55 },
@@ -117,10 +117,6 @@ export function addMacros(a: Macros, b: Macros): Macros {
     carbs: a.carbs + b.carbs,
     fat: a.fat + b.fat,
   };
-}
-
-export function scaleMacros(m: Macros, f: number): Macros {
-  return { kcal: m.kcal * f, protein: m.protein * f, carbs: m.carbs * f, fat: m.fat * f };
 }
 
 export function macrosForGrams(ing: Ingredient, grams: number): Macros {

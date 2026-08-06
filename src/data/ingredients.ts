@@ -114,8 +114,6 @@ export const INGREDIENTS: Record<string, Ingredient> = Object.fromEntries(
   RAW.map((i) => [i.id, i]),
 );
 
-export const ALL_INGREDIENTS = RAW;
-
 export function getIngredient(id: string): Ingredient {
   const ing = INGREDIENTS[id];
   if (!ing) throw new Error(`Unknown ingredient: ${id}`);

@@ -78,11 +78,6 @@ export function buildShoppingList(plan: WeekPlan, factor = 1): ShoppingList {
   };
 }
 
-/** How much of each pack actually gets used — high leftovers mean waste. */
-export function wasteRatio(item: ShoppingItem): number {
-  return 1 - item.grams / item.boughtGrams;
-}
-
 /** How many whole units a counted ingredient (eggs, bananas) works out to. */
 export function unitCount(item: ShoppingItem): number | null {
   const { ingredient, grams } = item;

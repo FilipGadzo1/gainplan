@@ -1566,7 +1566,7 @@ export const RECIPES: Recipe[] = [
   },
 ];
 
-export const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
+const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
   RECIPES.map((r) => [r.id, r]),
 );
 
