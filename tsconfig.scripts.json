@@ -1,0 +1,14 @@
+{
+  // The dev scripts import from src/ but were outside "include", so nothing
+  // checked them. Three of them sat broken through the i18n migration —
+  // importing DAY_NAMES, formatGrams and shoppingListText long after those
+  // moved behind React hooks — and only failed when someone ran them.
+  //
+  // noEmit + a separate file rather than adding "scripts" to tsconfig.json,
+  // because the app build must not compile dev tooling into the bundle.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["scripts"]
+}

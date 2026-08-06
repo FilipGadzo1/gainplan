@@ -6,10 +6,10 @@
  */
 import { writeFileSync } from 'node:fs';
 import { DEFAULT_PROFILE } from '../src/lib/storage';
-import { generatePlan, dayMacros, mealMacros, DAY_NAMES } from '../src/lib/planner';
+import { generatePlan, dayMacros, mealMacros } from '../src/lib/planner';
 import { getRecipe } from '../src/data/recipes';
 import { getIngredient } from '../src/data/ingredients';
-import { formatGrams } from '../src/lib/shopping';
+import { DAY_NAMES, formatGrams } from './_shared';
 
 const profile = { ...DEFAULT_PROFILE };
 const plan = generatePlan(profile, { seed: 2026 });

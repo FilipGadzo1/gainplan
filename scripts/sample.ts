@@ -1,6 +1,7 @@
 /** Prints one generated week to the terminal — a quick eyeball check on realism. */
 import { DEFAULT_PROFILE } from '../src/lib/storage';
-import { generatePlan, dayMacros, DAY_NAMES, prepPlan } from '../src/lib/planner';
+import { generatePlan, dayMacros, prepPlan } from '../src/lib/planner';
+import { DAY_NAMES } from './_shared';
 import { getRecipe } from '../src/data/recipes';
 import { recipeMacros } from '../src/lib/nutrition';
 import { buildShoppingList } from '../src/lib/shopping';
