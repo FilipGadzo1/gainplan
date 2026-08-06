@@ -41,12 +41,24 @@ export const KAUFLAND: Chain = {
 };
 
 /**
+ * No searchUrl, and no webshop at all: studenac.hr carries a newsletter form
+ * and a parcel service, and nothing that takes a product query. Listed for the
+ * shop name on your list.
+ */
+export const STUDENAC: Chain = {
+  id: 'studenac',
+  name: 'Studenac',
+  area: 'Hrvatska',
+  onlineUrl: 'https://www.studenac.hr/',
+};
+
+/**
  * Konzum first: widest reach, the only Croatian chain that can deep-link a
  * product, and the catalogue the ingredient names and `storeQuery` overrides in
  * ./ingredients.ts were checked against.
  *
  * Plodine and Spar were here briefly and are gone. Both render client-side and
- * put nothing searchable in the address, and unlike Kaufland they were not
+ * put nothing searchable in the address, and unlike these three they were not
  * asked to stay.
  */
-export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND];
+export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND, STUDENAC];

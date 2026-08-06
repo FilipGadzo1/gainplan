@@ -11,8 +11,8 @@
   },
   "chain": {
     "title": "Trgovina",
-    "hint": "Cijene, veličine pakiranja i redoslijed odjela.",
-    "noSearch": "nema pretrage na webu"
+    "hint": "Za koju je trgovinu popis i kamo vode poveznice.",
+    "noSearch": "nema pretrage proizvoda"
   },
   "tabs": {
     "body": "Tijelo",
@@ -43,19 +43,46 @@
   "activity": {
     "label": "Aktivnost",
     "hint": "Sve izvan teretane — posao, koraci, svakodnevica.",
-    "sedentary": { "label": "Sjedilački", "hint": "Uredski posao, bez treninga" },
-    "light": { "label": "Lagana", "hint": "Trening 1-3× tjedno" },
-    "moderate": { "label": "Umjerena", "hint": "Trening 3-5× tjedno" },
-    "high": { "label": "Visoka", "hint": "Trening 6-7× tjedno" },
-    "athlete": { "label": "Vrlo visoka", "hint": "Dva treninga dnevno ili fizički posao" }
+    "sedentary": {
+      "label": "Sjedilački",
+      "hint": "Uredski posao, bez treninga"
+    },
+    "light": {
+      "label": "Lagana",
+      "hint": "Trening 1-3× tjedno"
+    },
+    "moderate": {
+      "label": "Umjerena",
+      "hint": "Trening 3-5× tjedno"
+    },
+    "high": {
+      "label": "Visoka",
+      "hint": "Trening 6-7× tjedno"
+    },
+    "athlete": {
+      "label": "Vrlo visoka",
+      "hint": "Dva treninga dnevno ili fizički posao"
+    }
   },
   "goal": {
     "title": "Cilj",
     "hint": "Određuje odmak od kalorija za održavanje.",
-    "cut": { "label": "Skidanje", "hint": "-20% — gubi masnoću, zadrži mišić" },
-    "maintain": { "label": "Održavanje", "hint": "Ostani gdje jesi" },
-    "lean-bulk": { "label": "Čisto dobivanje", "hint": "+10% — sporo i čisto" },
-    "bulk": { "label": "Masa", "hint": "+20% — najbrži rast" }
+    "cut": {
+      "label": "Skidanje",
+      "hint": "-20% — gubi masnoću, zadrži mišić"
+    },
+    "maintain": {
+      "label": "Održavanje",
+      "hint": "Ostani gdje jesi"
+    },
+    "lean-bulk": {
+      "label": "Čisto dobivanje",
+      "hint": "+10% — sporo i čisto"
+    },
+    "bulk": {
+      "label": "Masa",
+      "hint": "+20% — najbrži rast"
+    }
   },
   "trainingDays": {
     "label": "Dani treninga",

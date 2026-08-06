@@ -11,8 +11,8 @@
   },
   "chain": {
     "title": "Butik",
-    "hint": "Priser, förpackningsstorlekar och avdelningarnas ordning.",
-    "noSearch": "ingen sökning på webben"
+    "hint": "Vilken butik listan gäller, och vart varorna länkar.",
+    "noSearch": "ingen produktsökning"
   },
   "tabs": {
     "body": "Kropp",

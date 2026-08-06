@@ -11,8 +11,8 @@
   },
   "chain": {
     "title": "Store",
-    "hint": "Prices, pack sizes and the order of the departments.",
-    "noSearch": "no search on the web"
+    "hint": "Which shop the list is for, and where its items link.",
+    "noSearch": "no product search"
   },
   "tabs": {
     "body": "Body",

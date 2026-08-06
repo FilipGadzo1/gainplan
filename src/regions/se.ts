@@ -9,7 +9,10 @@ import { RECIPES } from '../data/recipes';
  * and aisle order.
  */
 const ICA_KVANTUM_UPPSALA = {
-  id: '1003871',
+  // The chain, not the store: the id identifies who you are shopping with, and
+  // is what the logo and any stored preference key off. The store number lives
+  // in the URLs below, which is the only place it means anything.
+  id: 'ica',
   name: 'ICA Kvantum Uppsala',
   area: 'Gränby Centrum, Marknadsgatan 1',
   onlineUrl: 'https://handlaprivatkund.ica.se/stores/1003871',
