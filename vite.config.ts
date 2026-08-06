@@ -6,15 +6,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Pinned well clear of Vite's default 5173, because every other Vite
-    // project uses that too. Browsers cache favicons and localStorage per
-    // origin, and http://localhost:5173 is the same origin no matter which
-    // project is serving it — sharing it means this app shows another one's
-    // tab icon out of cache.
-    //
-    // strictPort matters as much as the number: without it Vite quietly walks
-    // up to the next free port, which lands the app on an origin some other
-    // project has already polluted. Better to fail and say so.
+    // Pinned rather than left to Vite's default-and-drift behaviour. Without
+    // strictPort, a busy port makes Vite quietly walk up to the next free one,
+    // so the app comes up on whatever origin happens to be going. That matters
+    // because browsers cache favicons and localStorage per origin: land on a
+    // port another project used and you inherit its tab icon out of cache.
+    // Failing loudly is better than starting on the wrong origin.
     port: 5173,
     strictPort: true,
   },

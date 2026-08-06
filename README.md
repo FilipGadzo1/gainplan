@@ -11,7 +11,7 @@ No account, no backend, no API keys. Everything runs in the browser and is store
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 77 tests
+npm test         # 167 tests
 npm run build    # static site in dist/
 ```
 
