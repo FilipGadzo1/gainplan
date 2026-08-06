@@ -120,55 +120,60 @@ export default function RegionSwitcher({
       </button>
 
       {open && (
-        <ul
-          id={menuId}
-          role="listbox"
-          aria-label={t('region.title')}
-          onKeyDown={(e) => {
-            const last = REGION_IDS.length - 1;
-            const current = optionRefs.current.indexOf(document.activeElement as HTMLButtonElement);
-            if (e.key === 'ArrowDown') {
-              e.preventDefault();
-              optionRefs.current[current >= last ? 0 : current + 1]?.focus();
-            } else if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              optionRefs.current[current <= 0 ? last : current - 1]?.focus();
-            } else if (e.key === 'Home') {
-              e.preventDefault();
-              optionRefs.current[0]?.focus();
-            } else if (e.key === 'End') {
-              e.preventDefault();
-              optionRefs.current[last]?.focus();
-            }
-          }}
-          className="absolute right-0 z-40 mt-1 min-w-[10rem] overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-surface)] py-1 shadow-lg"
-        >
-          {REGION_IDS.map((id, i) => {
-            const Flag = FLAGS[id];
-            const active = id === profile.region;
-            return (
-              <li key={id}>
-                <button
-                  type="button"
-                  role="option"
-                  ref={(el) => {
-                    optionRefs.current[i] = el;
-                  }}
-                  aria-selected={active}
-                  onClick={() => choose(id)}
-                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors ${
-                    active
-                      ? 'bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
-                      : 'text-[var(--color-muted)] hover:bg-[var(--color-raised)] hover:text-[var(--color-text)]'
-                  }`}
-                >
-                  <Flag className="h-3 w-5 shrink-0 rounded-[2px]" />
-                  {t(LABEL_KEY[id])}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="absolute right-0 z-40 mt-1 min-w-[12rem] overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-surface)] shadow-lg">
+          <p className="border-b border-[var(--color-line)] px-3 py-1.5 text-[10px] font-bold tracking-[0.08em] text-[var(--color-muted)] uppercase">
+            {t('region.title')}
+          </p>
+          <ul
+            id={menuId}
+            role="listbox"
+            aria-label={t('region.title')}
+            onKeyDown={(e) => {
+              const last = REGION_IDS.length - 1;
+              const current = optionRefs.current.indexOf(document.activeElement as HTMLButtonElement);
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                optionRefs.current[current >= last ? 0 : current + 1]?.focus();
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                optionRefs.current[current <= 0 ? last : current - 1]?.focus();
+              } else if (e.key === 'Home') {
+                e.preventDefault();
+                optionRefs.current[0]?.focus();
+              } else if (e.key === 'End') {
+                e.preventDefault();
+                optionRefs.current[last]?.focus();
+              }
+            }}
+            className="py-1"
+          >
+            {REGION_IDS.map((id, i) => {
+              const Flag = FLAGS[id];
+              const active = id === profile.region;
+              return (
+                <li key={id}>
+                  <button
+                    type="button"
+                    role="option"
+                    ref={(el) => {
+                      optionRefs.current[i] = el;
+                    }}
+                    aria-selected={active}
+                    onClick={() => choose(id)}
+                    className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors ${
+                      active
+                        ? 'bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
+                        : 'text-[var(--color-muted)] hover:bg-[var(--color-raised)] hover:text-[var(--color-text)]'
+                    }`}
+                  >
+                    <Flag className="h-3 w-5 shrink-0 rounded-[2px]" />
+                    {t(LABEL_KEY[id])}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
     </div>
   );

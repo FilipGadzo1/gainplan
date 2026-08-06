@@ -25,9 +25,11 @@ describe('LanguageSwitcher', () => {
     await open(user);
 
     const options = screen.getAllByRole('option');
-    expect(options.map((o) => o.textContent)).toEqual(['Svenska', 'English']);
-    expect(options[0].getAttribute('aria-selected')).toBe('true');
-    expect(options[1].getAttribute('aria-selected')).toBe('false');
+    expect(options).toHaveLength(2);
+    // Named by the language itself. The sv/en code beside it is decoration for
+    // the eye and is aria-hidden, so it stays out of the accessible name.
+    expect(screen.getByRole('option', { name: 'Svenska' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('option', { name: 'English' }).getAttribute('aria-selected')).toBe('false');
   });
 
   it('switches the language and closes the menu', async () => {
@@ -79,9 +81,22 @@ describe('LanguageSwitcher', () => {
     expect(i18n.resolvedLanguage).toBe('sv');
   });
 
-  it('renders flags as SVG, which Windows browsers cannot do with emoji', () => {
+  it('marks languages with letters, never a flag', () => {
+    // The region switcher sits inches away and does use flags, which it is
+    // entitled to: a region is a place. A language is not — English is not the
+    // United Kingdom — and two flag controls side by side read as one repeated
+    // control. Letters against flags is what tells them apart.
     const { container } = render(<LanguageSwitcher />);
-    expect(container.querySelector('svg')).toBeTruthy();
-    expect(container.textContent).not.toMatch(/🇸🇪|🇬🇧/);
+
+    expect(container.querySelector('svg')).toBeNull();
+    expect(container.textContent).not.toMatch(/🇸🇪|🇬🇧|🇭🇷/);
+    expect(container.textContent).toContain('sv');
+  });
+
+  it('says what it changes when opened', async () => {
+    const user = userEvent.setup();
+    render(<LanguageSwitcher />);
+    await open(user);
+    expect(screen.getByText('Språk')).toBeTruthy();
   });
 });
