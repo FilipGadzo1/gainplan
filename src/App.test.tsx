@@ -4,10 +4,14 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 import { DEFAULT_PROFILE } from './lib/storage';
 import { generatePlan } from './lib/planner';
+import i18n, { DEFAULT_LANGUAGE } from './i18n';
 
 afterEach(cleanup);
 
-beforeEach(() => {
+beforeEach(async () => {
+  // i18n is a module singleton, so a test that switches to Croatian would
+  // otherwise hand the next one a Croatian interface to assert Swedish against.
+  await i18n.changeLanguage(DEFAULT_LANGUAGE);
   localStorage.clear();
   localStorage.setItem('gainplan.profile.v1', JSON.stringify(DEFAULT_PROFILE));
   localStorage.setItem(
@@ -62,5 +66,62 @@ describe('tab navigation', () => {
     expect(screen.getByRole('tab', { name: /mat & kök/i }).getAttribute('aria-selected')).toBe(
       'true',
     );
+  });
+});
+
+describe('switching country', () => {
+  /** Opens the header's region menu and picks a country by its visible name. */
+  const switchTo = async (user: ReturnType<typeof userEvent.setup>, name: RegExp) => {
+    await user.click(screen.getAllByRole('button', { name: /var du handlar|gdje kupuješ/i })[0]);
+    await user.click(screen.getByRole('option', { name }));
+  };
+
+  it('is reachable from the header without visiting Setup', () => {
+    render(<App />);
+    // The app opens on Week when a plan exists, which is exactly why this
+    // control cannot live inside the Setup tab.
+    expect(screen.getAllByRole('button', { name: /var du handlar/i })[0]).toBeTruthy();
+  });
+
+  it('takes the whole interface to Croatian', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await switchTo(user, /kroatien/i);
+
+    // Chrome, tabs and the region control itself all follow the region.
+    expect(screen.getAllByRole('button', { name: /Tjedan/ })[0]).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /gdje kupuješ/i })[0]).toBeTruthy();
+  });
+
+  it('builds a Croatian week priced in euro', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await switchTo(user, /kroatien/i);
+    await user.click(screen.getAllByRole('button', { name: /Složi mi tjedan/ })[0]);
+    await goToTab(user, 'Kupnja');
+
+    // Croatian departments, Croatian chain, euro rather than kronor.
+    expect(screen.getByText(/Voće i povrće/)).toBeTruthy();
+    expect(screen.getAllByRole('heading', { name: /Konzum/ })[0]).toBeTruthy();
+    expect(screen.getAllByText(/€/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Frukt & Grönt/)).toBeNull();
+  });
+
+  it('gives each country its own week, so switching back loses nothing', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const swedishWeek = localStorage.getItem('gainplan.plan.se.v1');
+
+    await switchTo(user, /kroatien/i);
+    await user.click(screen.getAllByRole('button', { name: /Složi mi tjedan/ })[0]);
+
+    expect(localStorage.getItem('gainplan.plan.hr.v1')).not.toBeNull();
+    expect(localStorage.getItem('gainplan.plan.se.v1')).toBe(swedishWeek);
+
+    await switchTo(user, /Švedska/i);
+    expect(screen.getAllByRole('button', { name: /^Vecka$/ })[0]).toBeTruthy();
   });
 });

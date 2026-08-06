@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Profile, WeekPlan } from './types';
 import { generatePlan, rebalanceDay, setMealScale, swapMeal, toggleLock, weekMacros } from './lib/planner';
@@ -26,6 +26,7 @@ import ShoppingView from './components/ShoppingView';
 import PrepView from './components/PrepView';
 import RecipeModal from './components/RecipeModal';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import RegionSwitcher from './components/RegionSwitcher';
 import { RegionProvider } from './regions/context';
 
 type Tab = 'setup' | 'week' | 'shopping' | 'prep';
@@ -60,11 +61,35 @@ export default function App() {
   const [tab, setTab] = useState<Tab>(() => (loadPlan(initialProfile.region) ? 'week' : 'setup'));
   const [modal, setModal] = useState<{ recipeId: string; scale: number } | null>(null);
 
+  // Which region the plan and checked items currently in state belong to.
+  //
+  // Changing region has to swap both for that region's own, and the save
+  // effects below must not fire in between — they key on `region`, so the
+  // render right after a switch would otherwise write the *previous* region's
+  // week into the new region's storage and destroy both.
+  const loadedRegion = useRef(initialProfile.region);
+
+  useEffect(() => {
+    if (loadedRegion.current === region) return;
+    loadedRegion.current = region;
+    const next = loadPlan(region);
+    setPlan(next);
+    setChecked(loadChecked(region));
+    // A region with no week yet has nothing for the other tabs to show.
+    setTab(next ? 'week' : 'setup');
+  }, [region]);
+
+  const inSync = loadedRegion.current === region;
+
   useEffect(() => {
     if (hasOnboarded) saveProfile(profile);
   }, [profile, hasOnboarded]);
-  useEffect(() => savePlan(region, plan), [region, plan]);
-  useEffect(() => saveChecked(region, checked), [region, checked]);
+  useEffect(() => {
+    if (inSync) savePlan(region, plan);
+  }, [inSync, region, plan]);
+  useEffect(() => {
+    if (inSync) saveChecked(region, checked);
+  }, [inSync, region, checked]);
   useEffect(() => saveWeights(weights), [weights]);
   useEffect(() => saveShowHousehold(showHousehold), [showHousehold]);
 
@@ -139,6 +164,7 @@ export default function App() {
             </nav>
 
             <div className="ml-auto flex items-center gap-2 md:ml-0">
+              <RegionSwitcher profile={profile} onChange={setProfile} />
               <LanguageSwitcher />
               <button type="button" className="no-print btn btn-primary" onClick={regenerate}>
                 {plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
