@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Profile, Recipe, WeekPlan } from '../types';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
+import { sourceHost } from '../lib/shopping';
 import { prepPlan, type PrepTask } from '../lib/planner';
 import { householdFactor, recipeMacros } from '../lib/nutrition';
 import { ingredientSubtitle, recipeName, recipeSteps, recipeSubtitle } from '../i18n/content';
@@ -199,9 +200,9 @@ function SessionDetail({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn no-print px-2.5 py-1 text-[11px]"
-                title={t('icaSource', { recipe: title })}
+                title={t('recipeSource', { recipe: title, host: sourceHost(recipe.sourceUrl) })}
               >
-                ICA ↗
+                {sourceHost(recipe.sourceUrl)} ↗
               </a>
             )}
             <button

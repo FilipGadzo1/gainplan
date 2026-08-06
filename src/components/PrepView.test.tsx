@@ -181,15 +181,17 @@ describe('PrepView', () => {
     }
   });
 
-  it('offers the ICA page only for recipes that have one', () => {
+  it('offers the source page only for recipes that have one', () => {
     const p = plan();
     render(<PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />);
 
     // The selected task is the first one; it links out only if we matched it.
     const shown = getRecipe(prepPlan(p)[0].recipeId);
-    const icaLink = screen.queryByRole('link', { name: /ICA ↗/ });
+    // The label is the source's own host, so a recipe sourced anywhere but
+    // ica.se names that host rather than claiming to be ICA.
+    const sourceLink = screen.queryByRole('link', { name: /ica\.se ↗/ });
 
-    if (shown.sourceUrl) expect(icaLink?.getAttribute('href')).toBe(shown.sourceUrl);
-    else expect(icaLink).toBeNull();
+    if (shown.sourceUrl) expect(sourceLink?.getAttribute('href')).toBe(shown.sourceUrl);
+    else expect(sourceLink).toBeNull();
   });
 });

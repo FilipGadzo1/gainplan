@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
+import { sourceHost } from '../lib/shopping';
 import { macrosForGrams, recipeCost, recipePackCost, recipeMacros } from '../lib/nutrition';
 import { ingredientSubtitle, recipeName, recipeSteps, recipeSubtitle } from '../i18n/content';
 import { useCurrencyFormat, useLanguage, useNumberFormat, useQuantityFormat } from '../i18n/hooks';
@@ -190,7 +191,7 @@ export default function RecipeModal({
                 rel="noopener noreferrer"
                 className="hover:text-[var(--color-accent)] hover:underline"
               >
-                {t('sameDishAtIca')}
+                {t('sameDishAtSource', { host: sourceHost(recipe.sourceUrl) })}
               </a>{' '}
               {t('sameDishSuffix')}
             </p>

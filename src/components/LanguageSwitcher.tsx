@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LANGUAGES, type Language } from '../i18n';
+import { languagesFor, type Language } from '../i18n';
+import { useRegion } from '../regions/context';
 import { useLanguage } from '../i18n/hooks';
 
 /**
@@ -30,17 +31,31 @@ function FlagEn({ className = '' }: { className?: string }) {
   );
 }
 
+function FlagHr({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 10" className={className} aria-hidden focusable="false">
+      <rect width="16" height="3.34" fill="#ff0000" />
+      <rect y="3.33" width="16" height="3.34" fill="#fff" />
+      <rect y="6.66" width="16" height="3.34" fill="#171796" />
+      <path d="M6.4 3.1h3.2v2.3a1.6 1.6 0 0 1-1.6 1.6 1.6 1.6 0 0 1-1.6-1.6z" fill="#fff" stroke="#d90000" strokeWidth=".4" />
+    </svg>
+  );
+}
+
 const FLAGS: Record<Language, (props: { className?: string }) => React.ReactElement> = {
   sv: FlagSv,
   en: FlagEn,
+  hr: FlagHr,
 };
 
 /** Spelled out rather than built as `language.${lang}` so the keys stay typed. */
-const LABEL_KEY = { sv: 'language.sv', en: 'language.en' } as const;
+const LABEL_KEY = { sv: 'language.sv', en: 'language.en', hr: 'language.hr' } as const;
 
 export default function LanguageSwitcher() {
   const { t } = useTranslation('common');
   const { language, setLanguage } = useLanguage();
+  const { region } = useRegion();
+  const languages = languagesFor(region.language);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -49,8 +64,8 @@ export default function LanguageSwitcher() {
   // Opening moves focus onto the active option, so the menu is usable from the
   // keyboard without tabbing through it.
   useEffect(() => {
-    if (open) optionRefs.current[LANGUAGES.indexOf(language)]?.focus();
-  }, [open, language]);
+    if (open) optionRefs.current[languages.indexOf(language)]?.focus();
+  }, [open, language, languages]);
 
   // Close on Escape or on a click that lands outside the control.
   useEffect(() => {
@@ -100,7 +115,7 @@ export default function LanguageSwitcher() {
           role="listbox"
           aria-label={t('language.label')}
           onKeyDown={(e) => {
-            const last = LANGUAGES.length - 1;
+            const last = languages.length - 1;
             const current = optionRefs.current.indexOf(document.activeElement as HTMLButtonElement);
             if (e.key === 'ArrowDown') {
               e.preventDefault();
@@ -118,7 +133,7 @@ export default function LanguageSwitcher() {
           }}
           className="absolute right-0 z-40 mt-1 min-w-[10rem] overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-surface)] py-1 shadow-lg"
         >
-          {LANGUAGES.map((lang, i) => {
+          {languages.map((lang, i) => {
             const Flag = FLAGS[lang];
             const active = lang === language;
             return (

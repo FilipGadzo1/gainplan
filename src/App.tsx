@@ -103,7 +103,7 @@ export default function App() {
   };
 
   return (
-    <RegionProvider regionId={region}>
+    <RegionProvider regionId={region} chainId={profile.chain ?? undefined}>
       {/* On desktop the shell owns the viewport and each tab manages its own
           overflow, so the week can lay itself out to fit instead of running off
           the bottom of the page. Mobile keeps ordinary page scrolling. */}

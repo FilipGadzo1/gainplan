@@ -3,9 +3,12 @@ import type { Chain, Region } from '../regions';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
 
-/** Deep link into a chain's own search for one ingredient. */
-export function chainSearchUrl(chain: Chain, ingredient: Ingredient): string {
-  return chain.searchUrl(ingredient.storeQuery ?? ingredient.name);
+/**
+ * Deep link into a chain's own search for one ingredient, or null where the
+ * chain has no searchable URL to link to.
+ */
+export function chainSearchUrl(chain: Chain, ingredient: Ingredient): string | null {
+  return chain.searchUrl?.(ingredient.storeQuery ?? ingredient.name) ?? null;
 }
 
 /**
@@ -77,3 +80,18 @@ export function unitCount(item: ShoppingItem): number | null {
 
 // Quantity strings and the plain-text export are language-dependent and live in
 // src/i18n/useShoppingFormat.ts. Everything above this line is arithmetic.
+
+/**
+ * The bare host a recipe's source URL points at, for labelling the link.
+ * Read off the URL rather than hardcoded, so a recipe sourced anywhere but
+ * ica.se does not label itself as ICA. Returns '' for a missing or malformed
+ * URL, which the callers only reach when a sourceUrl exists at all.
+ */
+export function sourceHost(url: string | undefined): string {
+  if (!url) return '';
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}

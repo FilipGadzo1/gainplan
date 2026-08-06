@@ -350,8 +350,10 @@ describe('ICA deep links', () => {
   });
 
   it('escapes every ingredient into a same-origin store URL', () => {
-    for (const ingredient of Object.values(INGREDIENTS)) {
-      const url = new URL(chainSearchUrl(ICA, ingredient));
+    for (const ingredient of SWEDEN.ingredients) {
+      const href = chainSearchUrl(ICA, ingredient);
+      if (!href) throw new Error(`no search URL for ${ingredient.id}`);
+      const url = new URL(href);
       expect(url.origin, ingredient.id).toBe(new URL(ICA.onlineUrl).origin);
       expect(url.searchParams.get('q'), ingredient.id).toBe(
         ingredient.storeQuery ?? ingredient.name,

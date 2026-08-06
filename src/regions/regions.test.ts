@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import type { DietTag, MealSlot } from '../types';
 import { DEPT_IDS, REGION_IDS } from '../types';
+import { recipeTags } from '../lib/nutrition';
 import { INGREDIENTS } from '../data/ingredients';
 import { assertRegion, type Region } from './index';
 import { DEFAULT_REGION, REGIONS, regionOf } from './registry';
 
 const regions = Object.values(REGIONS);
+const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 
 /**
  * These are the invariants a hand-written region has to hold. Every one of them
@@ -93,6 +96,41 @@ describe('ids are unique across regions, not just within one', () => {
   });
 });
 
+/**
+ * A pool can satisfy every structural rule above and still leave a restricted
+ * eater with nothing to eat at some hour of the day. That failure does not
+ * throw — the planner just repeats whatever it can find, or cannot fill the
+ * slot — so it has to be asserted rather than waited for.
+ *
+ * The Croatian pool was written with this in mind and covers gluten-free plus
+ * dairy-free at every slot. The Swedish one predates the check and scrapes
+ * through breakfast and snack with a single recipe each, which is why the floor
+ * here is one rather than something more comfortable.
+ */
+describe('every region can still feed a restricted eater', () => {
+  const COMBOS: [string, DietTag[]][] = [
+    ['vegetarian', ['meat', 'pork', 'fish']],
+    ['gluten free', ['gluten']],
+    ['dairy free', ['dairy', 'lactose']],
+    ['gluten + dairy free', ['gluten', 'dairy', 'lactose']],
+  ];
+
+  for (const region of regions) {
+    for (const [label, exclude] of COMBOS) {
+      it(`${region.id} has a ${label} option at every meal`, () => {
+        const excluded = new Set(exclude);
+        const usable = region.recipes.filter(
+          (r) => ![...recipeTags(r)].some((tag) => excluded.has(tag)),
+        );
+        for (const slot of MEAL_SLOTS) {
+          const n = usable.filter((r) => r.slots.includes(slot)).length;
+          expect(n, `${region.id} / ${label} / ${slot}`).toBeGreaterThan(0);
+        }
+      });
+    }
+  }
+});
+
 describe('the registry', () => {
   it('has an entry for every declared region id', () => {
     for (const id of REGION_IDS) expect(REGIONS[id]?.id, id).toBe(id);
@@ -102,16 +140,26 @@ describe('the registry', () => {
     expect(regionOf('atlantis' as never).id).toBe(DEFAULT_REGION);
   });
 
-  it('gives every region at least one chain, with a working search URL', () => {
+  it('gives every region at least one chain, each reachable over https', () => {
     for (const region of regions) {
       expect(region.chains.length, region.id).toBeGreaterThan(0);
       for (const chain of region.chains) {
-        const url = new URL(chain.searchUrl('nötfärs 5%'));
-        expect(url.protocol, chain.id).toBe('https:');
-        // The term has to survive escaping — a raw % or space would otherwise
-        // produce a malformed URL rather than a failed search.
-        expect(url.href, chain.id).toContain(encodeURIComponent('nötfärs 5%'));
+        expect(new URL(chain.onlineUrl).protocol, chain.id).toBe('https:');
       }
+    }
+  });
+
+  it('escapes the search term wherever a chain has a search URL', () => {
+    // Not every chain has one: Spar and Plodine render client-side and put
+    // nothing searchable in the address. Those are skipped rather than faked.
+    const searchable = regions.flatMap((r) => r.chains).filter((c) => c.searchUrl);
+    expect(searchable.length).toBeGreaterThan(0);
+
+    for (const chain of searchable) {
+      const url = new URL(chain.searchUrl!('nötfärs 5%'));
+      expect(url.protocol, chain.id).toBe('https:');
+      // A raw % or space would produce a malformed URL, not a failed search.
+      expect(url.href, chain.id).toContain(encodeURIComponent('nötfärs 5%'));
     }
   });
 });

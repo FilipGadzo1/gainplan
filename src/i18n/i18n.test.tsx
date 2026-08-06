@@ -50,11 +50,43 @@ describe('locale resources', () => {
   });
 
   it('has the same keys in every language', () => {
+    // Plural suffixes are language property, not a key difference: Croatian
+    // needs a _few form that neither Swedish nor English has, and English
+    // needs no _few. Comparing the stems is what actually catches a key that
+    // was added to one bundle and forgotten in another.
+    const stems = (value: unknown) =>
+      [...new Set(paths(value).map((p) => p.replace(/_(one|two|few|many|other)$/, '')))].sort();
+
     const namespaces = Object.keys(resources.sv) as (keyof typeof resources.sv)[];
     for (const ns of namespaces) {
-      const sv = paths(resources.sv[ns]).sort();
-      const en = paths(resources.en[ns]).sort();
-      expect(en, `namespace "${ns}"`).toEqual(sv);
+      const sv = stems(resources.sv[ns]);
+      for (const lang of LANGUAGES) {
+        expect(stems(resources[lang][ns]), `${lang}, namespace "${ns}"`).toEqual(sv);
+      }
+    }
+  });
+
+  it('gives every plural key the forms its language actually needs', () => {
+    // i18next picks a suffix by CLDR category. A missing one falls back to the
+    // key itself, which renders as raw text like "items_few" on screen.
+    const required: Record<Language, string[]> = {
+      sv: ['one', 'other'],
+      en: ['one', 'other'],
+      hr: ['one', 'few', 'other'],
+    };
+
+    for (const lang of LANGUAGES) {
+      for (const [ns, bundle] of Object.entries(resources[lang])) {
+        const all = paths(bundle);
+        const plurals = new Set(
+          all.filter((p) => /_(one|two|few|many|other)$/.test(p)).map((p) => p.replace(/_\w+$/, '')),
+        );
+        for (const stem of plurals) {
+          for (const form of required[lang]) {
+            expect(all, `${lang}:${ns}.${stem} needs _${form}`).toContain(`${stem}_${form}`);
+          }
+        }
+      }
     }
   });
 

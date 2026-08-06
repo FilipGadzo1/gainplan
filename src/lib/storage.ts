@@ -33,6 +33,7 @@ const LEGACY_KEYS: Record<keyof typeof REGION_KEYS, string> = {
 
 export const DEFAULT_PROFILE: Profile = {
   region: DEFAULT_REGION,
+  chain: null,
   sex: 'male',
   age: 30,
   heightCm: 180,

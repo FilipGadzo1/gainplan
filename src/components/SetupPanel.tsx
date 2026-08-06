@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { ActivityLevel, DietTag, Goal, HouseholdMember, Profile, Sex } from '../types';
+import type { ActivityLevel, DietTag, Goal, HouseholdMember, Profile, RegionId, Sex } from '../types';
+import { REGION_IDS } from '../types';
 import {
   ACTIVITY_LEVELS,
   GOALS,
@@ -12,7 +13,8 @@ import {
   macrosForKcal,
   tdee,
 } from '../lib/nutrition';
-import { useDayNames, useNumberFormat } from '../i18n/hooks';
+import { useDayNames, useLanguage, useNumberFormat } from '../i18n/hooks';
+import { regionOf } from '../regions/registry';
 import type { WeightEntry } from '../lib/storage';
 import { Field, NumberField, SegmentedControl, SegmentedTabs, Toggle } from './ui';
 
@@ -100,6 +102,7 @@ export default function SetupPanel({
   return (
     <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
       <TargetHero profile={profile} />
+      <RegionPicker profile={profile} onChange={onChange} />
 
       <SegmentedTabs
         className="shrink-0 self-start"
@@ -397,6 +400,77 @@ function cyclingHint(profile: Profile, t: SetupT): string {
     training: kcalForDay(profile, profile.trainingDays[0]),
     rest: kcalForDay(profile, rest),
   });
+}
+
+/**
+ * Where you shop, which everything else hangs off: the region picks the food,
+ * the recipes, the currency and the language, and the chain picks the prices
+ * and the order you walk the aisles.
+ *
+ * Changing region switches the language with it. The two are deliberately
+ * coupled — a region's food data is written in exactly one non-English
+ * language, so a Swedish interface listing Croatian products is not a state
+ * worth reaching. English stays available afterwards from the header.
+ *
+ * The chain row only appears where there is a choice to make, so Sweden — one
+ * store, by design — shows nothing extra.
+ */
+function RegionPicker({
+  profile,
+  onChange,
+}: {
+  profile: Profile;
+  onChange: (p: Profile) => void;
+}) {
+  const { t } = useTranslation('setup');
+  const { setLanguage } = useLanguage();
+  const region = regionOf(profile.region);
+
+  const chooseRegion = (id: RegionId) => {
+    if (id === profile.region) return;
+    // The chain is cleared rather than carried over: chain ids are scoped to a
+    // region, and Konzum means nothing in Sweden.
+    onChange({ ...profile, region: id, chain: null });
+    setLanguage(regionOf(id).language);
+  };
+
+  return (
+    <div className="card shrink-0 p-4">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="min-w-[10rem] flex-1">
+          <p className="text-xs font-semibold">{t('region.title')}</p>
+          <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">{t('region.hint')}</p>
+          <div className="mt-2">
+            <SegmentedControl<RegionId>
+              value={profile.region}
+              onChange={chooseRegion}
+              columns="grid-cols-2"
+              options={REGION_IDS.map((id) => ({ value: id, label: t(`region.${id}`) }))}
+            />
+          </div>
+        </div>
+
+        {region.chains.length > 1 && (
+          <div className="min-w-[14rem] flex-[2]">
+            <p className="text-xs font-semibold">{t('chain.title')}</p>
+            <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">{t('chain.hint')}</p>
+            <div className="mt-2">
+              <SegmentedControl<string>
+                value={profile.chain ?? region.chains[0].id}
+                onChange={(id) => onChange({ ...profile, chain: id })}
+                columns="grid-cols-2 sm:grid-cols-4"
+                options={region.chains.map((c) => ({
+                  value: c.id,
+                  label: c.name,
+                  hint: c.searchUrl ? undefined : t('chain.noSearch'),
+                }))}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function Card({

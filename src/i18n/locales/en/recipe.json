@@ -10,7 +10,7 @@
   "method": "Method",
   "yourPortion": "Your portion",
   "householdTab": "{{label}} ({{factor}}×)",
-  "sameDishAtIca": "The same dish at ICA ↗",
+  "sameDishAtSource": "The same dish at {{host}} ↗",
   "sameDishSuffix": "— their version, with their quantities.",
   "householdNote": "Amounts above are the whole pan for {{label}}. The macros at the top are still only your share of it.",
   "blockRecipe": "Never suggest this again",

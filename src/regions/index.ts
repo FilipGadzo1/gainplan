@@ -32,8 +32,13 @@ export interface Chain {
    * Deep link into the store's own search for one product. None of these chains
    * publish an "add to basket" URL, so search results are as far as we can take
    * you — from there it is one tap to the cart.
+   *
+   * Optional, because not every chain has one to link to. Spar and Plodine
+   * render their sites client-side and expose no URL that carries a search
+   * term, so their ingredients show as plain text rather than as a link that
+   * would land you on a page that has not heard of the thing you wanted.
    */
-  searchUrl: (term: string) => string;
+  searchUrl?: (term: string) => string;
 }
 
 export interface Region {

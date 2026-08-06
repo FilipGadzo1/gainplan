@@ -210,6 +210,13 @@ export function StoreLink({
   const { t } = useTranslation('shopping');
   const { language } = useLanguage();
   const { chain } = useRegion();
+  const href = chainSearchUrl(chain, ingredient);
+  const name = ingredientName(ingredient, language);
+
+  // Not every chain has a searchable URL — Spar and Plodine render client-side
+  // and carry no search term in the address. Those get plain text rather than a
+  // link onto a page that has never heard of the ingredient.
+  if (!href) return <span className={className}>{name}</span>;
 
   // Names truncate in the narrow week and prep columns, so the tooltip carries
   // the full local and English name as well as where the link goes. The search
@@ -217,13 +224,13 @@ export function StoreLink({
   const title = `${ingredient.name} — ${ingredient.en} · ${t('searchAt', { store: chain.name })}`;
   return (
     <a
-      href={chainSearchUrl(chain, ingredient)}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       title={title}
       className={`hover:text-[var(--color-accent)] hover:underline ${className}`}
     >
-      {ingredientName(ingredient, language)}
+      {name}
       <span className="no-print ml-1 text-[0.85em] text-[var(--color-muted)]">↗</span>
     </a>
   );

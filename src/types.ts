@@ -26,7 +26,7 @@ export type DeptId = (typeof DEPT_IDS)[number];
  * id is a domain type, so that `Profile` can name a region without the types
  * module depending on the data.
  */
-export const REGION_IDS = ['se'] as const;
+export const REGION_IDS = ['se', 'hr'] as const;
 export type RegionId = (typeof REGION_IDS)[number];
 
 export type Currency = 'SEK' | 'EUR';
@@ -152,6 +152,13 @@ export interface Profile {
    * about your body and is shared across regions.
    */
   region: RegionId;
+  /**
+   * Which of the region's chains you shop at, by id. null means "whichever the
+   * region lists first", which is also what an unrecognised id falls back to —
+   * chains come and go, and one that has been dropped should cost you the
+   * preference and nothing else.
+   */
+  chain: string | null;
   sex: Sex;
   age: number;
   heightCm: number;

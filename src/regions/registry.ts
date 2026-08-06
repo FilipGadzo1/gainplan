@@ -1,6 +1,7 @@
 import type { RegionId } from '../types';
 import type { Region } from './index';
 import { SWEDEN } from './se';
+import { CROATIA } from './hr';
 
 /**
  * Every region, by id. This lives apart from ./index so the region files can
@@ -10,7 +11,7 @@ import { SWEDEN } from './se';
  *
  * Adding a region is one import and one entry.
  */
-export const REGIONS: Record<RegionId, Region> = { se: SWEDEN };
+export const REGIONS: Record<RegionId, Region> = { se: SWEDEN, hr: CROATIA };
 
 export const DEFAULT_REGION: RegionId = 'se';
 

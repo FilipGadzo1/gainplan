@@ -1,7 +1,18 @@
 {
   "intro": {
     "title": "Set your numbers, then build the week.",
-    "body": "GainPlan works out your calorie and macro targets, fills seven days with high-protein meals scaled to hit them, batches what can be batched, and turns the whole thing into one shopping list sorted the way you walk ICA Kvantum in Gränby."
+    "body": "GainPlan works out your calorie and macro targets, fills seven days with high-protein meals scaled to hit them, batches what can be batched, and turns the whole thing into one shopping list sorted the way you walk {{store}}."
+  },
+  "region": {
+    "title": "Where you shop",
+    "hint": "Picks the food, recipes, stores, currency and language.",
+    "se": "Sweden",
+    "hr": "Croatia"
+  },
+  "chain": {
+    "title": "Store",
+    "hint": "Prices, pack sizes and the order of the departments.",
+    "noSearch": "no search on the web"
   },
   "tabs": {
     "body": "Body",
@@ -32,19 +43,46 @@
   "activity": {
     "label": "Activity",
     "hint": "Everything outside the gym — job, steps, daily life.",
-    "sedentary": { "label": "Sedentary", "hint": "Desk job, no training" },
-    "light": { "label": "Light", "hint": "Training 1-3x per week" },
-    "moderate": { "label": "Moderate", "hint": "Training 3-5x per week" },
-    "high": { "label": "High", "hint": "Training 6-7x per week" },
-    "athlete": { "label": "Very high", "hint": "Two-a-days or physical job" }
+    "sedentary": {
+      "label": "Sedentary",
+      "hint": "Desk job, no training"
+    },
+    "light": {
+      "label": "Light",
+      "hint": "Training 1-3x per week"
+    },
+    "moderate": {
+      "label": "Moderate",
+      "hint": "Training 3-5x per week"
+    },
+    "high": {
+      "label": "High",
+      "hint": "Training 6-7x per week"
+    },
+    "athlete": {
+      "label": "Very high",
+      "hint": "Two-a-days or physical job"
+    }
   },
   "goal": {
     "title": "Goal",
     "hint": "Sets the calorie offset from maintenance.",
-    "cut": { "label": "Cut", "hint": "-20% — lose fat, hold muscle" },
-    "maintain": { "label": "Maintain", "hint": "Stay where you are" },
-    "lean-bulk": { "label": "Lean bulk", "hint": "+10% — slow, clean gain" },
-    "bulk": { "label": "Bulk", "hint": "+20% — maximum growth" }
+    "cut": {
+      "label": "Cut",
+      "hint": "-20% — lose fat, hold muscle"
+    },
+    "maintain": {
+      "label": "Maintain",
+      "hint": "Stay where you are"
+    },
+    "lean-bulk": {
+      "label": "Lean bulk",
+      "hint": "+10% — slow, clean gain"
+    },
+    "bulk": {
+      "label": "Bulk",
+      "hint": "+20% — maximum growth"
+    }
   },
   "trainingDays": {
     "label": "Training days",

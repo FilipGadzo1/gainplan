@@ -91,7 +91,7 @@ export default function ShoppingView({
             rel="noopener noreferrer"
             className="btn btn-primary"
           >
-            {t('openIcaOnline')}
+            {t('openStoreOnline', { store: chain.name })}
           </a>
           <button type="button" className="btn" onClick={copy}>
             {copied ? t('copied') : t('copyList')}
@@ -115,7 +115,7 @@ export default function ShoppingView({
         </div>
 
         <p className="mt-3 text-[11px] leading-relaxed text-[var(--color-muted)]">
-          {t('disclaimer')}
+          {t('disclaimer', { store: chain.name })}
         </p>
       </section>
 

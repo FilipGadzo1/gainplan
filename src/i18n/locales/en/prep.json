@@ -15,7 +15,7 @@
   "meals_other": "{{count}} meals",
   "approxMinutes": "~{{minutes}} min",
   "fullRecipe": "Full recipe",
-  "icaSource": "{{recipe}} at ica.se",
+  "recipeSource": "{{recipe}} at {{host}}",
   "servings": "{{meals}} × {{portions}}",
   "portionsFactor": "{{factor}} portions",
   "portionsSingle": "1 portion",

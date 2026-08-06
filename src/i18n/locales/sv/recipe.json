@@ -10,7 +10,7 @@
   "method": "Tillvägagångssätt",
   "yourPortion": "Din portion",
   "householdTab": "{{label}} ({{factor}}×)",
-  "sameDishAtIca": "Samma rätt hos ICA ↗",
+  "sameDishAtSource": "Samma rätt på {{host}} ↗",
   "sameDishSuffix": "— deras version, med deras mängder.",
   "householdNote": "Mängderna ovan är hela pannan för {{label}}. Makrona högst upp är fortfarande bara din andel av den.",
   "blockRecipe": "Föreslå aldrig det här igen",

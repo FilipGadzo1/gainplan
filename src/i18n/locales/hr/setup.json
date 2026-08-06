@@ -1,0 +1,161 @@
+{
+  "intro": {
+    "title": "Unesi svoje brojke, pa složi tjedan.",
+    "body": "GainPlan izračuna tvoje kalorijske i makro mete, popuni sedam dana visokoproteinskim obrocima skaliranima da ih pogode, spoji što se može kuhati odjednom i sve pretvori u jedan popis za kupnju posložen onako kako prolaziš kroz {{store}}."
+  },
+  "region": {
+    "title": "Gdje kupuješ",
+    "hint": "Bira namirnice, recepte, trgovine, valutu i jezik.",
+    "se": "Švedska",
+    "hr": "Hrvatska"
+  },
+  "chain": {
+    "title": "Trgovina",
+    "hint": "Cijene, veličine pakiranja i redoslijed odjela.",
+    "noSearch": "nema pretrage na webu"
+  },
+  "tabs": {
+    "body": "Tijelo",
+    "targets": "Mete",
+    "food": "Hrana i kuhinja"
+  },
+  "food": {
+    "title": "Hrana",
+    "hint": "Kako je dan podijeljen i što ne dolazi na jelovnik."
+  },
+  "hero": {
+    "dailyTarget": "Dnevna meta",
+    "summaryLabel": "Sažetak dnevne mete",
+    "bmr": "BMR {{bmr}} · Održavanje {{maintenance}}",
+    "cooking": " · kuhaš {{factor}}×"
+  },
+  "measurements": {
+    "title": "Mjere",
+    "hint": "Na čemu se temelji izračun kalorija.",
+    "sex": "Spol",
+    "sexHint": "Koristi se samo u BMR formuli.",
+    "male": "Muško",
+    "female": "Žensko",
+    "age": "Dob",
+    "height": "Visina (cm)",
+    "weight": "Težina (kg)"
+  },
+  "activity": {
+    "label": "Aktivnost",
+    "hint": "Sve izvan teretane — posao, koraci, svakodnevica.",
+    "sedentary": { "label": "Sjedilački", "hint": "Uredski posao, bez treninga" },
+    "light": { "label": "Lagana", "hint": "Trening 1-3× tjedno" },
+    "moderate": { "label": "Umjerena", "hint": "Trening 3-5× tjedno" },
+    "high": { "label": "Visoka", "hint": "Trening 6-7× tjedno" },
+    "athlete": { "label": "Vrlo visoka", "hint": "Dva treninga dnevno ili fizički posao" }
+  },
+  "goal": {
+    "title": "Cilj",
+    "hint": "Određuje odmak od kalorija za održavanje.",
+    "cut": { "label": "Skidanje", "hint": "-20% — gubi masnoću, zadrži mišić" },
+    "maintain": { "label": "Održavanje", "hint": "Ostani gdje jesi" },
+    "lean-bulk": { "label": "Čisto dobivanje", "hint": "+10% — sporo i čisto" },
+    "bulk": { "label": "Masa", "hint": "+20% — najbrži rast" }
+  },
+  "trainingDays": {
+    "label": "Dani treninga",
+    "hint": "Određuje kojim danima ide dodatak kalorija."
+  },
+  "cycling": {
+    "label": "Cikliranje kalorija",
+    "hintDefault": "Više ugljikohidrata na dane treninga, manje na dane odmora. Tjedni zbroj je isti.",
+    "hintDetail": "{{training}} kcal na dane treninga, {{rest}} na dane odmora."
+  },
+  "macroSplit": {
+    "title": "Raspodjela makronutrijenata",
+    "hint": "Bjelančevine su fiksne po kilogramu; ugljikohidrati uzimaju ostatak.",
+    "proteinLabel": "Bjelančevine — {{value}} g/kg",
+    "proteinHint": "1,6-2,2 g/kg pokriva dokaze za rast mišića. Viša granica kod skidanja.",
+    "fatLabel": "Masti — {{pct}}% kalorija",
+    "fatHint": "Ispod 20% počinje se osjetiti na hormonima i sitosti.",
+    "manualLabel": "Ručni unos kalorija",
+    "manualHint": "Ostavi prazno za izračunatu metu."
+  },
+  "meals": {
+    "title": "Raspored obroka",
+    "hint": "Kako se dnevne kalorije dijele.",
+    "perDay": "Obroka dnevno",
+    "hint3": "D / R / V",
+    "hint4": "+ 1 međuobrok",
+    "hint5": "+ 2 međuobroka"
+  },
+  "diet": {
+    "title": "Što ne jedeš",
+    "hint": "Recepti s ovime nikad se ne predlažu.",
+    "vegetarian": "Vegetarijanski",
+    "noPork": "Bez svinjetine",
+    "noFish": "Bez ribe",
+    "noDairy": "Bez mliječnih proizvoda",
+    "lowLactose": "Malo laktoze",
+    "noEgg": "Bez jaja",
+    "glutenFree": "Bez glutena",
+    "noNuts": "Bez orašastih plodova",
+    "noSoy": "Bez soje"
+  },
+  "blocked": {
+    "suffix_one": "recept blokiran pojedinačno",
+    "suffix_few": "recepta blokirana pojedinačno",
+    "suffix_other": "recepata blokirano pojedinačno",
+    "unblockAll": "Odblokiraj sve"
+  },
+  "kitchen": {
+    "title": "Kako kuhaš",
+    "hint": "Filtrira izbor recepata i planira kuhanje unaprijed.",
+    "maxTimeLabel": "Najduže kuhanje — {{minutes}} min",
+    "maxTimeHint": "Recepti koji traju dulje ispadaju iz izbora.",
+    "leftoversLabel": "Skuhaj jednom, pojedi dvaput",
+    "leftoversHint": "Večere pogodne za veće šarže pretvara u sutrašnji ručak."
+  },
+  "cookingFor": {
+    "title": "Kuhaš za",
+    "hint": "Skalira kupnju i količine za kuhanje. Tvoji makronutrijenti se ne mijenjaju.",
+    "you": "Tebe",
+    "youShare": "100% · {{kcal}} kcal/dan",
+    "personPlaceholder": "Osoba {{number}}",
+    "remove": "Ukloni {{name}}",
+    "fallbackName": "osoba {{number}}",
+    "portionSize": "Veličina porcije",
+    "portionShare": "{{pct}}%",
+    "portionKcal": "~{{kcal}} kcal/dan",
+    "portionSliderLabel": "Veličina porcije za {{name}}",
+    "add": "+ Dodaj osobu",
+    "cookingNotePrefix": "Kuhaš",
+    "cookingNoteSuffix": "svakog obroka."
+  },
+  "weighIn": {
+    "title": "Vaganje",
+    "hint": "Ujutro, nakon WC-a, prije jela. Bitan je trend, a ne pojedini broj.",
+    "placeholder": "kg",
+    "logToday": "Zabilježi danas",
+    "empty": "Zabilježi četiri ili više dana i ovdje ćeš dobiti savjet treba li pomaknuti kalorijsku metu i za koliko.",
+    "entries_one": "{{count}} unos",
+    "entries_few": "{{count}} unosa",
+    "entries_other": "{{count}} unosa",
+    "latest": "zadnje",
+    "clear": "Očisti",
+    "perWeek": "{{value}} kg/tjedan",
+    "trendLabel": "Trend težine"
+  },
+  "trend": {
+    "cutSlow": "— gubiš sporije nego što skidanje traži. Spusti metu za ~150 kcal.",
+    "cutFast": "— padaš dovoljno brzo da te to košta mišića. Dodaj ~200 kcal.",
+    "cutGood": "— to je pravi tempo za skidanje. Ne diraj metu.",
+    "bulkNone": "— ne dobivaš. Dodaj ~200 kcal i provjeri za dva tjedna.",
+    "bulkFast": "— dobivaš toliko brzo da je dobar dio masnoća. Skini ~150 kcal.",
+    "bulkGood": "— dobar tempo dobivanja. Ostani ovdje.",
+    "stable": "— stabilno, što i je cilj.",
+    "driftingUp": "— polako raste. Skini ~150 kcal.",
+    "driftingDown": "— polako pada. Dodaj ~150 kcal."
+  },
+  "poolWarning_one": "Samo {{count}} recept odgovara tvojim ograničenjima i vremenu. Tjedan će se ponavljati — popusti nešto ako želiš raznolikost.",
+  "poolWarning_few": "Samo {{count}} recepta odgovaraju tvojim ograničenjima i vremenu. Tjedan će se ponavljati — popusti nešto ako želiš raznolikost.",
+  "poolWarning_other": "Samo {{count}} recepata odgovara tvojim ograničenjima i vremenu. Tjedan će se ponavljati — popusti nešto ako želiš raznolikost.",
+  "rebuildWeek": "Ponovno složi tjedan s ovim postavkama",
+  "resetAll": "Poništi sve",
+  "resetConfirm": "Obrisati tvoj profil, plan i vaganja iz ovog preglednika?"
+}

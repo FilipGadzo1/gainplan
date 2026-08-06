@@ -1566,8 +1566,11 @@ export const RECIPES: Recipe[] = [
   },
 ];
 
+import { HR_RECIPES } from '../regions/hr/recipes';
+
+/** Every recipe across all regions, keyed by id. See INGREDIENTS for why. */
 const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
-  RECIPES.map((r) => [r.id, r]),
+  [...RECIPES, ...HR_RECIPES].map((r) => [r.id, r]),
 );
 
 export function getRecipe(id: string): Recipe {

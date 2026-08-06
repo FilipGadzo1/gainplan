@@ -1,7 +1,18 @@
 {
   "intro": {
-    "title": "Ställ in dina siffror och bygg sedan veckan.",
-    "body": "GainPlan räknar ut dina kalori- och makromål, fyller sju dagar med proteinrika måltider skalade för att träffa dem, satsvislagar det som går och gör alltihop till en inköpslista sorterad så som du går genom ICA Kvantum i Gränby."
+    "title": "Ange dina siffror och bygg veckan.",
+    "body": "GainPlan räknar ut dina kalori- och makromål, fyller sju dagar med proteinrika måltider skalade för att träffa dem, samlar det som kan lagas i sats och gör alltihop till en inköpslista sorterad så som du går genom {{store}}."
+  },
+  "region": {
+    "title": "Var du handlar",
+    "hint": "Väljer varor, recept, butiker, valuta och språk.",
+    "se": "Sverige",
+    "hr": "Kroatien"
+  },
+  "chain": {
+    "title": "Butik",
+    "hint": "Priser, förpackningsstorlekar och avdelningarnas ordning.",
+    "noSearch": "ingen sökning på webben"
   },
   "tabs": {
     "body": "Kropp",
@@ -32,19 +43,46 @@
   "activity": {
     "label": "Aktivitet",
     "hint": "Allt utanför gymmet — jobb, steg, vardag.",
-    "sedentary": { "label": "Stillasittande", "hint": "Kontorsjobb, ingen träning" },
-    "light": { "label": "Lätt", "hint": "Träning 1–3 ggr i veckan" },
-    "moderate": { "label": "Måttlig", "hint": "Träning 3–5 ggr i veckan" },
-    "high": { "label": "Hög", "hint": "Träning 6–7 ggr i veckan" },
-    "athlete": { "label": "Mycket hög", "hint": "Två pass om dagen eller fysiskt jobb" }
+    "sedentary": {
+      "label": "Stillasittande",
+      "hint": "Kontorsjobb, ingen träning"
+    },
+    "light": {
+      "label": "Lätt",
+      "hint": "Träning 1–3 ggr i veckan"
+    },
+    "moderate": {
+      "label": "Måttlig",
+      "hint": "Träning 3–5 ggr i veckan"
+    },
+    "high": {
+      "label": "Hög",
+      "hint": "Träning 6–7 ggr i veckan"
+    },
+    "athlete": {
+      "label": "Mycket hög",
+      "hint": "Två pass om dagen eller fysiskt jobb"
+    }
   },
   "goal": {
     "title": "Målsättning",
     "hint": "Sätter kaloriavvikelsen från underhåll.",
-    "cut": { "label": "Deff", "hint": "−20 % — tappa fett, behåll muskler" },
-    "maintain": { "label": "Behålla", "hint": "Stanna där du är" },
-    "lean-bulk": { "label": "Lean bulk", "hint": "+10 % — långsam, ren ökning" },
-    "bulk": { "label": "Bulk", "hint": "+20 % — maximal tillväxt" }
+    "cut": {
+      "label": "Deff",
+      "hint": "−20 % — tappa fett, behåll muskler"
+    },
+    "maintain": {
+      "label": "Behålla",
+      "hint": "Stanna där du är"
+    },
+    "lean-bulk": {
+      "label": "Lean bulk",
+      "hint": "+10 % — långsam, ren ökning"
+    },
+    "bulk": {
+      "label": "Bulk",
+      "hint": "+20 % — maximal tillväxt"
+    }
   },
   "trainingDays": {
     "label": "Träningsdagar",

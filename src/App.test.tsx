@@ -47,7 +47,9 @@ describe('tab navigation', () => {
     await user.click(box);
 
     expect((box as HTMLInputElement).checked).toBe(true);
-    expect(screen.getByText(/ICA Kvantum Uppsala/)).toBeTruthy();
+    // The chain is named twice on this tab — as the heading and inside the
+    // price disclaimer — so match the heading rather than any occurrence.
+    expect(screen.getByRole('heading', { name: /ICA Kvantum Uppsala/ })).toBeTruthy();
   });
 
   it('stays on Setup while editing settings', async () => {
