@@ -154,11 +154,12 @@ describe('chain search URLs keep the parameter each site expects', () => {
     expect(url.searchParams.get('q')).toBeNull();
   });
 
-  it('gives Kaufland no search URL, because it has no product search', () => {
-    // /pretrazivanje.html answers the same bytes for the products tab and the
-    // recipes tab — they are rendered client-side — so a link there lands on a
-    // mixed list. Better no link than a link somewhere unhelpful.
-    expect(chainNamed('kaufland')!.searchUrl).toBeUndefined();
+  it('sends Kaufland q', () => {
+    // Site-wide search, and it leads with products where the week's catalogue
+    // has one. See ./hr/chains.ts for why an occasional miss still earns a link.
+    const url = new URL(chainNamed('kaufland')!.searchUrl!('losos'));
+    expect(url.pathname).toBe('/pretrazivanje.html');
+    expect(url.searchParams.get('q')).toBe('losos');
   });
 
   it('leaves every region at least one chain that can look an ingredient up', () => {

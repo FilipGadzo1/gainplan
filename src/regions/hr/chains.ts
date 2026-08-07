@@ -26,39 +26,33 @@ export const KONZUM: Chain = {
 };
 
 /**
- * No searchUrl. Kaufland's /pretrazivanje.html takes a `q`, but it is a
- * site-wide search: the response is identical whether you ask for the products
- * tab or the recipes tab, because the tabs are rendered client-side. Linking an
- * ingredient there lands you on a mixed list of recipes and news articles, so
- * the chain is listed for its prices and aisle order and its ingredients render
- * as plain text.
+ * Kaufland's `q` is a site-wide search, and it leads with products: "losos"
+ * puts the fresh fillet and the packaged slices above the recipes and the
+ * food-lexicon entries.
+ *
+ * What it cannot do is guarantee them. Kaufland Hrvatska has no webshop, so the
+ * products it can show are the ones in the current week's promotional
+ * catalogue; ask for something not on offer this week and the product block is
+ * simply absent and you land on articles about the ingredient instead. That is
+ * a link that gets less useful, not one that goes nowhere, which is why it
+ * earns a place here where Studenac's newsletter form did not.
  */
 export const KAUFLAND: Chain = {
   id: 'kaufland',
   name: 'Kaufland',
   area: 'Hrvatska',
   onlineUrl: 'https://www.kaufland.hr/',
+  searchUrl: (term) =>
+    `https://www.kaufland.hr/pretrazivanje.html?q=${encodeURIComponent(term)}`,
 };
 
 /**
- * No searchUrl, and no webshop at all: studenac.hr carries a newsletter form
- * and a parcel service, and nothing that takes a product query. Listed for the
- * shop name on your list.
- */
-export const STUDENAC: Chain = {
-  id: 'studenac',
-  name: 'Studenac',
-  area: 'Hrvatska',
-  onlineUrl: 'https://www.studenac.hr/',
-};
-
-/**
- * Konzum first: widest reach, the only Croatian chain that can deep-link a
- * product, and the catalogue the ingredient names and `storeQuery` overrides in
- * ./ingredients.ts were checked against.
+ * Konzum first: widest reach, the deepest product search of the two, and the
+ * catalogue the ingredient names and `storeQuery` overrides in ./ingredients.ts
+ * were checked against.
  *
- * Plodine and Spar were here briefly and are gone. Both render client-side and
- * put nothing searchable in the address, and unlike these three they were not
- * asked to stay.
+ * Plodine, Spar and Studenac were all here briefly and are gone. The first two
+ * render client-side and put nothing searchable in the address; Studenac has no
+ * webshop at all, only a newsletter form and a parcel service.
  */
-export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND, STUDENAC];
+export const HR_CHAINS: Chain[] = [KONZUM, KAUFLAND];

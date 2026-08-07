@@ -13,7 +13,6 @@ const LOGOS: Record<string, string> = {
   ica: '/icons/ica_icon.webp',
   konzum: '/icons/konzum_icon.png',
   kaufland: '/icons/kaufland_icon.webp',
-  studenac: '/icons/studenac_icon.png',
 };
 
 export default function ChainMark({
