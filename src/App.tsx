@@ -324,8 +324,13 @@ export default function App() {
           {tab === 'prep' && plan && (
             <PrepView plan={plan} profile={profile} onOpenRecipe={openRecipe} />
           )}
-          <Footer />
         </main>
+
+        {/* Outside <main>, which on desktop is the only thing that scrolls: in
+            there the footer added its own height to a column already sized to
+            the viewport, so every tab ended a screen and a half tall. As a
+            sibling it is a row of that column instead, and nothing scrolls. */}
+        <Footer />
 
         {/* Fixed to the viewport, which is what puts it under the home
             indicator on an iPhone: the bar drew fine, and the labels sat
