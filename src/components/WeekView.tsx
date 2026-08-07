@@ -245,9 +245,11 @@ function MealCard({
         className="mt-1.5 shrink-0 text-left hover:text-[var(--color-accent)]"
       >
         <span className="block text-sm leading-snug font-bold">{recipeName(recipe, language)}</span>
-        <span className="block text-[11px] leading-snug text-[var(--color-muted)] italic">
-          {recipeSubtitle(recipe, language)}
-        </span>
+        {recipeSubtitle(recipe, language) && (
+          <span className="block text-[11px] leading-snug text-[var(--color-muted)] italic">
+            {recipeSubtitle(recipe, language)}
+          </span>
+        )}
       </button>
 
       <div className="mt-2 shrink-0">

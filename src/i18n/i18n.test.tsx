@@ -15,7 +15,14 @@ import i18n, {
   resources,
   type Language,
 } from './index';
-import { deptLabel, packName, recipeName, recipeSteps, recipeSubtitle } from './content';
+import {
+  deptLabel,
+  ingredientSubtitle,
+  packName,
+  recipeName,
+  recipeSteps,
+  recipeSubtitle,
+} from './content';
 import { useCurrencyFormat, useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
 import { useShoppingFormat } from './useShoppingFormat';
 
@@ -173,6 +180,36 @@ describe('content accessors', () => {
     expect(recipeSubtitle(recipe, 'en')).toBe(recipe.name);
   });
 
+  it('has no subtitle to give when both names are the same word', () => {
+    // A region whose own language is English carries the same string in `name`
+    // and `en`. There is no second name to show, and rendering the first one
+    // twice reads as a bug.
+    const ing = { ...getIngredient('lax'), name: 'Salmon fillet', en: 'Salmon fillet' };
+    expect(ingredientSubtitle(ing, 'en')).toBe('');
+    expect(ingredientSubtitle(ing, 'sv')).toBe('');
+
+    const recipe = { ...RECIPES[0], name: 'Shish tawook', en: 'Shish tawook' };
+    expect(recipeSubtitle(recipe, 'en')).toBe('');
+    expect(recipeSubtitle(recipe, 'sv')).toBe('');
+  });
+
+  it('still gives the other name where the two differ', () => {
+    // This half matters more than the half above: it is what proves Sweden and
+    // Croatia were not quietly stripped of their shelf names.
+    const lax = getIngredient('lax');
+    expect(ingredientSubtitle(lax, 'en')).toBe('Laxfilé');
+    expect(ingredientSubtitle(lax, 'sv')).toBe('Salmon fillet');
+  });
+
+  it('drops the duplicate for a row that is spelled the same in both languages', () => {
+    // Not hypothetical: "Bacon" is Bacon in Swedish, and eight rows across the
+    // shipping catalogues are like it. Printing the word twice was always noise.
+    const bacon = getIngredient('bacon');
+    expect(bacon.name).toBe(bacon.en);
+    expect(ingredientSubtitle(bacon, 'sv')).toBe('');
+    expect(ingredientSubtitle(bacon, 'en')).toBe('');
+  });
+
   it('swaps pack descriptions and departments', () => {
     const egg = getIngredient('agg');
     expect(packName(egg, 'sv')).toBe('kartong 12 st');
@@ -299,5 +336,27 @@ describe('shopping list export', () => {
 
     const en = await withLanguage('en', () => useShoppingFormat());
     expect(en.result.current.quantity(staple)).toContain('need approx');
+  });
+
+  it('writes no empty brackets for an item with only one name', async () => {
+    const { result } = await withLanguage('en', () => useShoppingFormat());
+    const list = buildShoppingList(generatePlan(profile()), SWEDEN);
+    const single = { ...list.groups[0].items[0] };
+    single.ingredient = { ...single.ingredient, name: 'Salmon fillet', en: 'Salmon fillet' };
+    const text = result.current.listText(
+      { ...list, groups: [{ dept: list.groups[0].dept, items: [single] }] },
+      'You',
+    );
+
+    expect(text).toContain('- Salmon fillet — ');
+    expect(text).not.toContain('()');
+  });
+
+  it('keeps the other name in brackets where there is one', async () => {
+    const { result } = await withLanguage('en', () => useShoppingFormat());
+    const list = buildShoppingList(generatePlan(profile()), SWEDEN);
+    const text = result.current.listText(list, 'You');
+    // Swedish rows still carry their Swedish shelf name for an English reader.
+    expect(text).toMatch(/- .+ \(.+\) — /);
   });
 });
