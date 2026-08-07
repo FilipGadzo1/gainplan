@@ -74,7 +74,12 @@ describe('tab navigation', () => {
 describe('switching country', () => {
   /** Opens the header's region menu and picks a country by its visible name. */
   const switchTo = async (user: ReturnType<typeof userEvent.setup>, name: RegExp) => {
-    await user.click(screen.getAllByRole('button', { name: /var du handlar|gdje kupuješ/i })[0]);
+    // Matches the control's label in whichever language is currently active —
+    // Swedish, or English once a region without its own interface (Croatia,
+    // now) has taken the language with it.
+    await user.click(
+      screen.getAllByRole('button', { name: /var du handlar|gdje kupuješ|where you shop/i })[0],
+    );
     await user.click(screen.getByRole('option', { name }));
   };
 
@@ -85,27 +90,30 @@ describe('switching country', () => {
     expect(screen.getAllByRole('button', { name: /var du handlar/i })[0]).toBeTruthy();
   });
 
-  it('takes the whole interface to Croatian', async () => {
+  it('takes the whole interface to English', async () => {
     const user = userEvent.setup();
     render(<App />);
 
     await switchTo(user, /kroatien/i);
 
-    // Chrome, tabs and the region control itself all follow the region.
-    expect(screen.getAllByRole('button', { name: /Tjedan/ })[0]).toBeTruthy();
-    expect(screen.getAllByRole('button', { name: /gdje kupuješ/i })[0]).toBeTruthy();
+    // Croatia's own interface translation was dropped, so its language is
+    // English — chrome, tabs and the region control itself follow the region
+    // there, same as they would to Croatian before.
+    expect(screen.getAllByRole('button', { name: /Week/ })[0]).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /where you shop/i })[0]).toBeTruthy();
   });
 
-  it('builds a Croatian week priced in euro', async () => {
+  it('builds a week on Croatian shelves, priced in euro', async () => {
     const user = userEvent.setup();
     render(<App />);
 
     await switchTo(user, /kroatien/i);
-    await user.click(screen.getAllByRole('button', { name: /Složi mi tjedan/ })[0]);
-    await goToTab(user, 'Kupnja');
+    await user.click(screen.getAllByRole('button', { name: /Build my week/ })[0]);
+    await goToTab(user, 'Shopping');
 
-    // Croatian departments, Croatian chain, euro rather than kronor.
-    expect(screen.getByText(/Voće i povrće/)).toBeTruthy();
+    // The interface is English, but the shop and the currency are still
+    // Croatia's: English department names, Croatian chain, euro not kronor.
+    expect(screen.getByText(/Fruit & Veg/)).toBeTruthy();
     expect(screen.getAllByRole('heading', { name: /Konzum/ })[0]).toBeTruthy();
     expect(screen.getAllByText(/€/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/Frukt & Grönt/)).toBeNull();
@@ -118,12 +126,16 @@ describe('switching country', () => {
     const swedishWeek = localStorage.getItem('gainplan.plan.se.v1');
 
     await switchTo(user, /kroatien/i);
-    await user.click(screen.getAllByRole('button', { name: /Složi mi tjedan/ })[0]);
+    await user.click(screen.getAllByRole('button', { name: /Build my week/ })[0]);
 
     expect(localStorage.getItem('gainplan.plan.hr.v1')).not.toBeNull();
     expect(localStorage.getItem('gainplan.plan.se.v1')).toBe(swedishWeek);
 
-    await switchTo(user, /Švedska/i);
+    // The interface is English at this point (Croatia took the language with
+    // it), so the country itself reads "Sweden" here rather than "Švedska" or
+    // "Sverige" — but picking it takes the language straight back to Swedish,
+    // same as it always did.
+    await switchTo(user, /^Sweden$/i);
     expect(screen.getAllByRole('button', { name: /^Vecka$/ })[0]).toBeTruthy();
   });
 });
@@ -142,10 +154,12 @@ describe('footer', () => {
     );
 
     // The name is a name; it does not get translated, but the wording round it does.
+    // Croatia's own interface translation is gone, so switching there lands on
+    // English rather than on "Izradio av".
     await user.click(screen.getAllByRole('button', { name: /var du handlar/i })[0]);
     await user.click(screen.getByRole('option', { name: /kroatien/i }));
     expect(screen.getByText('Filip Gadžo')).toBeTruthy();
-    expect(screen.getByText(/Izradio/)).toBeTruthy();
+    expect(screen.getByText(/Built by/)).toBeTruthy();
   });
 
   it('opens both links safely in a new tab', () => {

@@ -9,13 +9,6 @@ import svShopping from './locales/sv/shopping.json';
 import svPrep from './locales/sv/prep.json';
 import svRecipe from './locales/sv/recipe.json';
 
-import hrCommon from './locales/hr/common.json';
-import hrSetup from './locales/hr/setup.json';
-import hrWeek from './locales/hr/week.json';
-import hrShopping from './locales/hr/shopping.json';
-import hrPrep from './locales/hr/prep.json';
-import hrRecipe from './locales/hr/recipe.json';
-
 import enCommon from './locales/en/common.json';
 import enSetup from './locales/en/setup.json';
 import enWeek from './locales/en/week.json';
@@ -38,7 +31,7 @@ import enRecipe from './locales/en/recipe.json';
  * The browser's own locale is deliberately still not consulted, so the landing
  * language is a property of the app rather than of the visitor's machine.
  */
-export const LANGUAGES = ['sv', 'en', 'hr'] as const;
+export const LANGUAGES = ['sv', 'en'] as const;
 export type Language = (typeof LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: Language = 'en';
@@ -66,14 +59,6 @@ export const resources = {
     shopping: svShopping,
     prep: svPrep,
     recipe: svRecipe,
-  },
-  hr: {
-    common: hrCommon,
-    setup: hrSetup,
-    week: hrWeek,
-    shopping: hrShopping,
-    prep: hrPrep,
-    recipe: hrRecipe,
   },
   en: {
     common: enCommon,

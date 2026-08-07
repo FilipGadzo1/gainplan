@@ -8,6 +8,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import i18n, { LANGUAGE_STORAGE_KEY } from '../i18n';
+import { RegionProvider } from '../regions/context';
 import LanguageSwitcher from './LanguageSwitcher';
 
 beforeEach(async () => {
@@ -108,5 +109,21 @@ describe('LanguageSwitcher', () => {
     render(<LanguageSwitcher />);
     await open(user);
     expect(screen.getByText('Språk')).toBeTruthy();
+  });
+
+  it('offers English alone in a region that has no language of its own', async () => {
+    const user = userEvent.setup();
+    await i18n.changeLanguage('en');
+    render(
+      <RegionProvider regionId="hr">
+        <LanguageSwitcher />
+      </RegionProvider>,
+    );
+    await user.click(screen.getByRole('button', { name: /language/i }));
+
+    // Croatia's data is still Croatian; its interface is not. `languagesFor`
+    // collapses to a single option, and the control has to survive that.
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    expect(screen.getByRole('option', { name: 'English' }).getAttribute('aria-selected')).toBe('true');
   });
 });

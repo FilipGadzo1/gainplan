@@ -56,7 +56,10 @@ describe('RegionSwitcher', () => {
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ region: 'hr', chain: null }),
     );
-    expect(i18n.resolvedLanguage).toBe('hr');
+    // Croatia's interface language is English now, not Croatian — its own
+    // interface translation was dropped, so `setLanguage(regionOf(id).language)`
+    // lands on 'en' for this region too.
+    expect(i18n.resolvedLanguage).toBe('en');
   });
 
   it('leaves the language alone when the country does not change', async () => {

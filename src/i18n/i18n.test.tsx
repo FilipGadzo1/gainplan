@@ -8,7 +8,13 @@ import { buildShoppingList } from '../lib/shopping';
 import { RECIPES } from '../data/recipes';
 import { INGREDIENTS, getIngredient } from '../data/ingredients';
 import { SWEDEN } from '../regions/se';
-import i18n, { DEFAULT_LANGUAGE, LANGUAGES, resources, type Language } from './index';
+import i18n, {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_STORAGE_KEY,
+  LANGUAGES,
+  resources,
+  type Language,
+} from './index';
 import { deptLabel, packName, recipeName, recipeSteps, recipeSubtitle } from './content';
 import { useCurrencyFormat, useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
 import { useShoppingFormat } from './useShoppingFormat';
@@ -57,11 +63,28 @@ describe('locale resources', () => {
     expect(i18n.resolvedLanguage).toBe('en');
   });
 
+  it('ships Swedish and English and nothing else', () => {
+    expect([...LANGUAGES]).toEqual(['sv', 'en']);
+  });
+
+  it('sends a reader with Croatian stored back to English, not to Swedish', async () => {
+    // Croatian was an interface language until it was dropped for being bad. A
+    // stored choice of it is no longer supported, so i18next falls through to
+    // fallbackLng. This asserts where that lands, because "works by accident"
+    // stops working the day someone edits fallbackLng.
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, 'hr');
+    await act(async () => {
+      await i18n.changeLanguage('hr');
+    });
+    expect(i18n.resolvedLanguage).toBe('en');
+  });
+
   it('has the same keys in every language', () => {
-    // Plural suffixes are language property, not a key difference: Croatian
-    // needs a _few form that neither Swedish nor English has, and English
-    // needs no _few. Comparing the stems is what actually catches a key that
-    // was added to one bundle and forgotten in another.
+    // Plural suffixes are a language property, not a key difference: a stem
+    // can carry a different set of _one/_other forms per language without
+    // that being a missing key in either bundle. Comparing the stems is what
+    // actually catches a key that was added to one bundle and forgotten in
+    // another.
     const stems = (value: unknown) =>
       [...new Set(paths(value).map((p) => p.replace(/_(one|two|few|many|other)$/, '')))].sort();
 
@@ -80,7 +103,6 @@ describe('locale resources', () => {
     const required: Record<Language, string[]> = {
       sv: ['one', 'other'],
       en: ['one', 'other'],
-      hr: ['one', 'few', 'other'],
     };
 
     for (const lang of LANGUAGES) {
