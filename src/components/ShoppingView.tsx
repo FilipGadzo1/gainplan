@@ -63,8 +63,11 @@ export default function ShoppingView({
   return (
     <div className="mx-auto max-w-3xl lg:max-w-none">
       <section className="card mb-4 p-4 sm:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
+        {/* No wrap: the basket count is the answer to "how far through am I",
+            and wrapped underneath four pills on a phone it read as a footnote.
+            The pills wrap inside the left column instead. */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <h2 className="flex items-center gap-2 text-base font-bold">
               <ChainMark chainId={chain.id} name={chain.name} className="size-5 text-[11px]" />
               {chain.name}
@@ -79,7 +82,7 @@ export default function ShoppingView({
               )}
             </div>
           </div>
-          <div className="tnum text-right">
+          <div className="tnum shrink-0 text-right">
             <div className="text-2xl font-bold">
               {doneCount}
               <span className="text-base text-[var(--color-muted)]">/{visibleIds.length}</span>
@@ -146,7 +149,8 @@ export default function ShoppingView({
                       checked={isChecked}
                       onChange={() => toggle(item.ingredient.id)}
                       aria-label={`${ingredientName(item.ingredient, language)} — ${quantity(item)}`}
-                      className="size-4 shrink-0 accent-[var(--color-accent)]"
+                      // Ticked one-handed, in a shop, holding a basket.
+                      className="size-4 shrink-0 accent-[var(--color-accent)] pointer-coarse:size-6"
                     />
                     <span className={`min-w-0 flex-1 ${isChecked ? 'opacity-40' : ''}`}>
                       <span className="block text-sm font-semibold">

@@ -217,7 +217,9 @@ export default function SetupPanel({
                         }
                         aria-pressed={active}
                         title={name}
-                        className={`rounded-lg border py-2 text-[11px] font-bold transition-colors ${
+                        // Height only. Seven columns already fill a 360px
+                        // phone, so a minimum width here would overflow the row.
+                        className={`flex items-center justify-center rounded-lg border py-2 text-[11px] font-bold transition-colors pointer-coarse:min-h-11 ${
                           active
                             ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
                             : 'border-[var(--color-line)] bg-[var(--color-raised)] text-[var(--color-muted)]'
@@ -319,7 +321,7 @@ export default function SetupPanel({
                         )
                       }
                       aria-pressed={active}
-                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4 ${
                         active
                           ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
                           : 'border-[var(--color-line)] bg-[var(--color-raised)] text-[var(--color-muted)]'
@@ -599,7 +601,7 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
                   })
                 }
                 aria-label={t('cookingFor.remove', { name: displayName })}
-                className="shrink-0 rounded-md border border-[var(--color-line)] px-2.5 py-2 text-sm text-[var(--color-muted)] hover:border-[var(--color-fat)] hover:text-[var(--color-fat)]"
+                className="inline-flex shrink-0 items-center justify-center rounded-md border border-[var(--color-line)] px-2.5 py-2 text-sm text-[var(--color-muted)] pointer-coarse:size-11 pointer-coarse:px-0 hover:border-[var(--color-fat)] hover:text-[var(--color-fat)]"
               >
                 ✕
               </button>

@@ -168,13 +168,24 @@ function MacroValue({
 }
 
 /** A number against its target, coloured by how far off it is. */
-export function TargetDelta({ actual, target, unit = '' }: { actual: number; target: number; unit?: string }) {
+export function TargetDelta({
+  actual,
+  target,
+  unit = '',
+  /** Overridable so the day tiles can set it smaller than the default. */
+  className = 'text-xs',
+}: {
+  actual: number;
+  target: number;
+  unit?: string;
+  className?: string;
+}) {
   const diff = actual - target;
   const pct = Math.abs(diff) / Math.max(target, 1);
   const color = pct < 0.04 ? 'var(--color-accent)' : pct < 0.1 ? 'var(--color-carbs)' : 'var(--color-fat)';
   const sign = diff > 0 ? '+' : '';
   return (
-    <span className="tnum text-xs font-semibold" style={{ color }}>
+    <span className={`tnum font-semibold ${className}`} style={{ color }}>
       {sign}
       {Math.round(diff)}
       {unit}
@@ -213,9 +224,8 @@ export function StoreLink({
   const href = chainSearchUrl(chain, ingredient);
   const name = ingredientName(ingredient, language);
 
-  // Not every chain can deep-link a product — Kaufland's only search is
-  // site-wide and answers with recipes and news alongside groceries. Those get
-  // plain text rather than a link that lands you somewhere unhelpful.
+  // Not every chain has a search to link to — a region can list a shop for its
+  // prices and aisle order alone. Those get plain text rather than a dead link.
   if (!href) return <span className={className}>{name}</span>;
 
   // Names truncate in the narrow week and prep columns, so the tooltip carries
@@ -265,7 +275,7 @@ export function SegmentedTabs<T extends string>({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(o.value)}
-            className={`rounded-md px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors ${
+            className={`inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors pointer-coarse:min-h-10 ${
               active
                 ? 'bg-[var(--color-accent)]/15 text-[var(--color-accent)]'
                 : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
@@ -313,7 +323,9 @@ export function SegmentedControl<T extends string | number>({
             type="button"
             onClick={() => onChange(o.value)}
             aria-pressed={active}
-            className={`rounded-lg border px-2.5 py-2 text-left transition-colors ${
+            // Options with a hint are already tall enough; the bare ones
+            // (male/female, 3/4/5 meals) came out at 36px.
+            className={`flex flex-col justify-center rounded-lg border px-2.5 py-2 text-left transition-colors pointer-coarse:min-h-11 ${
               active
                 ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12'
                 : 'border-[var(--color-line)] bg-[var(--color-raised)] hover:border-[var(--color-muted)]'

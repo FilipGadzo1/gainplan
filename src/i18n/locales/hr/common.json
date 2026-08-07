@@ -13,6 +13,8 @@
   "actions": {
     "buildWeek": "Složi mi tjedan",
     "regenerateWeek": "Ponovno složi tjedan",
+    "buildWeekShort": "Složi",
+    "regenerateWeekShort": "Ponovi",
     "print": "Ispis",
     "close": "Zatvori"
   },

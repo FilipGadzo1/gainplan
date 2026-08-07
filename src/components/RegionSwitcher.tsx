@@ -110,7 +110,7 @@ export default function RegionSwitcher({
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
         aria-label={t('region.title')}
-        className="flex items-center gap-1.5 rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] px-2 py-1.5 text-xs font-semibold text-[var(--color-muted)] transition-colors hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
+        className="flex items-center gap-1.5 rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] px-2 py-1.5 text-xs font-semibold text-[var(--color-muted)] transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3 hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
       >
         <Current className="h-3 w-5 shrink-0 rounded-[2px]" />
         <span className="hidden sm:inline">{t(LABEL_KEY[profile.region])}</span>
@@ -160,7 +160,7 @@ export default function RegionSwitcher({
                     }}
                     aria-selected={active}
                     onClick={() => choose(id)}
-                    className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors ${
+                    className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors pointer-coarse:min-h-11 ${
                       active
                         ? 'bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
                         : 'text-[var(--color-muted)] hover:bg-[var(--color-raised)] hover:text-[var(--color-text)]'

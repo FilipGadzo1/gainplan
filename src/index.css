@@ -36,6 +36,18 @@
     color: var(--color-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /*
+     * index.html sets viewport-fit=cover so the dark chrome runs edge to edge
+     * behind the status bar. That opt-in also puts the page under the notch,
+     * so held in landscape an iPhone crops the first and last few millimetres
+     * of every row. Inset the scrolling page by however much the device says
+     * it needs; on a screen with no cutout every inset is 0 and this is inert.
+     *
+     * The bottom inset is deliberately not here — it belongs to the fixed tab
+     * bar, which is positioned against the viewport and never sees this.
+     */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   /* Numbers should line up in columns everywhere they appear. */
@@ -99,7 +111,23 @@
     border-radius: 0.5rem;
     padding: 0.5rem 0.7rem;
     color: var(--color-text);
-    font-size: 0.9375rem;
+    /*
+     * 16px, and not a sixteenth less: iOS Safari zooms the page in when you
+     * focus an input whose text is smaller than that, and it does not zoom
+     * back out when you leave. Every weigh-in and every age field was leaving
+     * the layout magnified and scrolled sideways with no way back but pinching.
+     *
+     * The 15px this used to be survives from the first breakpoint up, where
+     * there is no such rule and the tighter setting reads better in a form
+     * that is three fields to a row.
+     */
+    font-size: 1rem;
+  }
+
+  @media (min-width: 40rem) {
+    .field {
+      font-size: 0.9375rem;
+    }
   }
 
   .field:focus {
@@ -124,6 +152,21 @@
 
   .btn:hover {
     border-color: var(--color-muted);
+  }
+
+  /*
+   * A finger covers about 9mm of glass and lands on the centre of that patch,
+   * not on a pixel. Anything under ~44px gets missed often enough to feel
+   * broken, and this interface is built out of 11px controls.
+   *
+   * Keyed to the pointer rather than the viewport: what needs the bigger
+   * target is the input device, so a touch laptop gets it at any width and a
+   * narrow desktop window keeps the compact controls it was designed around.
+   */
+  @media (pointer: coarse) {
+    .btn {
+      min-height: 2.75rem;
+    }
   }
 
   .btn-primary {

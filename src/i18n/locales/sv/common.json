@@ -13,6 +13,8 @@
   "actions": {
     "buildWeek": "Bygg min vecka",
     "regenerateWeek": "Gör om veckan",
+    "buildWeekShort": "Bygg",
+    "regenerateWeekShort": "Gör om",
     "print": "Skriv ut",
     "close": "Stäng"
   },

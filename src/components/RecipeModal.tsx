@@ -63,8 +63,15 @@ export default function RecipeModal({
       aria-modal="true"
       aria-label={title}
     >
+      {/*
+        dvh, not vh. On mobile Safari `vh` is measured against the viewport
+        with the address bar retracted, so with the bar showing 92vh is taller
+        than the screen — and because this opens as a bottom sheet, the part
+        pushed out of view was the top of it: the title, the macros and the
+        close button.
+      */}
       <div
-        className="card max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-b-none sm:rounded-b-2xl"
+        className="card max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-b-none sm:rounded-b-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-surface)] p-4">
@@ -90,13 +97,16 @@ export default function RecipeModal({
             type="button"
             onClick={onClose}
             aria-label={tc('actions.close')}
-            className="shrink-0 rounded-md border border-[var(--color-line)] px-2.5 py-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-text)]"
+            className="inline-flex shrink-0 items-center justify-center rounded-md border border-[var(--color-line)] px-2.5 py-1 text-sm text-[var(--color-muted)] pointer-coarse:size-11 pointer-coarse:px-0 hover:text-[var(--color-text)]"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4">
+        {/* Flush to the bottom edge on a phone, so the block-recipe button at
+            the end of this panel would otherwise sit under the home indicator.
+            From `sm` up the sheet floats and the inset is not wanted. */}
+        <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-4">
           <div className="mb-1 flex items-baseline gap-2">
             <span className="tnum text-2xl font-bold">{Math.round(macros.kcal)}</span>
             <span className="text-sm text-[var(--color-muted)]">{t('kcalInYourPortion')}</span>
@@ -233,7 +243,7 @@ function QuantityTab({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
+      className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors pointer-coarse:min-h-10 pointer-coarse:px-3 ${
         active
           ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
           : 'border-[var(--color-line)] text-[var(--color-muted)] hover:text-[var(--color-text)]'

@@ -101,7 +101,12 @@ export default function WeekView({
         </div>
       </div>
 
-      <div className="grid shrink-0 grid-cols-4 gap-2 sm:grid-cols-7">
+      {/* Seven across at every width. Four columns left the last row three
+          tiles wide with a hole beside it, and a week that reads as 4+3 is a
+          week you have to reassemble in your head. The tile shrinks its type
+          instead — below 360px it would start to crowd the kcal figure, which
+          is the one screen size where four columns is still the calmer read. */}
+      <div className="grid shrink-0 grid-cols-4 gap-1.5 min-[360px]:grid-cols-7 sm:gap-2">
         {plan.days.map((d) => (
           <DayTile
             key={d.index}
@@ -149,27 +154,38 @@ function DayTile({
       type="button"
       onClick={onSelect}
       aria-current={selected}
-      className={`rounded-xl border p-2.5 text-left transition-colors ${
+      className={`min-w-0 rounded-xl border p-1.5 text-left transition-colors sm:p-2.5 ${
         selected
           ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
           : 'border-[var(--color-line)] bg-[var(--color-surface)] hover:border-[var(--color-muted)]'
       }`}
     >
       <div className="flex items-baseline justify-between gap-1">
-        <span className={`text-xs font-bold ${selected ? 'text-[var(--color-accent)]' : ''}`}>
+        <span
+          className={`text-[10px] font-bold sm:text-xs ${selected ? 'text-[var(--color-accent)]' : ''}`}
+        >
           {days.short[day.index]}
         </span>
         {day.training && (
           <span
-            className="size-1.5 rounded-full bg-[var(--color-accent)]"
+            className="size-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"
             title={t('trainingDay')}
             aria-label={t('trainingDay')}
           />
         )}
       </div>
-      <div className="tnum mt-1 text-sm leading-none font-bold">{Math.round(total.kcal)}</div>
+      <div className="tnum mt-1 text-[11px] leading-none font-bold sm:text-sm">
+        {Math.round(total.kcal)}
+      </div>
       <div className="tnum text-[10px] text-[var(--color-muted)]">
-        / {day.target.kcal} <TargetDelta actual={total.kcal} target={day.target.kcal} />
+        {/* A 44px tile fits the number or the target, not both. The delta is
+            the half that tells you something you cannot see elsewhere. */}
+        <span className="hidden sm:inline">/ {day.target.kcal} </span>
+        <TargetDelta
+          actual={total.kcal}
+          target={day.target.kcal}
+          className="text-[10px] sm:text-xs"
+        />
       </div>
       <div className="mt-1.5">
         <MacroBar macros={total} barOnly />
@@ -262,7 +278,14 @@ function MealCard({
         </ul>
       </div>
 
-      <div className="no-print mt-2 flex shrink-0 items-center gap-1 border-t border-[var(--color-line)] pt-2">
+      {/*
+        Six controls on one row, and the row has to survive Croatian on a 360px
+        phone: "Zamijeni", "Zaključaj" and "Recept" together are wider than the
+        card once the ± buttons are thumb-sized. `flex-wrap` lets the right-hand
+        group drop to a second line there instead of overflowing, and never
+        wraps at the widths where it fits.
+      */}
+      <div className="no-print mt-2 flex shrink-0 flex-wrap items-center gap-x-1 gap-y-2 border-t border-[var(--color-line)] pt-2">
         <IconButton label={t('smallerPortion')} onClick={() => onScale(meal.scale - 0.05)}>
           −
         </IconButton>
@@ -273,33 +296,35 @@ function MealCard({
           +
         </IconButton>
 
-        <button
-          type="button"
-          onClick={onSwap}
-          className="ml-auto rounded-md border border-[var(--color-line)] px-2 py-1 text-[11px] font-semibold text-[var(--color-muted)] hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
-        >
-          {t('swap')}
-        </button>
-        <button
-          type="button"
-          onClick={onToggleLock}
-          aria-pressed={!!meal.locked}
-          aria-label={t('lock')}
-          className={`rounded-md border px-2 py-1 text-[11px] font-semibold ${
-            meal.locked
-              ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
-              : 'border-[var(--color-line)] text-[var(--color-muted)] hover:border-[var(--color-muted)] hover:text-[var(--color-text)]'
-          }`}
-        >
-          {meal.locked ? '🔒' : t('lock')}
-        </button>
-        <button
-          type="button"
-          onClick={onOpen}
-          className="rounded-md border border-[var(--color-line)] px-2 py-1 text-[11px] font-semibold text-[var(--color-muted)] hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
-        >
-          {t('recipe')}
-        </button>
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onSwap}
+            className="inline-flex items-center rounded-md border border-[var(--color-line)] px-2 py-1 text-[11px] font-semibold text-[var(--color-muted)] pointer-coarse:min-h-11 pointer-coarse:px-3 hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
+          >
+            {t('swap')}
+          </button>
+          <button
+            type="button"
+            onClick={onToggleLock}
+            aria-pressed={!!meal.locked}
+            aria-label={t('lock')}
+            className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-semibold pointer-coarse:min-h-11 pointer-coarse:px-3 ${
+              meal.locked
+                ? 'border-[var(--color-accent)] text-[var(--color-accent)]'
+                : 'border-[var(--color-line)] text-[var(--color-muted)] hover:border-[var(--color-muted)] hover:text-[var(--color-text)]'
+            }`}
+          >
+            {meal.locked ? '🔒' : t('lock')}
+          </button>
+          <button
+            type="button"
+            onClick={onOpen}
+            className="inline-flex items-center rounded-md border border-[var(--color-line)] px-2 py-1 text-[11px] font-semibold text-[var(--color-muted)] pointer-coarse:min-h-11 pointer-coarse:px-3 hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
+          >
+            {t('recipe')}
+          </button>
+        </div>
       </div>
     </section>
   );
@@ -315,11 +340,13 @@ function IconButton({
   onClick: () => void;
 }) {
   return (
+    // 24px is a comfortable click and an uncomfortable tap — these two are the
+    // most-used controls on the page and were the easiest to miss.
     <button
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="size-6 rounded-md border border-[var(--color-line)] text-sm leading-none font-bold text-[var(--color-muted)] hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
+      className="inline-flex size-6 items-center justify-center rounded-md border border-[var(--color-line)] text-sm leading-none font-bold text-[var(--color-muted)] pointer-coarse:size-11 pointer-coarse:text-lg hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
     >
       {children}
     </button>

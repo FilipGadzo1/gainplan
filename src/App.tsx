@@ -132,15 +132,26 @@ export default function App() {
     <RegionProvider regionId={region} chainId={profile.chain ?? undefined}>
       {/* On desktop the shell owns the viewport and each tab manages its own
           overflow, so the week can lay itself out to fit instead of running off
-          the bottom of the page. Mobile keeps ordinary page scrolling. */}
-      <div className="min-h-dvh pb-20 lg:flex lg:h-dvh lg:min-h-0 lg:flex-col lg:overflow-hidden lg:pb-0">
-        <header className="sticky top-0 z-30 border-b border-[var(--color-line)] bg-[var(--color-ink)]/95 backdrop-blur lg:static lg:shrink-0">
-          <div className="mx-auto flex max-w-[1800px] flex-wrap items-center gap-3 px-4 py-2.5">
-            <div className="flex items-baseline gap-2">
+          the bottom of the page. Mobile keeps ordinary page scrolling.
+
+          The bottom padding clears the fixed tab bar, so it is sized off the
+          same two numbers the bar is: its own height plus whatever the device
+          reserves for the home indicator. It stops at `md`, where the bar is
+          replaced by the tabs in the header — carrying it further left five
+          empty rems under every page on a tablet. */}
+      <div className="min-h-dvh pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0 lg:flex lg:h-dvh lg:min-h-0 lg:flex-col lg:overflow-hidden">
+        {/* Sticky only from `md`, which is exactly where this bar becomes the
+            navigation. Below that the tabs live in the fixed bar at the bottom
+            of the screen, so pinning this one bought nothing and cost about a
+            sixth of a phone screen — header, then summary strip, before any of
+            the week was visible. It scrolls away with the page now. */}
+        <header className="z-30 border-b border-[var(--color-line)] bg-[var(--color-ink)]/95 backdrop-blur md:sticky md:top-0 lg:static lg:shrink-0">
+          <div className="mx-auto flex max-w-[1800px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
+            <div className="flex min-w-0 items-baseline gap-2">
               <h1 className="text-lg font-extrabold tracking-tight">
                 Gain<span className="text-[var(--color-accent)]">Plan</span>
               </h1>
-              <span className="hidden text-[11px] text-[var(--color-muted)] sm:inline">
+              <span className="hidden truncate text-[11px] text-[var(--color-muted)] sm:inline">
                 {t('app.tagline')}
               </span>
             </div>
@@ -164,11 +175,38 @@ export default function App() {
               ))}
             </nav>
 
-            <div className="ml-auto flex items-center gap-2 md:ml-0">
-              <RegionSwitcher profile={profile} onChange={setProfile} />
-              <LanguageSwitcher />
-              <button type="button" className="no-print btn btn-primary" onClick={regenerate}>
-                {plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
+            <div className="ml-auto flex items-center gap-3 md:ml-0">
+              {/* Country and language are one question — where you shop and what
+                  you read — so they sit tight against each other and the rule
+                  separates them from the action. Three evenly spaced controls
+                  read as three unrelated things, which is what made this corner
+                  look cluttered. */}
+              <div className="flex items-center gap-1.5">
+                <RegionSwitcher profile={profile} onChange={setProfile} />
+                <LanguageSwitcher />
+              </div>
+              <span aria-hidden className="h-6 w-px shrink-0 bg-[var(--color-line)]" />
+              {/*
+                "Ponovno složi tjedan" is 20 characters and on its own wider
+                than the phone has left after the brand and the two selectors,
+                which is what pushed this whole group onto a second row. The
+                short form keeps the verb — the same word the long label leads
+                with — rather than becoming an unlabelled icon.
+              */}
+              <button
+                type="button"
+                // The name a screen reader announces stays the full sentence at
+                // every width; only the ink shortens.
+                aria-label={plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
+                className="no-print btn btn-primary whitespace-nowrap max-sm:px-2.5"
+                onClick={regenerate}
+              >
+                <span className="sm:hidden">
+                  {plan ? t('actions.regenerateWeekShort') : t('actions.buildWeekShort')}
+                </span>
+                <span className="hidden sm:inline">
+                  {plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
+                </span>
               </button>
             </div>
           </div>
@@ -289,7 +327,11 @@ export default function App() {
           <Footer />
         </main>
 
-        <nav className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-[var(--color-line)] bg-[var(--color-surface)] md:hidden">
+        {/* Fixed to the viewport, which is what puts it under the home
+            indicator on an iPhone: the bar drew fine, and the labels sat
+            behind the system's own handle. The bottom inset pushes the row up
+            off it, and is 0 on hardware without one. */}
+        <nav className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-[var(--color-line)] bg-[var(--color-surface)] pb-[env(safe-area-inset-bottom)] md:hidden">
           {TABS.map((tab_) => (
             <button
               key={tab_.id}
@@ -297,12 +339,15 @@ export default function App() {
               onClick={() => setTab(tab_.id)}
               disabled={tab_.id !== 'setup' && !plan}
               aria-current={tab === tab_.id}
-              className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold disabled:opacity-30 ${
+              className={`flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[11px] font-semibold disabled:opacity-30 ${
                 tab === tab_.id ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'
               }`}
             >
               <span className="text-base leading-none">{tab_.icon}</span>
-              {t(tab_.labelKey)}
+              {/* "Inställningar" and "Förberedelse" are a quarter wider than a
+                  320px phone gives a column, and wrapping them made the bar
+                  two rows tall on that one screen. */}
+              <span className="w-full truncate text-center">{t(tab_.labelKey)}</span>
             </button>
           ))}
         </nav>

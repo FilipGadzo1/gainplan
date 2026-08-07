@@ -1,6 +1,6 @@
 {
   "app": {
-    "tagline": "Uppsala · ICA Gränby",
+    "tagline": "Weekly plan · your macros",
     "documentTitle": "GainPlan — weekly meal plans for lifters",
     "description": "Weekly high-protein meal plans built around your calorie target, with an ICA Gränby shopping list."
   },
@@ -13,6 +13,8 @@
   "actions": {
     "buildWeek": "Build my week",
     "regenerateWeek": "Regenerate week",
+    "buildWeekShort": "Build",
+    "regenerateWeekShort": "New week",
     "print": "Print",
     "close": "Close"
   },

@@ -79,7 +79,7 @@ export default function LanguageSwitcher() {
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
         aria-label={t('language.label')}
-        className="flex items-center gap-1.5 rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] px-2 py-1.5 text-xs font-semibold text-[var(--color-muted)] transition-colors hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
+        className="flex items-center gap-1.5 rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] px-2 py-1.5 text-xs font-semibold text-[var(--color-muted)] transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3 hover:border-[var(--color-muted)] hover:text-[var(--color-text)]"
       >
         <Code lang={language} />
         <span className="hidden sm:inline">{t(LABEL_KEY[language])}</span>
@@ -128,7 +128,7 @@ export default function LanguageSwitcher() {
                     }}
                     aria-selected={active}
                     onClick={() => choose(lang)}
-                    className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors ${
+                    className={`flex w-full items-center gap-2 px-3 py-2 text-left text-xs font-semibold transition-colors pointer-coarse:min-h-11 ${
                       active
                         ? 'bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
                         : 'text-[var(--color-muted)] hover:bg-[var(--color-raised)] hover:text-[var(--color-text)]'
