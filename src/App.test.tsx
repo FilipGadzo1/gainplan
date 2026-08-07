@@ -78,7 +78,7 @@ describe('switching country', () => {
     // Swedish, or English once a region without its own interface (Croatia,
     // now) has taken the language with it.
     await user.click(
-      screen.getAllByRole('button', { name: /var du handlar|gdje kupuješ|where you shop/i })[0],
+      screen.getAllByRole('button', { name: /var du handlar|where you shop/i })[0],
     );
     await user.click(screen.getByRole('option', { name }));
   };
@@ -88,19 +88,6 @@ describe('switching country', () => {
     // The app opens on Week when a plan exists, which is exactly why this
     // control cannot live inside the Setup tab.
     expect(screen.getAllByRole('button', { name: /var du handlar/i })[0]).toBeTruthy();
-  });
-
-  it('takes the whole interface to English', async () => {
-    const user = userEvent.setup();
-    render(<App />);
-
-    await switchTo(user, /kroatien/i);
-
-    // Croatia's own interface translation was dropped, so its language is
-    // English — chrome, tabs and the region control itself follow the region
-    // there, same as they would to Croatian before.
-    expect(screen.getAllByRole('button', { name: /Week/ })[0]).toBeTruthy();
-    expect(screen.getAllByRole('button', { name: /where you shop/i })[0]).toBeTruthy();
   });
 
   it('builds a week on Croatian shelves, priced in euro', async () => {
@@ -116,7 +103,9 @@ describe('switching country', () => {
     expect(screen.getByText(/Fruit & Veg/)).toBeTruthy();
     expect(screen.getAllByRole('heading', { name: /Konzum/ })[0]).toBeTruthy();
     expect(screen.getAllByText(/€/).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/Frukt & Grönt/)).toBeNull();
+    // Department labels no longer distinguish the regions — both render in
+    // English now — so the chain is what proves this is Croatia, not Sweden.
+    expect(screen.queryByRole('heading', { name: /ICA/ })).toBeNull();
   });
 
   it('gives each country its own week, so switching back loses nothing', async () => {
@@ -153,13 +142,16 @@ describe('footer', () => {
       'https://www.linkedin.com/in/filip-gadzo/',
     );
 
-    // The name is a name; it does not get translated, but the wording round it does.
-    // Croatia's own interface translation is gone, so switching there lands on
-    // English rather than on "Izradio av".
-    await user.click(screen.getAllByRole('button', { name: /var du handlar/i })[0]);
-    await user.click(screen.getByRole('option', { name: /kroatien/i }));
+    // The name is a name; it does not get translated, but the wording round it
+    // does. Driven through the language control itself, not a region switch —
+    // Croatia no longer carries a language of its own to proxy through.
+    expect(screen.getByText('Byggd av')).toBeTruthy();
+
+    await user.click(screen.getAllByRole('button', { name: /språk/i })[0]);
+    await user.click(screen.getByRole('option', { name: 'English' }));
+
     expect(screen.getByText('Filip Gadžo')).toBeTruthy();
-    expect(screen.getByText(/Built by/)).toBeTruthy();
+    expect(screen.getByText('Built by')).toBeTruthy();
   });
 
   it('opens both links safely in a new tab', () => {
