@@ -3,8 +3,8 @@ import type { Ingredient } from '../../types';
 /**
  * The Dubai catalogue. Macros are per 100 g (per 100 ml for liquids) and are
  * carried over from the Swedish and Croatian rows for the same product —
- * chicken breast is chicken breast, and retyping ninety nutrition panels would
- * only invent transcription errors. The rows with no counterpart elsewhere —
+ * chicken breast is chicken breast, and retyping a nutrition panel per row here
+ * would only invent transcription errors. The rows with no counterpart —
  * tahini, freekeh, labneh, the spice blends — follow manufacturer declarations
  * for what Union Coop and Lulu actually stock.
  *
@@ -68,6 +68,11 @@ export const AE_INGREDIENTS: Ingredient[] = [
 
   // ── Fish ────────────────────────────────────────────────────────────────
   { id: 'ae-salmon-fillet', name: 'Salmon fillet', en: 'Salmon fillet', dept: 'fish', kcal: 208, protein: 20, carbs: 0, fat: 13, pricePerKg: 65, packSize: 500, packName: 'pack approx 500 g', packNameEn: 'pack approx 500 g', tags: ['fish'] },
+  // No `storeQuery` here, and that is deliberate. Union Coop's search comes back
+  // with a single category refinement link for "Hammour fillet", for "hammour"
+  // on its own, and for "seabass" — the local white fish is barely in its index
+  // under any name. An override would trade the full display name for something
+  // shorter that finds no more than it does, so the plain name stands.
   { id: 'ae-hammour-fillet', name: 'Hammour fillet', en: 'Hammour fillet', dept: 'fish', kcal: 92, protein: 19, carbs: 0, fat: 1, pricePerKg: 55, packSize: 500, packName: 'pack approx 500 g', packNameEn: 'pack approx 500 g', tags: ['fish'] },
   { id: 'ae-cod-fillet', name: 'Cod fillet', en: 'Cod fillet', dept: 'fish', kcal: 82, protein: 18, carbs: 0, fat: 0.7, pricePerKg: 48, packSize: 400, packName: 'pack 400 g', packNameEn: 'pack 400 g', tags: ['fish'] },
   { id: 'ae-shrimp', name: 'Peeled shrimp', en: 'Peeled shrimp', dept: 'fish', kcal: 99, protein: 20, carbs: 0, fat: 1, pricePerKg: 52, packSize: 400, packName: 'pack 400 g', packNameEn: 'pack 400 g', tags: ['fish'] },
@@ -86,6 +91,11 @@ export const AE_INGREDIENTS: Ingredient[] = [
   { id: 'ae-halloumi', name: 'Halloumi', en: 'Halloumi', dept: 'dairy', kcal: 320, protein: 22, carbs: 2, fat: 25, pricePerKg: 46, packSize: 250, packName: 'pack 250 g', packNameEn: 'pack 250 g', tags: ['dairy'] },
   { id: 'ae-parmesan', name: 'Parmesan, grated', en: 'Parmesan, grated', dept: 'dairy', kcal: 400, protein: 32, carbs: 0, fat: 30, pricePerKg: 85, packSize: 150, packName: 'pack 150 g', packNameEn: 'pack 150 g', tags: ['dairy'] },
   { id: 'ae-cream-cheese', name: 'Cream cheese spread', en: 'Cream cheese spread', dept: 'dairy', kcal: 230, protein: 8, carbs: 5, fat: 20, pricePerKg: 32, packSize: 240, packName: 'tub 240 g', packNameEn: 'tub 240 g', tags: ['dairy', 'lactose'] },
+  // Hummus has no dairy in it, but it is sold chilled here, in the same cabinet
+  // as the labneh and the dips. Departments are a route through the shop, not a
+  // taxonomy of ingredients, and `dairy` is the one that sends you to the right
+  // fridge. Filing it under `pantry` would walk you down the dry-goods aisle.
+  { id: 'ae-hummus', name: 'Hummus', en: 'Hummus', dept: 'dairy', kcal: 170, protein: 7, carbs: 12, fat: 10, pricePerKg: 24, packSize: 250, packName: 'tub 250 g', packNameEn: 'tub 250 g', tags: [] },
   { id: 'ae-butter', name: 'Butter', en: 'Butter', dept: 'dairy', kcal: 730, protein: 0.5, carbs: 0.5, fat: 81, pricePerKg: 38, packSize: 400, packName: 'pack 400 g', packNameEn: 'pack 400 g', staple: true, tags: ['dairy'] },
   { id: 'ae-tofu', name: 'Firm tofu', en: 'Firm tofu', dept: 'dairy', kcal: 130, protein: 14, carbs: 2, fat: 7, pricePerKg: 30, packSize: 400, packName: 'pack 400 g', packNameEn: 'pack 400 g', tags: ['soy'] },
 
@@ -109,8 +119,11 @@ export const AE_INGREDIENTS: Ingredient[] = [
   { id: 'ae-dried-chickpeas', name: 'Dried chickpeas', en: 'Dried chickpeas', dept: 'pantry', kcal: 360, protein: 19, carbs: 55, fat: 6, pricePerKg: 9, packSize: 1000, packName: 'bag 1 kg', packNameEn: 'bag 1 kg', tags: [] },
   { id: 'ae-chickpeas-tinned', name: 'Chickpeas, tinned', en: 'Chickpeas, tinned', dept: 'pantry', kcal: 120, protein: 7, carbs: 15, fat: 2.6, pricePerKg: 8, packSize: 400, packName: 'tin 400 g (240 g drained)', packNameEn: 'tin 400 g (240 g drained)', storeQuery: 'chickpeas', tags: [] },
   { id: 'ae-fava-beans', name: 'Fava beans, tinned', en: 'Fava beans, tinned', dept: 'pantry', kcal: 110, protein: 7, carbs: 14, fat: 0.6, pricePerKg: 7, packSize: 400, packName: 'tin 400 g', packNameEn: 'tin 400 g', tags: [] },
-  { id: 'ae-hummus', name: 'Hummus', en: 'Hummus', dept: 'pantry', kcal: 170, protein: 7, carbs: 12, fat: 10, pricePerKg: 24, packSize: 250, packName: 'tub 250 g', packNameEn: 'tub 250 g', tags: [] },
-  { id: 'ae-tahini', name: 'Tahini', en: 'Tahini', dept: 'pantry', kcal: 595, protein: 17, carbs: 10, fat: 54, pricePerKg: 22, packSize: 400, packName: 'jar 400 g', packNameEn: 'jar 400 g', staple: true, tags: [] },
+  // Tahini is the dry-goods half of this pair and stays here; the hummus made
+  // from it is sold chilled and sits in `dairy`. Carbs are the full declared
+  // figure, of which roughly 9 g is fibre — that gap is why 17/21/54 does not
+  // come to 595 kcal on a flat 4/4/9.
+  { id: 'ae-tahini', name: 'Tahini', en: 'Tahini', dept: 'pantry', kcal: 595, protein: 17, carbs: 21, fat: 54, pricePerKg: 22, packSize: 400, packName: 'jar 400 g', packNameEn: 'jar 400 g', staple: true, tags: [] },
   { id: 'ae-crushed-tomatoes', name: 'Crushed tomatoes', en: 'Crushed tomatoes', dept: 'pantry', kcal: 32, protein: 1.3, carbs: 5, fat: 0.3, pricePerKg: 8, packSize: 400, packName: 'tin 400 g', packNameEn: 'tin 400 g', tags: [] },
   { id: 'ae-tomato-puree', name: 'Tomato purée', en: 'Tomato purée', dept: 'pantry', kcal: 80, protein: 4, carbs: 12, fat: 0.5, pricePerKg: 18, packSize: 200, packName: 'tin 200 g', packNameEn: 'tin 200 g', staple: true, tags: [] },
   { id: 'ae-pomegranate-molasses', name: 'Pomegranate molasses', en: 'Pomegranate molasses', dept: 'pantry', kcal: 290, protein: 0.5, carbs: 70, fat: 0.2, pricePerKg: 28, packSize: 500, packName: 'bottle 500 ml', packNameEn: 'bottle 500 ml', staple: true, tags: [] },
@@ -121,7 +134,9 @@ export const AE_INGREDIENTS: Ingredient[] = [
   { id: 'ae-almonds', name: 'Almonds', en: 'Almonds', dept: 'pantry', kcal: 600, protein: 21, carbs: 6, fat: 52, pricePerKg: 48, packSize: 500, packName: 'bag 500 g', packNameEn: 'bag 500 g', tags: ['nuts'] },
   { id: 'ae-walnuts', name: 'Walnuts', en: 'Walnuts', dept: 'pantry', kcal: 690, protein: 15, carbs: 7, fat: 65, pricePerKg: 55, packSize: 400, packName: 'bag 400 g', packNameEn: 'bag 400 g', tags: ['nuts'] },
   { id: 'ae-chia-seeds', name: 'Chia seeds', en: 'Chia seeds', dept: 'pantry', kcal: 480, protein: 17, carbs: 8, fat: 31, pricePerKg: 40, packSize: 250, packName: 'bag 250 g', packNameEn: 'bag 250 g', tags: [] },
-  { id: 'ae-whey-protein', name: 'Whey protein powder', en: 'Whey protein powder', dept: 'pantry', kcal: 380, protein: 80, carbs: 6, fat: 5, pricePerKg: 130, packSize: 900, packName: 'tub 900 g', packNameEn: 'tub 900 g', tags: ['dairy'] },
+  // Dearer per kg than either other region: whey is imported here and sold at a
+  // supplement-shelf margin rather than a grocery one.
+  { id: 'ae-whey-protein', name: 'Whey protein powder', en: 'Whey protein powder', dept: 'pantry', kcal: 380, protein: 80, carbs: 6, fat: 5, pricePerKg: 170, packSize: 900, packName: 'tub 900 g', packNameEn: 'tub 900 g', tags: ['dairy'] },
   { id: 'ae-dates', name: 'Dates', en: 'Dates', dept: 'pantry', kcal: 282, protein: 2.5, carbs: 68, fat: 0.4, pricePerKg: 25, packSize: 500, packName: 'box 500 g', packNameEn: 'box 500 g', unitWeight: 8, tags: [] },
   { id: 'ae-honey', name: 'Honey', en: 'Honey', dept: 'pantry', kcal: 320, protein: 0.2, carbs: 82, fat: 0, pricePerKg: 45, packSize: 500, packName: 'jar 500 g', packNameEn: 'jar 500 g', staple: true, tags: [] },
   { id: 'ae-cumin', name: 'Ground cumin', en: 'Ground cumin', dept: 'pantry', kcal: 375, protein: 18, carbs: 44, fat: 22, pricePerKg: 32, packSize: 100, packName: 'pack 100 g', packNameEn: 'pack 100 g', staple: true, tags: [] },
@@ -131,7 +146,7 @@ export const AE_INGREDIENTS: Ingredient[] = [
   { id: 'ae-harissa', name: 'Harissa paste', en: 'Harissa paste', dept: 'pantry', kcal: 120, protein: 3, carbs: 12, fat: 6, pricePerKg: 30, packSize: 200, packName: 'jar 200 g', packNameEn: 'jar 200 g', staple: true, tags: [] },
   { id: 'ae-spices', name: 'Spices (pepper, paprika, cinnamon, turmeric)', en: 'Spices (pepper, paprika, cinnamon, turmeric)', dept: 'pantry', kcal: 300, protein: 10, carbs: 50, fat: 5, pricePerKg: 55, packSize: 100, packName: 'packs', packNameEn: 'packs', staple: true, storeQuery: 'spices', tags: [] },
   { id: 'ae-soy-sauce', name: 'Soy sauce', en: 'Soy sauce', dept: 'pantry', kcal: 60, protein: 6, carbs: 6, fat: 0, pricePerKg: 22, packSize: 250, packName: 'bottle 250 ml', packNameEn: 'bottle 250 ml', staple: true, tags: ['soy', 'gluten'] },
-  { id: 'ae-stock-cubes', name: 'Stock cubes', en: 'Stock cubes', dept: 'pantry', kcal: 200, protein: 10, carbs: 20, fat: 10, pricePerKg: 40, packSize: 80, packName: 'pack of 8', packNameEn: 'pack of 8', staple: true, tags: [] },
+  { id: 'ae-stock-cubes', name: 'Stock cubes', en: 'Stock cubes', dept: 'pantry', kcal: 200, protein: 10, carbs: 20, fat: 10, pricePerKg: 65, packSize: 80, packName: 'pack of 8', packNameEn: 'pack of 8', staple: true, tags: [] },
 
   // ── Frozen ──────────────────────────────────────────────────────────────
   { id: 'ae-frozen-blueberries', name: 'Frozen blueberries', en: 'Frozen blueberries', dept: 'frozen', kcal: 45, protein: 0.7, carbs: 8, fat: 0.4, pricePerKg: 40, packSize: 500, packName: 'bag 500 g', packNameEn: 'bag 500 g', tags: [] },
