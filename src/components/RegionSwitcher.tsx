@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Profile, RegionId } from '../types';
 import { REGION_IDS } from '../types';
 import { useLanguage } from '../i18n/hooks';
+import { languagesFor } from '../i18n';
 import { regionOf } from '../regions/registry';
 
 /**
@@ -64,7 +65,7 @@ export default function RegionSwitcher({
   onChange: (p: Profile) => void;
 }) {
   const { t } = useTranslation('setup');
-  const { setLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -96,7 +97,14 @@ export default function RegionSwitcher({
     // The chain is cleared rather than carried over: chain ids are scoped to a
     // region, and Konzum means nothing in Sweden.
     onChange({ ...profile, region: id, chain: null });
-    setLanguage(regionOf(id).language);
+
+    // Changing country is not a request to change language. Keep what the
+    // reader is reading wherever the new region can serve it, and fall back to
+    // English where it cannot — English is offered by every region, so this is
+    // the only move that can ever happen, and only to someone who had
+    // deliberately chosen Swedish.
+    const next = regionOf(id);
+    if (!languagesFor(next.language).includes(language)) setLanguage('en');
   };
 
   const Current = FLAGS[profile.region];

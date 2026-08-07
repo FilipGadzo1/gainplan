@@ -74,9 +74,9 @@ describe('tab navigation', () => {
 describe('switching country', () => {
   /** Opens the header's region menu and picks a country by its visible name. */
   const switchTo = async (user: ReturnType<typeof userEvent.setup>, name: RegExp) => {
-    // Matches the control's label in whichever language is currently active —
-    // Swedish, or English once a region without its own interface (Croatia,
-    // now) has taken the language with it.
+    // Matches the control's label in whichever language is currently active.
+    // Switching country no longer switches language, so this stays Swedish
+    // unless something else in the test drove it to English first.
     await user.click(
       screen.getAllByRole('button', { name: /var du handlar|where you shop/i })[0],
     );
@@ -120,12 +120,13 @@ describe('switching country', () => {
     expect(localStorage.getItem('gainplan.plan.hr.v1')).not.toBeNull();
     expect(localStorage.getItem('gainplan.plan.se.v1')).toBe(swedishWeek);
 
-    // The interface is English at this point (Croatia took the language with
-    // it), so the country itself reads "Sweden" here rather than "Švedska" or
-    // "Sverige" — but picking it takes the language straight back to Swedish,
-    // same as it always did.
+    // The interface is English at this point (Croatia has no Swedish, so the
+    // earlier switch fell back to English), so the country itself reads
+    // "Sweden" here rather than "Švedska" or "Sverige" — and picking it does
+    // not change the language back, because switching country is not a
+    // request to switch language. It stays English.
     await switchTo(user, /^Sweden$/i);
-    expect(screen.getAllByRole('button', { name: /^Vecka$/ })[0]).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /^Week$/ })[0]).toBeTruthy();
   });
 });
 

@@ -42,23 +42,40 @@ describe('RegionSwitcher', () => {
     expect(screen.getByText('Var du handlar')).toBeTruthy();
   });
 
-  it('switches region, clears the chain and takes the language with it', async () => {
+  it('switches region and clears the chain', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <RegionSwitcher profile={{ ...DEFAULT_PROFILE, chain: 'ica' }} onChange={onChange} />,
-    );
+    render(<RegionSwitcher profile={{ ...DEFAULT_PROFILE, chain: 'ica' }} onChange={onChange} />);
     await open(user);
     await user.click(screen.getByRole('option', { name: 'Kroatien' }));
 
     // The chain goes with the region: chain ids are scoped to one country, and
     // ICA means nothing in Croatia.
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ region: 'hr', chain: null }),
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ region: 'hr', chain: null }));
+  });
+
+  it('returns you to English when the new country cannot offer what you were reading', async () => {
+    const user = userEvent.setup();
+    render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
+    await open(user);
+    await user.click(screen.getByRole('option', { name: 'Kroatien' }));
+
+    // Croatia has no Swedish interface, so Swedish cannot survive the move.
+    // English can, and is where every region falls back to.
+    expect(i18n.resolvedLanguage).toBe('en');
+  });
+
+  it('leaves a language the new country does still offer alone', async () => {
+    const user = userEvent.setup();
+    await i18n.changeLanguage('en');
+    render(
+      <RegionSwitcher profile={{ ...DEFAULT_PROFILE, region: 'hr' }} onChange={() => {}} />,
     );
-    // Croatia's interface language is English now, not Croatian — its own
-    // interface translation was dropped, so `setLanguage(regionOf(id).language)`
-    // lands on 'en' for this region too.
+    await user.click(screen.getByRole('button', { name: /var du handlar|where you shop/i }));
+    await user.click(screen.getByRole('option', { name: /Sverige|Sweden/ }));
+
+    // Sweden offers Swedish, but the reader did not ask for Swedish. Changing
+    // country is not a request to change language.
     expect(i18n.resolvedLanguage).toBe('en');
   });
 
