@@ -44,9 +44,17 @@ describe('locale resources', () => {
     return Object.entries(value).flatMap(([k, v]) => leaves(v, prefix ? `${prefix}.${k}` : k));
   }
 
-  it('defaults to Swedish', () => {
-    expect(DEFAULT_LANGUAGE).toBe('sv');
-    expect(i18n.resolvedLanguage).toBe('sv');
+  it('lands a first-time visitor in English, whatever their country', async () => {
+    // The default country is Sweden and the default language is English, and
+    // that mismatch is deliberate: the plan you land on should be readable
+    // before you have chosen anything.
+    expect(DEFAULT_LANGUAGE).toBe('en');
+
+    localStorage.clear();
+    await act(async () => {
+      await i18n.changeLanguage(undefined);
+    });
+    expect(i18n.resolvedLanguage).toBe('en');
   });
 
   it('has the same keys in every language', () => {

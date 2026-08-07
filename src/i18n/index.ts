@@ -26,17 +26,22 @@ import enRecipe from './locales/en/recipe.json';
 /**
  * Every language the app ships. Which of them you are actually offered depends
  * on your region — see `languagesFor` — because a region's food data is written
- * in exactly one non-English language, and a Swedish interface listing Croatian
+ * in at most one non-English language, and a Swedish interface listing Emirati
  * products would be worse than either language on its own.
  *
- * Swedish is the default because Sweden is the default region. The browser's
- * own locale is deliberately *not* consulted, so a visitor with an English
- * browser still lands on Swedish until they choose otherwise.
+ * English is the default even though Sweden is the default region. The two used
+ * to agree, and it read as tidy until the app grew a region whose own language
+ * *is* English: at that point "default country" and "default language" are
+ * simply different questions, and the second one wants the answer more readers
+ * can act on.
+ *
+ * The browser's own locale is deliberately still not consulted, so the landing
+ * language is a property of the app rather than of the visitor's machine.
  */
 export const LANGUAGES = ['sv', 'en', 'hr'] as const;
 export type Language = (typeof LANGUAGES)[number];
 
-export const DEFAULT_LANGUAGE: Language = 'sv';
+export const DEFAULT_LANGUAGE: Language = 'en';
 
 /** Versioned alongside the other gainplan.* keys in localStorage. */
 export const LANGUAGE_STORAGE_KEY = 'gainplan.lang.v1';
