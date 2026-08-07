@@ -1,10 +1,32 @@
 import { describe, expect, it } from 'vitest';
-import type { DietTag, MealSlot } from '../../types';
-import { recipeTags } from '../../lib/nutrition';
+import type { DietTag, MealSlot, Recipe } from '../../types';
 import { AE_INGREDIENTS } from './ingredients';
 import { AE_RECIPES } from './recipes';
 
 const SLOTS: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack'];
+
+/**
+ * Tags resolved against this region's own catalogue rather than through
+ * `recipeTags`, which goes via the shared `INGREDIENTS` lookup. That lookup
+ * does not know about the UAE until the region is registered, which is a
+ * later task and has to happen in the same commit as the merge — the id
+ * uniqueness test in regions.test.ts ties the two together.
+ *
+ * Nothing is lost by checking it here instead: once the region is registered,
+ * the parameterised restricted-eater suite in regions.test.ts runs this same
+ * assertion against the real `recipeTags` for every region, this one included.
+ */
+const BY_ID = new Map(AE_INGREDIENTS.map((i) => [i.id, i]));
+
+const tagsOf = (recipe: Recipe): Set<DietTag> => {
+  const tags = new Set<DietTag>();
+  for (const ri of recipe.ingredients) {
+    const ing = BY_ID.get(ri.id);
+    if (!ing) throw new Error(`${recipe.id} wants ${ri.id}, which this region does not stock`);
+    for (const t of ing.tags) tags.add(t);
+  }
+  return tags;
+};
 
 describe('the UAE recipe pool', () => {
   it('is deep enough to plan a week without repeating itself', () => {
@@ -60,7 +82,7 @@ describe('the UAE recipe pool', () => {
     ];
     for (const [label, exclude] of combos) {
       const excluded = new Set(exclude);
-      const usable = AE_RECIPES.filter((r) => ![...recipeTags(r)].some((t) => excluded.has(t)));
+      const usable = AE_RECIPES.filter((r) => ![...tagsOf(r)].some((t) => excluded.has(t)));
       for (const slot of SLOTS) {
         const n = usable.filter((r) => r.slots.includes(slot)).length;
         expect(n, `${label} / ${slot}`).toBeGreaterThan(0);
