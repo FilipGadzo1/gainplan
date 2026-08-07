@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile } from '../types';
 import { DEFAULT_PROFILE, type WeightEntry } from '../lib/storage';
 import { baseKcal, macrosForKcal } from '../lib/nutrition';
+import i18n from '../i18n';
 import SetupPanel from './SetupPanel';
 
+beforeEach(async () => {
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
+});
 afterEach(cleanup);
 
 function Harness({ initial = DEFAULT_PROFILE }: { initial?: Profile }) {

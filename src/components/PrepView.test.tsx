@@ -1,17 +1,25 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile, WeekPlan } from '../types';
 import { DEFAULT_PROFILE } from '../lib/storage';
 import { generatePlan, prepPlan } from '../lib/planner';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
 import { macrosForKcal } from '../lib/nutrition';
+import i18n from '../i18n';
 import PrepView from './PrepView';
 
-/** Swedish is the default language, so that is what these assertions read. */
+/** These assertions read Swedish, so the language is pinned in beforeEach below. */
 const DAGAR = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
 
+beforeEach(async () => {
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
+});
 afterEach(cleanup);
 
 const ANNA = { id: 'w', name: 'Anna', portionFactor: 0.65 };

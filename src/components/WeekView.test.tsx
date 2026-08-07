@@ -1,14 +1,22 @@
 import { useState } from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile } from '../types';
 import { DEFAULT_PROFILE } from '../lib/storage';
 import { generatePlan, mealMacros } from '../lib/planner';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
+import i18n from '../i18n';
 import WeekView from './WeekView';
 
+beforeEach(async () => {
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
+});
 afterEach(cleanup);
 
 const ANNA = { id: 'w', name: 'Anna', portionFactor: 0.65 };
