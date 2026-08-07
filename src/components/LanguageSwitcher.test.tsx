@@ -1,12 +1,22 @@
+/**
+ * Every test here forces a language rather than relying on the default. The
+ * default is English and the assertions are Swedish, and coupling the two
+ * would mean a change of default silently rewrites what these tests claim.
+ */
+
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import i18n, { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../i18n';
+import i18n, { LANGUAGE_STORAGE_KEY } from '../i18n';
 import LanguageSwitcher from './LanguageSwitcher';
 
 beforeEach(async () => {
   localStorage.clear();
-  await i18n.changeLanguage(DEFAULT_LANGUAGE);
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
 });
 afterEach(cleanup);
 

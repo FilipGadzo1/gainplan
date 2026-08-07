@@ -1,14 +1,18 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import i18n, { DEFAULT_LANGUAGE } from '../i18n';
+import i18n from '../i18n';
 import { DEFAULT_PROFILE } from '../lib/storage';
 import LanguageSwitcher from './LanguageSwitcher';
 import RegionSwitcher from './RegionSwitcher';
 
 beforeEach(async () => {
   localStorage.clear();
-  await i18n.changeLanguage(DEFAULT_LANGUAGE);
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
 });
 afterEach(cleanup);
 

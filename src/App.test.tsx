@@ -4,15 +4,17 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 import { DEFAULT_PROFILE } from './lib/storage';
 import { generatePlan } from './lib/planner';
-import i18n, { DEFAULT_LANGUAGE } from './i18n';
+import i18n from './i18n';
 
 afterEach(cleanup);
 
 beforeEach(async () => {
-  // i18n is a module singleton, so a test that switches to Croatian would
-  // otherwise hand the next one a Croatian interface to assert Swedish against.
-  await i18n.changeLanguage(DEFAULT_LANGUAGE);
   localStorage.clear();
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
   localStorage.setItem('gainplan.profile.v1', JSON.stringify(DEFAULT_PROFILE));
   localStorage.setItem(
     'gainplan.plan.v1',
