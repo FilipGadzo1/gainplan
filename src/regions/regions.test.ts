@@ -170,6 +170,21 @@ describe('chain search URLs keep the parameter each site expects', () => {
       ).toBe(true);
     }
   });
+
+  it('sends Union Coop q', () => {
+    const url = new URL(chainNamed('unioncoop')!.searchUrl!('chicken'));
+    expect(url.pathname).toBe('/catalogsearch/result/');
+    expect(url.searchParams.get('q')).toBe('chicken');
+  });
+
+  it('sends Lulu search_text, not q', () => {
+    // Lulu's own schema.org SearchAction is where this URL comes from; every
+    // guessable alternative 404s. See ./ae/chains.ts.
+    const url = new URL(chainNamed('lulu')!.searchUrl!('salmon'));
+    expect(url.pathname).toBe('/en-ae/list/');
+    expect(url.searchParams.get('search_text')).toBe('salmon');
+    expect(url.searchParams.get('q')).toBeNull();
+  });
 });
 
 describe('the registry', () => {
@@ -202,5 +217,13 @@ describe('the registry', () => {
       // A raw % or space would produce a malformed URL, not a failed search.
       expect(url.href, chain.id).toContain(encodeURIComponent('nötfärs 5%'));
     }
+  });
+
+  it('shops in three countries, in two currencies and two languages', () => {
+    expect([...REGION_IDS]).toEqual(['se', 'hr', 'ae']);
+    expect(regionOf('ae').currency).toBe('AED');
+    expect(regionOf('ae').language).toBe('en');
+    // Croatia keeps its shelves and loses its interface.
+    expect(regionOf('hr').language).toBe('en');
   });
 });

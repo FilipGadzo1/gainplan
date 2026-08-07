@@ -30,9 +30,17 @@ describe('RegionSwitcher', () => {
     render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
     await open(user);
 
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    expect(screen.getAllByRole('option')).toHaveLength(3);
     expect(screen.getByRole('option', { name: 'Sverige' }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('option', { name: 'Kroatien' }).getAttribute('aria-selected')).toBe('false');
+  });
+
+  it('lists the UAE alongside the other two', async () => {
+    const user = userEvent.setup();
+    render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
+    await open(user);
+    expect(screen.getAllByRole('option')).toHaveLength(3);
+    expect(screen.getByRole('option', { name: /Förenade Arabemiraten|United Arab Emirates/ })).toBeTruthy();
   });
 
   it('says what it changes when opened', async () => {

@@ -37,13 +37,25 @@ function FlagHr({ className = '' }: { className?: string }) {
   );
 }
 
+function FlagAe({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 10" className={className} aria-hidden focusable="false">
+      <rect width="16" height="10" fill="#00732f" />
+      <rect y="3.34" width="16" height="3.33" fill="#fff" />
+      <rect y="6.67" width="16" height="3.33" fill="#000" />
+      <rect width="4" height="10" fill="#ff0000" />
+    </svg>
+  );
+}
+
 const FLAGS: Record<RegionId, (props: { className?: string }) => React.ReactElement> = {
   se: FlagSe,
   hr: FlagHr,
+  ae: FlagAe,
 };
 
 /** Spelled out rather than built as `region.${id}` so the keys stay typed. */
-const LABEL_KEY = { se: 'region.se', hr: 'region.hr' } as const;
+const LABEL_KEY = { se: 'region.se', hr: 'region.hr', ae: 'region.ae' } as const;
 
 /**
  * Where you shop, in the header rather than buried in Setup.

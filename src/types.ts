@@ -26,10 +26,10 @@ export type DeptId = (typeof DEPT_IDS)[number];
  * id is a domain type, so that `Profile` can name a region without the types
  * module depending on the data.
  */
-export const REGION_IDS = ['se', 'hr'] as const;
+export const REGION_IDS = ['se', 'hr', 'ae'] as const;
 export type RegionId = (typeof REGION_IDS)[number];
 
-export type Currency = 'SEK' | 'EUR';
+export type Currency = 'SEK' | 'EUR' | 'AED';
 
 /** Restrictions a user can switch on. A recipe is excluded if it contains any flagged tag. */
 export type DietTag =

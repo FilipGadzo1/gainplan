@@ -99,7 +99,7 @@ export function useHouseholdLabel(): (profile: Profile) => string {
  * shown, and both put the currency where a shopper does not read it. Every
  * currency here happens to suffix, so one shape covers both.
  */
-const CURRENCY_SYMBOL: Record<Currency, string> = { SEK: 'kr', EUR: '€' };
+const CURRENCY_SYMBOL: Record<Currency, string> = { SEK: 'kr', EUR: '€', AED: 'AED' };
 
 /**
  * A money amount in the current region's currency, rounded to whole units. Prices
