@@ -5,9 +5,11 @@ calorie and macro targets, fills seven days with high-protein meals **scaled to 
 those targets**, batches what can be batched, and turns the week into one shopping list
 sorted the way you walk your actual shop.
 
-Two regions: **Sweden** (ICA Kvantum Uppsala, Gränby Centrum) and **Croatia** (Konzum or
-Kaufland). Picking a country switches the food, the recipes, the prices, the aisle order
-and the language together, and each country keeps its own week.
+Three regions: **Sweden** (ICA Kvantum Uppsala, Gränby Centrum), **Croatia** (Konzum or
+Kaufland), and the **United Arab Emirates** (Dubai, Union Coop or Lulu, priced in AED).
+Picking a country switches the food, the recipes, the prices and the aisle order, and each
+country keeps its own week. Language is a separate choice: it keeps your current language
+where the new region offers it, and falls back to English otherwise.
 
 No account, no backend, no API keys. Everything runs in the browser and is stored in
 `localStorage`.
@@ -15,7 +17,7 @@ No account, no backend, no API keys. Everything runs in the browser and is store
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 232 tests
+npm test         # 294 tests
 npm run build    # static site in dist/
 ```
 
@@ -80,6 +82,7 @@ src/
     registry.ts         Every region by id, and the lookup
     se.ts               Sweden: ICA, SEK, Swedish aisle order
     hr/                 Croatia: Konzum and Kaufland, EUR, 51 recipes
+    ae/                 United Arab Emirates: Union Coop and Lulu, AED, 37 recipes
   data/ingredients.ts   88 ICA products: macros per 100 g, SEK/kg, pack size, department
   data/recipes.ts       65 Swedish recipes, quantities per single serving
   lib/nutrition.ts      BMR, TDEE, targets, macro maths
@@ -92,8 +95,8 @@ scripts/sample.ts       Prints a generated week to the terminal
 ```
 
 Ingredient and recipe ids are unique across regions — Croatian rows carry an `hr-`
-prefix — because the two registries in `data/` are shared and the region only filters
-them. A test enforces it.
+prefix, UAE rows an `ae-` prefix — because the two registries in `data/` are shared and
+the region only filters them. A test enforces it.
 
 ## The store integrations, honestly
 
@@ -112,6 +115,8 @@ Which chains can be deep-linked, and why:
 | ICA | yes | Search results only — ICA publishes no "add to basket" URL |
 | Konzum | yes | `search[term]`, taken from their own search form |
 | Kaufland | no | Only a site-wide search; it answers with recipes and news too |
+| Union Coop | yes | `/catalogsearch/result/?q=` — server-rendered, so its results can be counted |
+| Lulu | yes | `/en-ae/list/?search_text=` — the search path Lulu's own schema.org markup publishes |
 
 Croatian ingredient names were checked against Konzum's live catalogue by counting the
 products each query actually returns; 25 rows carry a `storeQuery` override where the
@@ -130,6 +135,7 @@ enriched product data is CC BY-NC-SA 4.0, which is worth reading before relying 
 - Protein typically lands above your g/kg target (~2.7 g/kg when you ask for 2.0) because
   the recipe pool is protein-dense by design. Harmless, but it costs money — lower
   `proteinPerKg` if you want the planner to reach for carbier meals.
-- Swedish is primary for every recipe title and ingredient, so the shopping list matches
-  the shelf labels at ICA; the English translation sits underneath in italics.
+- Each region's own product and recipe names are primary, matching the shelf labels you'd
+  actually shop off; the English translation sits underneath in italics, except for a
+  region whose own language is English (the UAE), where there is no second line to show.
 - Data lives in one browser. Clearing site data clears your plan.

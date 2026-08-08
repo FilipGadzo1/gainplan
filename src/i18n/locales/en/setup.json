@@ -5,7 +5,7 @@
   },
   "region": {
     "title": "Where you shop",
-    "hint": "Picks the food, recipes, stores, currency and language.",
+    "hint": "Picks the food, recipes, stores and currency.",
     "se": "Sweden",
     "hr": "Croatia",
     "ae": "United Arab Emirates"

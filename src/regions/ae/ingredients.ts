@@ -23,8 +23,11 @@ import type { Ingredient } from '../../types';
  *
  * Pork sits in the meat section here as it does elsewhere, tagged `meat` and
  * `pork`. Note that UAE supermarkets sell it from a separate licensed room
- * rather than the main chiller — the shopping list cannot say so, but the
- * `pork` tag lets anyone who would rather not walk in there switch it off.
+ * rather than the main chiller — a detail the shopping list has no way to
+ * show. Neither pork row is currently used by any UAE recipe, so the `pork`
+ * tag does not yet drop anything from a UAE plan; it is here because a
+ * catalogue is a shop, not a recipe index, and the tag is what makes the row
+ * correctly excludable the day a pork recipe is added.
  */
 export const AE_INGREDIENTS: Ingredient[] = [
 

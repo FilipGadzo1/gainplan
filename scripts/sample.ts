@@ -3,12 +3,13 @@
  *
  *   npx vite-node scripts/sample.ts        Sweden
  *   npx vite-node scripts/sample.ts hr     Croatia
+ *   npx vite-node scripts/sample.ts ae     United Arab Emirates
  *
  * Day names stay Swedish whichever region is printed. This is a developer's
  * eyeball check, not product surface, and translating it would only add a
  * second thing to keep in sync.
  */
-import type { RegionId } from '../src/types';
+import type { Currency, RegionId } from '../src/types';
 import { REGION_IDS } from '../src/types';
 import { DEFAULT_PROFILE } from '../src/lib/storage';
 import { generatePlan, dayMacros, prepPlan } from '../src/lib/planner';
@@ -54,6 +55,9 @@ console.log(
   `\nWeek avg: ${Math.round(week / 7)} kcal/day, ${Math.round(protein / 7)} g protein ` +
     `(${(protein / 7 / profile.weightKg).toFixed(1)} g/kg)`,
 );
-const money = (n: number) => `${Math.round(n)} ${list.currency === 'SEK' ? 'kr' : 'EUR'}`;
+// Same shape as CURRENCY_SYMBOL in src/i18n/hooks.ts, so the next currency is a
+// compile error here too rather than a silent mislabel.
+const CURRENCY_SYMBOL: Record<Currency, string> = { SEK: 'kr', EUR: '€', AED: 'AED' };
+const money = (n: number) => `${Math.round(n)} ${CURRENCY_SYMBOL[list.currency]}`;
 console.log(`Shopping: ${list.itemCount} items, ~${money(list.total)} (${money(list.total / 7)}/day)`);
 console.log(`Batch sessions: ${prepPlan(plan).length}`);

@@ -193,7 +193,7 @@ describe('the UAE walk-through', () => {
 
     const titles = plan.days[0].meals.map((m) => recipeName(getRecipe(m.recipeId), 'en'));
     expect(titles.length).toBeGreaterThan(0);
-    for (const title of titles) expect(screen.getByText(title)).toBeTruthy();
+    for (const title of titles) expect(screen.getAllByText(title).length).toBeGreaterThan(0);
 
     // The same slot's Swedish and Croatian pool-mates, by title, to prove the
     // week is drawn from the UAE pool and not merely missing a filter.
