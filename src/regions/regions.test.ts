@@ -3,6 +3,7 @@ import type { DietTag, MealSlot } from '../types';
 import { DEPT_IDS, REGION_IDS } from '../types';
 import { recipeTags } from '../lib/nutrition';
 import { INGREDIENTS } from '../data/ingredients';
+import { RECIPES_BY_ID } from '../data/recipes';
 import { assertRegion, type Region } from './index';
 import { DEFAULT_REGION, REGIONS, regionOf } from './registry';
 
@@ -93,6 +94,12 @@ describe('ids are unique across regions, not just within one', () => {
         seen.set(recipe.id, region.id);
       }
     }
+    // The shared lookup must see exactly what the regions hold. Without this,
+    // a region's recipes can be absent from `RECIPES_BY_ID` while every other
+    // test still passes — the suite walks `region.recipes` directly, so nothing
+    // else exercises `getRecipe` with a real id. That is exactly how the UAE
+    // shipped unbuildable: the week generated, then threw on the first lookup.
+    expect(seen.size).toBe(Object.keys(RECIPES_BY_ID).length);
   });
 });
 

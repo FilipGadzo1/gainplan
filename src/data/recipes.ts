@@ -1570,7 +1570,7 @@ import { HR_RECIPES } from '../regions/hr/recipes';
 import { AE_RECIPES } from '../regions/ae/recipes';
 
 /** Every recipe across all regions, keyed by id. See INGREDIENTS for why. */
-const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
+export const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
   [...RECIPES, ...HR_RECIPES, ...AE_RECIPES].map((r) => [r.id, r]),
 );
 
