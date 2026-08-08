@@ -17,7 +17,7 @@ No account, no backend, no API keys. Everything runs in the browser and is store
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 294 tests
+npm test         # 300 tests
 npm run build    # static site in dist/
 ```
 
@@ -91,7 +91,7 @@ src/
   lib/storage.ts        localStorage persistence, namespaced per region
   components/           UI
 scripts/sample.ts       Prints a generated week to the terminal
-                        (npx vite-node scripts/sample.ts [se|hr])
+                        (npx vite-node scripts/sample.ts [se|hr|ae])
 ```
 
 Ingredient and recipe ids are unique across regions — Croatian rows carry an `hr-`
@@ -101,7 +101,7 @@ the region only filters them. A test enforces it.
 ## The store integrations, honestly
 
 No chain here is integrated in the sense of an API. Prices are hand-typed shelf
-estimates in both countries — **an estimate, not a receipt.** They drift; treat the
+estimates in all three — **an estimate, not a receipt.** They drift; treat the
 total as a planning figure.
 
 What the app does do is group your list by that shop's real departments in walking
