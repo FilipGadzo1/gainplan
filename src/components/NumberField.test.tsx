@@ -95,15 +95,43 @@ describe('NumberField', () => {
     expect(committed()).toBe('14');
   });
 
-  it('clamps values above the maximum on blur', async () => {
+  it('holds at the maximum as you type, without waiting for blur', async () => {
     const user = userEvent.setup();
     render(<Harness min={14} max={90} />);
 
     await user.clear(field());
     await user.type(field(), '250');
-    await user.tab();
 
+    // No number can be rescued by typing more of it once it is over the
+    // ceiling, so there is nothing to wait for.
+    expect(shown()).toBe('90');
     expect(committed()).toBe('90');
+  });
+
+  it('never shows a number the parent has not been told', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={14} max={90} />);
+
+    await user.clear(field());
+    // The regression this guards: "5" committed nothing, "50" committed 50,
+    // and "500" was rejected — leaving the field reading 500 while the app
+    // held 50, right up until something happened to blur it.
+    await user.type(field(), '500');
+
+    expect(shown()).toBe('90');
+    expect(committed()).toBe('90');
+  });
+
+  it('still clamps a too-small number on blur rather than while typing', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={14} max={90} />);
+
+    await user.clear(field());
+    await user.type(field(), '9');
+    expect(shown()).toBe('9'); // could still be on its way to 90
+
+    await user.tab();
+    expect(committed()).toBe('14');
   });
 
   it('accepts a decimal typed one character at a time', async () => {
