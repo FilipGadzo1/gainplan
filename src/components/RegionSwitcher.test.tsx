@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n';
@@ -111,6 +111,23 @@ describe('RegionSwitcher', () => {
 
     expect(screen.queryByRole('listbox')).toBeNull();
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('hands focus back to the trigger when it closes', async () => {
+    const user = userEvent.setup();
+    render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
+    const trigger = screen.getByRole('button', { name: /var du handlar/i });
+
+    await open(user);
+    // Focus is inside the menu while it is up.
+    expect(trigger.contains(document.activeElement)).toBe(false);
+
+    await user.keyboard('{Escape}');
+
+    // The hand-rolled menu left focus on an option that had just unmounted, so
+    // it fell to <body> and keyboard navigation restarted from the top of the
+    // page. Popover restores it to whatever opened the menu.
+    await waitFor(() => expect(document.activeElement).toBe(trigger));
   });
 });
 

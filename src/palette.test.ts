@@ -65,10 +65,14 @@ describe('text is readable on every background it lands on', () => {
   });
 
   it('keeps the primary button legible, which white would not', () => {
-    // Not a custom property — it is a literal inside .btn-primary, alongside a
-    // comment claiming 7.9:1 against white's 2.3:1. This is that claim, checked.
-    const button = css.match(/\.btn-primary\s*\{[^}]*?color:\s*(#[0-9a-fA-F]{6})/);
-    if (!button) throw new Error('.btn-primary has no literal text colour');
+    // Not a custom property — it is the primary palette's `contrastText`,
+    // alongside a comment claiming 7.9:1 against white's 2.3:1. This is that
+    // claim, checked. The value has moved twice as the button was rebuilt
+    // (index.css, then a Button `sx`, now the theme); the check follows it
+    // rather than being dropped, which is the whole point of having it.
+    const theme = readFileSync('src/theme.ts', 'utf8');
+    const button = theme.match(/contrastText:\s*'(#[0-9a-fA-F]{6})'/);
+    if (!button) throw new Error('the primary palette has no literal contrastText');
 
     const onAccent = contrast(button[1], colour('accent'));
     expect(onAccent).toBeGreaterThanOrEqual(4.5);

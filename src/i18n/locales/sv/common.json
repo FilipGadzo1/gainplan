@@ -16,7 +16,8 @@
     "buildWeekShort": "Bygg",
     "regenerateWeekShort": "Gör om",
     "print": "Skriv ut",
-    "close": "Stäng"
+    "close": "Stäng",
+    "cancel": "Avbryt"
   },
   "days": {
     "mon": "Måndag",

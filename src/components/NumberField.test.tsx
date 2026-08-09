@@ -12,11 +12,13 @@ function Harness({
   max,
   initial = 30,
   allowEmpty = false,
+  step,
 }: {
   min: number;
   max: number;
   initial?: number | null;
   allowEmpty?: boolean;
+  step?: number;
 }) {
   const [value, setValue] = useState<number | null>(initial);
   return (
@@ -25,6 +27,7 @@ function Harness({
         value={value}
         min={min}
         max={max}
+        step={step}
         allowEmpty={allowEmpty}
         onChange={(v) => setValue(allowEmpty ? v : (v ?? value))}
       />
@@ -33,7 +36,11 @@ function Harness({
   );
 }
 
-const field = () => screen.getByRole('spinbutton') as HTMLInputElement;
+/**
+ * A textbox, not a spinbutton: this is a text input with `inputMode="decimal"`
+ * rather than `type="number"` — see the note on NumberField for why.
+ */
+const field = () => screen.getByRole('textbox') as HTMLInputElement;
 /** What the input currently shows — including mid-edit text. */
 const shown = () => field().value;
 /** What the parent component has actually been told. */
@@ -132,6 +139,62 @@ describe('NumberField', () => {
     await user.type(field(), '9{Enter}');
 
     expect(committed()).toBe('14');
+  });
+
+  it('takes a comma as the decimal separator', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={35} max={200} initial={80} />);
+
+    // Swedish and Croatian both write 82,5. Under `type="number"` the browser
+    // handed back an empty string the moment the comma landed, so this was
+    // simply not enterable in either of the app's two non-English languages.
+    await user.clear(field());
+    await user.type(field(), '82,5');
+    await user.tab();
+
+    expect(committed()).toBe('82.5');
+  });
+
+  it('does not offer the browser spinner it used to', () => {
+    render(<Harness min={14} max={90} />);
+
+    // The arrows are gone because the input is no longer type="number"; if it
+    // reverts, this field answers to the spinbutton role again.
+    expect(field().getAttribute('type')).not.toBe('number');
+    expect(screen.queryByRole('spinbutton')).toBeNull();
+  });
+
+  it('steps with the arrow keys, which is the part of the spinner worth keeping', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={35} max={200} initial={80} step={0.5} />);
+
+    await user.click(field());
+    await user.keyboard('{ArrowUp}');
+    expect(committed()).toBe('80.5');
+
+    await user.keyboard('{ArrowDown}{ArrowDown}');
+    expect(committed()).toBe('79.5');
+  });
+
+  it('holds the step precision instead of drifting into binary fractions', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={0.15} max={0.45} initial={0.27} step={0.01} />);
+
+    await user.click(field());
+    await user.keyboard('{ArrowUp}');
+
+    // 0.27 + 0.01 is 0.28000000000000003 before rounding.
+    expect(committed()).toBe('0.28');
+  });
+
+  it('will not step past the range', async () => {
+    const user = userEvent.setup();
+    render(<Harness min={14} max={90} initial={90} />);
+
+    await user.click(field());
+    await user.keyboard('{ArrowUp}');
+
+    expect(committed()).toBe('90');
   });
 
   it('shows the committed value again after editing finishes', async () => {

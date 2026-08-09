@@ -16,7 +16,8 @@
     "buildWeekShort": "Build",
     "regenerateWeekShort": "New week",
     "print": "Print",
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "days": {
     "mon": "Monday",

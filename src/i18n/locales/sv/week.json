@@ -1,5 +1,6 @@
 {
   "scope": {
+    "label": "Mängder visas för",
     "yourPlate": "Din tallrik",
     "household": "{{label}} · {{factor}}×"
   },

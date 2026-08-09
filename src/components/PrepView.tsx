@@ -14,9 +14,12 @@ import {
   useNumberFormat,
   useQuantityFormat,
 } from '../i18n/hooks';
-import { StoreLink, Pill } from './ui';
+import { Button, Hint, StoreLink, Pill } from './ui';
 
 const taskKey = (t: PrepTask) => `${t.recipeId}-${t.dayIndex}`;
+
+/** The two header actions sit beside a title and have to stay out of its way. */
+const COMPACT_ACTION = { px: '0.625rem', py: '0.25rem', fontSize: '0.6875rem' } as const;
 
 type StorageKey = 'storage.fish' | 'storage.saucy' | 'storage.default';
 
@@ -197,23 +200,25 @@ function SessionDetail({
           </div>
           <div className="flex shrink-0 gap-1.5">
             {recipe.sourceUrl && (
-              <a
-                href={recipe.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn no-print px-2.5 py-1 text-[11px]"
-                title={t('recipeSource', { recipe: title, host: sourceHost(recipe.sourceUrl) })}
-              >
-                {sourceHost(recipe.sourceUrl)} ↗
-              </a>
+              <Hint title={t('recipeSource', { recipe: title, host: sourceHost(recipe.sourceUrl) })}>
+                <Button
+                  component="a"
+                  href={recipe.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="no-print"
+                  sx={COMPACT_ACTION}
+                >
+                  {sourceHost(recipe.sourceUrl)} ↗
+                </Button>
+              </Hint>
             )}
-            <button
-              type="button"
-              className="btn px-2.5 py-1 text-[11px]"
+            <Button
+              sx={COMPACT_ACTION}
               onClick={() => onOpenRecipe(task.recipeId, task.totalScale / task.servings)}
             >
               {t('fullRecipe')}
-            </button>
+            </Button>
           </div>
         </div>
         <div className="mt-2 flex flex-wrap gap-1.5">

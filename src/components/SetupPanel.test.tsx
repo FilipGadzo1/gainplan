@@ -56,6 +56,57 @@ describe('Setup structure', () => {
     expect(cardsInView()).toEqual(['Mat', 'Så lagar du']);
   });
 
+  it('honours the tab role it declares: arrow keys move between tabs', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    // The hand-rolled row announced role="tab" and then ignored every arrow
+    // key, so a screen-reader user was told to expect navigation that did not
+    // exist. Tabs implements the roving tabindex the role promises.
+    await user.click(screen.getByRole('tab', { name: 'Kropp' }));
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement).toBe(screen.getByRole('tab', { name: /^mål$/i }));
+
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement).toBe(screen.getByRole('tab', { name: /mat & kök/i }));
+
+    // Wraps back round to the first.
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Kropp' }));
+  });
+
+  it('gives the tabs a panel to control, labelled by the open tab', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    const panel = screen.getByRole('tabpanel');
+    // Every tab points at a panel that exists — previously aria-controls was
+    // absent and there was no tabpanel anywhere in the app.
+    for (const tab of screen.getAllByRole('tab')) {
+      expect(tab.getAttribute('aria-controls')).toBe(panel.id);
+    }
+    expect(panel.getAttribute('aria-labelledby')).toBe(
+      screen.getByRole('tab', { name: 'Kropp' }).id,
+    );
+
+    await openTab(user, /mat & kök/i);
+    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe(
+      screen.getByRole('tab', { name: /mat & kök/i }).id,
+    );
+  });
+
+  it('names each training-day tile by its day, not by its initial', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await openTab(user, /^mål$/i);
+
+    // The tile reads "M". The full day name used to arrive through the `title`
+    // attribute's accessible-name fallback; with the tooltip now a description,
+    // the name has to be explicit or this button announces as "M".
+    expect(screen.getByRole('button', { name: 'Måndag' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Söndag' })).toBeTruthy();
+  });
+
   it('opens on Body, with the measurements that drive everything else', () => {
     render(<Harness />);
     expect(screen.getByRole('tab', { name: 'Kropp' }).getAttribute('aria-selected')).toBe('true');

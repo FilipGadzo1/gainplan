@@ -7,7 +7,8 @@ import { deptLabel, ingredientName, ingredientSubtitle } from '../i18n/content';
 import { useCurrencyFormat, useHouseholdLabel, useLanguage, useNumberFormat } from '../i18n/hooks';
 import { useShoppingFormat } from '../i18n/useShoppingFormat';
 import { useRegion } from '../regions/context';
-import { StoreLink, Pill } from './ui';
+import Checkbox from '@mui/material/Checkbox';
+import { Button, StoreLink, Pill } from './ui';
 import ChainMark from './ChainMark';
 
 export default function ShoppingView({
@@ -92,32 +93,22 @@ export default function ShoppingView({
         </div>
 
         <div className="no-print mt-4 flex flex-wrap gap-2">
-          <a
+          <Button
+            tone="primary"
+            component="a"
             href={chain.onlineUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-primary"
           >
             {t('openStoreOnline', { store: chain.name })}
-          </a>
-          <button type="button" className="btn" onClick={copy}>
-            {copied ? t('copied') : t('copyList')}
-          </button>
-          <button type="button" className="btn" onClick={() => window.print()}>
-            {tc('actions.print')}
-          </button>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setHideStaples((v) => !v)}
-            aria-pressed={hideStaples}
-          >
+          </Button>
+          <Button onClick={copy}>{copied ? t('copied') : t('copyList')}</Button>
+          <Button onClick={() => window.print()}>{tc('actions.print')}</Button>
+          <Button onClick={() => setHideStaples((v) => !v)} aria-pressed={hideStaples}>
             {hideStaples ? t('showPantry') : t('hidePantry')}
-          </button>
+          </Button>
           {checked.size > 0 && (
-            <button type="button" className="btn" onClick={() => onCheckedChange(new Set())}>
-              {t('uncheckAll')}
-            </button>
+            <Button onClick={() => onCheckedChange(new Set())}>{t('uncheckAll')}</Button>
           )}
         </div>
 
@@ -143,14 +134,18 @@ export default function ShoppingView({
                 // the price stay as labels to keep a decent-sized tap target.
                 return (
                   <li key={item.ingredient.id} className="flex items-center gap-3 px-4 py-3">
-                    <input
+                    <Checkbox
                       id={boxId}
-                      type="checkbox"
                       checked={isChecked}
                       onChange={() => toggle(item.ingredient.id)}
-                      aria-label={`${ingredientName(item.ingredient, language)} — ${quantity(item)}`}
-                      // Ticked one-handed, in a shop, holding a basket.
-                      className="size-4 shrink-0 accent-[var(--color-accent)] pointer-coarse:size-6"
+                      slotProps={{
+                        input: {
+                          'aria-label': `${ingredientName(item.ingredient, language)} — ${quantity(item)}`,
+                        },
+                      }}
+                      // Ticked one-handed, in a shop, holding a basket, so the
+                      // target grows on touch rather than staying mouse-sized.
+                      sx={{ p: 0.5, '@media (pointer: coarse)': { p: 1.25 } }}
                     />
                     <span className={`min-w-0 flex-1 ${isChecked ? 'opacity-40' : ''}`}>
                       <span className="block text-sm font-semibold">

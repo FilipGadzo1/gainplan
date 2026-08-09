@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import type { Profile, WeekPlan } from './types';
 import { generatePlan, rebalanceDay, setMealScale, swapMeal, toggleLock, weekMacros } from './lib/planner';
@@ -25,9 +27,31 @@ import RecipeModal from './components/RecipeModal';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import RegionSwitcher from './components/RegionSwitcher';
 import Footer from './components/Footer';
-import { RegionProvider } from './regions/context';
+import { RegionProvider, useRegion } from './regions/context';
+import { Button, ConfirmDialog } from './components/ui';
+import { theme } from './theme';
 
 type Tab = 'setup' | 'week' | 'shopping' | 'prep';
+
+/**
+ * The first thing a new visitor reads, and it names their shop.
+ *
+ * Its own component purely so it can call `useRegion()`: App renders the
+ * provider, so App itself sits outside it. Without the chain name the sentence
+ * shipped with a literal "{{store}}" in it.
+ */
+function SetupIntro() {
+  const { t } = useTranslation('setup');
+  const { chain } = useRegion();
+  return (
+    <div className="card shrink-0 p-4 sm:p-5">
+      <h2 className="text-base font-bold">{t('intro.title')}</h2>
+      <p className="mt-1 text-sm leading-relaxed text-[var(--color-muted)]">
+        {t('intro.body', { store: chain.name })}
+      </p>
+    </div>
+  );
+}
 
 const TABS: { id: Tab; labelKey: `nav.${Tab}`; icon: string }[] = [
   { id: 'setup', labelKey: 'nav.setup', icon: '⚙' },
@@ -57,6 +81,7 @@ export default function App() {
   const [showHousehold, setShowHousehold] = useState(() => loadShowHousehold());
   const [tab, setTab] = useState<Tab>(() => (loadPlan(initialProfile.region) ? 'week' : 'setup'));
   const [modal, setModal] = useState<{ recipeId: string; scale: number } | null>(null);
+  const [confirmingReset, setConfirmingReset] = useState(false);
 
   // Which region the plan and checked items currently in state belong to.
   //
@@ -124,7 +149,12 @@ export default function App() {
   };
 
   return (
-    <RegionProvider regionId={region} chainId={profile.chain ?? undefined}>
+    <ThemeProvider theme={theme}>
+      {/* Normalises MUI's own base layer against the theme palette. index.css
+          keeps the parts CssBaseline has no opinion on — safe-area insets,
+          scrollbar styling, print. */}
+      <CssBaseline />
+      <RegionProvider regionId={region} chainId={profile.chain ?? undefined}>
       {/* On desktop the shell owns the viewport and each tab manages its own
           overflow, so the week can lay itself out to fit instead of running off
           the bottom of the page. Mobile keeps ordinary page scrolling.
@@ -188,12 +218,13 @@ export default function App() {
                 short form keeps the verb — the same word the long label leads
                 with — rather than becoming an unlabelled icon.
               */}
-              <button
-                type="button"
+              <Button
+                tone="primary"
                 // The name a screen reader announces stays the full sentence at
                 // every width; only the ink shortens.
                 aria-label={plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
-                className="no-print btn btn-primary whitespace-nowrap max-sm:px-2.5"
+                className="no-print"
+                sx={{ whiteSpace: 'nowrap', '@media (max-width: 39.99rem)': { px: '0.625rem' } }}
                 onClick={regenerate}
               >
                 <span className="sm:hidden">
@@ -202,7 +233,7 @@ export default function App() {
                 <span className="hidden sm:inline">
                   {plan ? t('actions.regenerateWeek') : t('actions.buildWeek')}
                 </span>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -244,14 +275,7 @@ export default function App() {
         <main className="mx-auto w-full max-w-[1800px] p-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
           {tab === 'setup' && (
             <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
-              {!plan && (
-                <div className="card shrink-0 p-4 sm:p-5">
-                  <h2 className="text-base font-bold">{tSetup('intro.title')}</h2>
-                  <p className="mt-1 text-sm leading-relaxed text-[var(--color-muted)]">
-                    {tSetup('intro.body')}
-                  </p>
-                </div>
-              )}
+              {!plan && <SetupIntro />}
               <div className="lg:min-h-0 lg:flex-1">
                 <SetupPanel profile={profile} onChange={setProfile} />
               </div>
@@ -262,23 +286,10 @@ export default function App() {
               )}
               {/* Pinned to the bottom of the shell so it is never scrolled off. */}
               <div className="flex shrink-0 flex-wrap gap-2">
-                <button type="button" className="btn btn-primary" onClick={regenerate}>
+                <Button tone="primary" onClick={regenerate}>
                   {plan ? tSetup('rebuildWeek') : t('actions.buildWeek')}
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => {
-                    if (!confirm(tSetup('resetConfirm'))) return;
-                    resetAll();
-                    setProfile(DEFAULT_PROFILE);
-                    setPlan(null);
-                    setChecked(new Set());
-                    setHasOnboarded(false);
-                  }}
-                >
-                  {tSetup('resetAll')}
-                </button>
+                </Button>
+                <Button onClick={() => setConfirmingReset(true)}>{tSetup('resetAll')}</Button>
               </div>
             </div>
           )}
@@ -346,6 +357,21 @@ export default function App() {
           ))}
         </nav>
 
+        <ConfirmDialog
+          open={confirmingReset}
+          title={tSetup('resetConfirm')}
+          confirmLabel={tSetup('resetAll')}
+          cancelLabel={t('actions.cancel')}
+          onClose={() => setConfirmingReset(false)}
+          onConfirm={() => {
+            resetAll();
+            setProfile(DEFAULT_PROFILE);
+            setPlan(null);
+            setChecked(new Set());
+            setHasOnboarded(false);
+          }}
+        />
+
         {modal && (
           <RecipeModal
             recipeId={modal.recipeId}
@@ -358,7 +384,8 @@ export default function App() {
             onClose={() => setModal(null)}
           />
         )}
-      </div>
-    </RegionProvider>
+        </div>
+      </RegionProvider>
+    </ThemeProvider>
   );
 }

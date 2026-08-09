@@ -13,7 +13,7 @@ import {
   useNumberFormat,
   useQuantityFormat,
 } from '../i18n/hooks';
-import { StoreLink, MacroBar, Pill, SegmentedTabs, TargetDelta } from './ui';
+import { Button, Hint, StoreLink, MacroBar, Pill, SegmentedToggle, TargetDelta } from './ui';
 
 const SLOT_KEY = {
   breakfast: 'slots.breakfast',
@@ -82,7 +82,8 @@ export default function WeekView({
     <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
       <div className="no-print flex shrink-0 flex-wrap items-center gap-2">
         {factor > 1 && (
-          <SegmentedTabs
+          <SegmentedToggle
+            label={t('scope.label')}
             value={household ? 'household' : 'you'}
             onChange={(v) => onShowHouseholdChange(v === 'household')}
             options={[
@@ -92,12 +93,8 @@ export default function WeekView({
           />
         )}
         <div className="ml-auto flex gap-2">
-          <button type="button" className="btn" onClick={onRebalance}>
-            {t('rebalance')}
-          </button>
-          <button type="button" className="btn" onClick={() => window.print()}>
-            {tc('actions.print')}
-          </button>
+          <Button onClick={onRebalance}>{t('rebalance')}</Button>
+          <Button onClick={() => window.print()}>{tc('actions.print')}</Button>
         </div>
       </div>
 
@@ -126,8 +123,12 @@ export default function WeekView({
         ))}
       </div>
 
+      {/* items-start, so a card is as tall as its own ingredient list. Stretched
+          to the full column the four cards each carried a few hundred pixels of
+          empty middle between the last ingredient and the controls, which read
+          as a rendering fault rather than as spare room. */}
       <div
-        className={`grid gap-3 lg:min-h-0 lg:flex-1 ${MEAL_COLUMNS[day.meals.length] ?? 'lg:grid-cols-4'}`}
+        className={`grid gap-3 lg:min-h-0 lg:flex-1 lg:items-start ${MEAL_COLUMNS[day.meals.length] ?? 'lg:grid-cols-4'}`}
       >
         {day.meals.map((meal, i) => (
           <MealCard
@@ -176,11 +177,12 @@ function DayTile({
           {days.short[day.index]}
         </span>
         {day.training && (
-          <span
-            className="size-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"
-            title={t('trainingDay')}
-            aria-label={t('trainingDay')}
-          />
+          <Hint title={t('trainingDay')}>
+            <span
+              className="size-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"
+              aria-label={t('trainingDay')}
+            />
+          </Hint>
         )}
       </div>
       <div className="tnum mt-1 text-[11px] leading-none font-bold sm:text-sm">
@@ -271,7 +273,7 @@ function MealCard({
         </div>
       </div>
 
-      <div className="mt-2.5 min-h-0 flex-1 overflow-hidden">
+      <div className="mt-2.5 min-h-0 overflow-hidden">
         <div className="text-[10px] font-bold tracking-wide text-[var(--color-muted)] uppercase">
           {factor > 1 ? t('cookWholePan') : t('ingredients')}
         </div>

@@ -1,5 +1,6 @@
 {
   "scope": {
+    "label": "Amounts shown for",
     "yourPlate": "Your plate",
     "household": "{{label}} · {{factor}}×"
   },

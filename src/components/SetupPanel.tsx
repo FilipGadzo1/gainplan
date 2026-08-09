@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import type { ActivityLevel, DietTag, Goal, HouseholdMember, Profile, Sex } from '../types';
 import {
@@ -14,7 +18,16 @@ import {
 } from '../lib/nutrition';
 import { useDayNames, useNumberFormat } from '../i18n/hooks';
 import { regionOf } from '../regions/registry';
-import { Field, NumberField, SegmentedControl, SegmentedTabs, Toggle } from './ui';
+import {
+  Button,
+  Field,
+  Hint,
+  NumberField,
+  SectionTabs,
+  SegmentedControl,
+  TabPanel,
+  Toggle,
+} from './ui';
 import ChainMark from './ChainMark';
 
 type DietKey =
@@ -58,6 +71,9 @@ const GOAL_KEYS = {
 
 type Section = 'body' | 'targets' | 'food';
 
+/** Namespaces the tab and panel ids, since a page could hold more than one set. */
+const TAB_GROUP = 'setup';
+
 /**
  * Setup is five cards behind three tabs:
  *
@@ -97,7 +113,8 @@ export default function SetupPanel({
       <TargetHero profile={profile} />
       <ChainPicker profile={profile} onChange={onChange} />
 
-      <SegmentedTabs
+      <SectionTabs
+        group={TAB_GROUP}
         className="shrink-0 self-start"
         value={section}
         onChange={setSection}
@@ -108,18 +125,20 @@ export default function SetupPanel({
         ]}
       />
 
-      <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+      <TabPanel group={TAB_GROUP} value={section} className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         {section === 'body' && (
-          // Column flow rather than a grid: the cards in a section are never
-          // the same height, and a grid would top-align them into a row and
-          // leave the short one trailing dead space to its bottom.
-          <div className="columns-1 gap-4 md:columns-2">
+          // One column, unlike the other two sections: Body holds a single card
+          // since the weigh-in log was removed, and in a two-column flow it sat
+          // in the left half with a screen-wide hole beside it. Full width lets
+          // its own fields spread instead.
+          <div className="columns-1 gap-4">
         <Card title={t('measurements.title')} hint={t('measurements.hint')}>
           <Field label={t('measurements.sex')} hint={t('measurements.sexHint')}>
             <SegmentedControl<Sex>
               value={profile.sex}
               onChange={(v) => set('sex', v)}
-              columns="grid-cols-2"
+              // Two short words; at full card width they were 350px each.
+              columns="grid-cols-2 max-w-xs"
               options={[
                 { value: 'male', label: t('measurements.male') },
                 { value: 'female', label: t('measurements.female') },
@@ -127,7 +146,7 @@ export default function SetupPanel({
             />
           </Field>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4 sm:max-w-xl">
             <Field label={t('measurements.age')}>
               <NumberField
                 value={profile.age}
@@ -159,7 +178,9 @@ export default function SetupPanel({
             <SegmentedControl<ActivityLevel>
               value={profile.activity}
               onChange={(v) => set('activity', v)}
-              columns="grid-cols-1 sm:grid-cols-2"
+              // Five across at full width, so the row reads as one scale from
+              // desk job to two-a-days rather than as a 2x3 block with a gap.
+              columns="grid-cols-1 sm:grid-cols-3 lg:grid-cols-5"
               options={ACTIVITY_LEVELS.map((k) => ({
                 value: k,
                 label: t(ACTIVITY_KEYS[k].label),
@@ -190,29 +211,35 @@ export default function SetupPanel({
                   {days.long.map((name, i) => {
                     const active = profile.trainingDays.includes(i);
                     return (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={() =>
-                          set(
-                            'trainingDays',
+                      <Hint key={name} title={name}>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            set(
+                              'trainingDays',
+                              active
+                                ? profile.trainingDays.filter((d) => d !== i)
+                                : [...profile.trainingDays, i].sort(),
+                            )
+                          }
+                          aria-pressed={active}
+                          // The tile reads "M". `title` used to double as the
+                          // accessible name through the name-computation
+                          // fallback; the tooltip is a *description* now, so
+                          // the name has to be stated outright or a screen
+                          // reader would announce this button as "M".
+                          aria-label={name}
+                          // Height only. Seven columns already fill a 360px
+                          // phone, so a minimum width here would overflow the row.
+                          className={`flex items-center justify-center rounded-lg border py-2 text-[11px] font-bold transition-colors pointer-coarse:min-h-11 ${
                             active
-                              ? profile.trainingDays.filter((d) => d !== i)
-                              : [...profile.trainingDays, i].sort(),
-                          )
-                        }
-                        aria-pressed={active}
-                        title={name}
-                        // Height only. Seven columns already fill a 360px
-                        // phone, so a minimum width here would overflow the row.
-                        className={`flex items-center justify-center rounded-lg border py-2 text-[11px] font-bold transition-colors pointer-coarse:min-h-11 ${
-                          active
-                            ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
-                            : 'border-[var(--color-line)] bg-[var(--color-raised)] text-[var(--color-muted)]'
-                        }`}
-                      >
-                        {days.min[i]}
-                      </button>
+                              ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
+                              : 'border-[var(--color-line)] bg-[var(--color-raised)] text-[var(--color-muted)]'
+                          }`}
+                        >
+                          {days.min[i]}
+                        </button>
+                      </Hint>
                     );
                   })}
                 </div>
@@ -231,14 +258,12 @@ export default function SetupPanel({
                 label={t('macroSplit.proteinLabel', { value: nf(profile.proteinPerKg, 1) })}
                 hint={t('macroSplit.proteinHint')}
               >
-                <input
-                  type="range"
+                <Slider
                   min={1.2}
                   max={3}
                   step={0.1}
                   value={profile.proteinPerKg}
-                  onChange={(e) => set('proteinPerKg', Number(e.target.value))}
-                  className="w-full"
+                  onChange={(_, v) => set('proteinPerKg', v as number)}
                 />
               </Field>
 
@@ -246,14 +271,12 @@ export default function SetupPanel({
                 label={t('macroSplit.fatLabel', { pct: Math.round(profile.fatPct * 100) })}
                 hint={t('macroSplit.fatHint')}
               >
-                <input
-                  type="range"
+                <Slider
                   min={0.15}
                   max={0.45}
                   step={0.01}
                   value={profile.fatPct}
-                  onChange={(e) => set('fatPct', Number(e.target.value))}
-                  className="w-full"
+                  onChange={(_, v) => set('fatPct', v as number)}
                 />
               </Field>
 
@@ -295,9 +318,14 @@ export default function SetupPanel({
                 {DIET_OPTIONS.map((o) => {
                   const active = o.tags.every((tag) => profile.exclude.includes(tag));
                   return (
-                    <button
+                    <Chip
                       key={o.key}
-                      type="button"
+                      label={t(o.key)}
+                      // Filter chips: selected is filled, unselected is a quiet
+                      // outline. That contrast is the whole affordance, and it
+                      // was missing when both states carried the same border.
+                      variant={active ? 'filled' : 'outlined'}
+                      aria-pressed={active}
                       onClick={() =>
                         set(
                           'exclude',
@@ -306,15 +334,15 @@ export default function SetupPanel({
                             : [...new Set([...profile.exclude, ...o.tags])],
                         )
                       }
-                      aria-pressed={active}
-                      className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4 ${
+                      sx={
                         active
-                          ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/12 text-[var(--color-accent)]'
-                          : 'border-[var(--color-line)] bg-[var(--color-raised)] text-[var(--color-muted)]'
-                      }`}
-                    >
-                      {t(o.key)}
-                    </button>
+                          ? {
+                              backgroundColor: 'color-mix(in srgb, #57aefa 20%, transparent)',
+                              color: 'var(--color-accent)',
+                            }
+                          : undefined
+                      }
+                    />
                   );
                 })}
               </div>
@@ -342,14 +370,12 @@ export default function SetupPanel({
             label={t('kitchen.maxTimeLabel', { minutes: profile.maxMinutes })}
             hint={t('kitchen.maxTimeHint')}
           >
-            <input
-              type="range"
+            <Slider
               min={10}
               max={60}
               step={5}
               value={profile.maxMinutes}
-              onChange={(e) => set('maxMinutes', Number(e.target.value))}
-              className="w-full"
+              onChange={(_, v) => set('maxMinutes', v as number)}
             />
           </Field>
 
@@ -372,7 +398,7 @@ export default function SetupPanel({
         </Card>
           </div>
         )}
-      </div>
+      </TabPanel>
     </div>
   );
 }
@@ -443,9 +469,12 @@ function Card({
     // break-inside-avoid keeps a card whole instead of splitting it across two
     // columns; mb-4 is the vertical gap, since column-gap does not apply.
     <section className="card mb-4 break-inside-avoid p-4">
-      <h2 className="text-sm font-bold">{title}</h2>
-      {hint && <p className="mt-0.5 text-[11px] text-[var(--color-muted)]">{hint}</p>}
-      <div className="mt-4 grid gap-4">{children}</div>
+      <h2 className="text-base font-bold">{title}</h2>
+      {hint && <p className="mt-1 text-xs text-[var(--color-muted)]">{hint}</p>}
+      {/* gap-6, not gap-4: each Field carries a hint line under its control, and
+          at the tighter rhythm that hint read as the caption for whatever came
+          next rather than for its own field. */}
+      <div className="mt-5 grid gap-6">{children}</div>
     </section>
   );
 }
@@ -474,9 +503,12 @@ function TargetHero({ profile }: { profile: Profile }) {
         <div className="text-[10px] font-bold tracking-wide text-[var(--color-muted)] uppercase">
           {t('hero.dailyTarget')}
         </div>
-        <div className="tnum text-2xl leading-none font-bold text-[var(--color-accent)]">
+        {/* The single most important number on this screen, and it used to be
+            set two points above body text. Everything on the page exists to
+            produce it, so it gets the top of the type scale. */}
+        <div className="tnum text-[2.5rem] leading-none font-bold tracking-tight text-[var(--color-accent)]">
           {target}
-          <span className="ml-1 text-xs font-medium text-[var(--color-muted)]">
+          <span className="ml-1.5 text-sm font-medium text-[var(--color-muted)]">
             {tc('units.kcal')}
           </span>
         </div>
@@ -557,16 +589,15 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
             className="rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] p-3"
           >
             <div className="flex items-center gap-2">
-              <input
-                type="text"
-                className="field"
+              <TextField
+                fullWidth
+                hiddenLabel
                 placeholder={t('cookingFor.personPlaceholder', { number: i + 2 })}
                 value={m.name}
-                maxLength={24}
+                slotProps={{ htmlInput: { maxLength: 24 } }}
                 onChange={(e) => update(m.id, { name: e.target.value })}
               />
-              <button
-                type="button"
+              <IconButton
                 onClick={() =>
                   onChange({
                     ...profile,
@@ -574,10 +605,10 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
                   })
                 }
                 aria-label={t('cookingFor.remove', { name: displayName })}
-                className="inline-flex shrink-0 items-center justify-center rounded-md border border-[var(--color-line)] px-2.5 py-2 text-sm text-[var(--color-muted)] pointer-coarse:size-11 pointer-coarse:px-0 hover:border-[var(--color-fat)] hover:text-[var(--color-fat)]"
+                sx={{ color: 'var(--color-muted)', '&:hover': { color: 'var(--color-fat)' } }}
               >
                 ✕
-              </button>
+              </IconButton>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-xs">
@@ -591,23 +622,20 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
                 </span>
               </span>
             </div>
-            <input
-              type="range"
+            <Slider
               min={0.3}
               max={1.3}
               step={0.05}
               value={m.portionFactor}
-              onChange={(e) => update(m.id, { portionFactor: Number(e.target.value) })}
-              className="mt-1 w-full"
+              onChange={(_, v) => update(m.id, { portionFactor: v as number })}
               aria-label={t('cookingFor.portionSliderLabel', { name: displayName })}
+              sx={{ mt: 0.5 }}
             />
           </div>
         );
       })}
 
-      <button
-        type="button"
-        className="btn"
+      <Button
         onClick={() =>
           onChange({
             ...profile,
@@ -619,7 +647,7 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
         }
       >
         {t('cookingFor.add')}
-      </button>
+      </Button>
 
       {profile.household.length > 0 && (
         <p className="text-[11px] leading-relaxed text-[var(--color-muted)]">

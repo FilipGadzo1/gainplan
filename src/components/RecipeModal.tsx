@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useId, useState } from 'react';
+import Dialog from '@mui/material/Dialog';
 import { useTranslation } from 'react-i18next';
 import { getIngredient } from '../data/ingredients';
 import { getRecipe } from '../data/recipes';
@@ -35,6 +36,7 @@ export default function RecipeModal({
   const money = useCurrencyFormat();
   const fmt = useQuantityFormat();
 
+  const titleId = useId();
   const recipe = getRecipe(recipeId);
   const title = recipeName(recipe, language);
   const cooksForOthers = householdFactor > 1;
@@ -45,38 +47,51 @@ export default function RecipeModal({
   // Macros always describe your portion — they are your targets, not the pan's.
   const macros = recipeMacros(recipe, scale);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
-
+  // Escape, the scroll lock, the focus trap and returning focus to whatever
+  // opened this are all Dialog's now. The hand-rolled version had the first two
+  // and neither of the last two, so tabbing out of an open recipe walked into
+  // the page behind it.
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-6"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={title}
+    <Dialog
+      open
+      onClose={onClose}
+      aria-labelledby={titleId}
+      fullWidth
+      maxWidth="sm"
+      sx={{
+        // Bottom sheet on a phone, floating card from `sm` up — the same split
+        // the hand-rolled overlay drew with `items-end sm:items-center`.
+        '& .MuiDialog-container': { alignItems: { xs: 'flex-end', sm: 'center' } },
+      }}
+      slotProps={{
+        backdrop: { sx: { backgroundColor: 'rgb(0 0 0 / 0.7)' } },
+        paper: {
+          sx: {
+            m: { xs: 0, sm: 3 },
+            width: '100%',
+            /*
+             * dvh, not vh. On mobile Safari `vh` is measured against the
+             * viewport with the address bar retracted, so with the bar showing
+             * 92vh is taller than the screen — and because this opens as a
+             * bottom sheet, the part pushed out of view was the top of it: the
+             * title, the macros and the close button.
+             */
+            maxHeight: '92dvh',
+            // The paper is the scroll container rather than a DialogContent
+            // child, which is what lets the header below stay sticky.
+            overflowY: 'auto',
+            borderBottomLeftRadius: { xs: 0, sm: '0.875rem' },
+            borderBottomRightRadius: { xs: 0, sm: '0.875rem' },
+          },
+        },
+      }}
     >
-      {/*
-        dvh, not vh. On mobile Safari `vh` is measured against the viewport
-        with the address bar retracted, so with the bar showing 92vh is taller
-        than the screen — and because this opens as a bottom sheet, the part
-        pushed out of view was the top of it: the title, the macros and the
-        close button.
-      */}
-      <div
-        className="card max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-b-none sm:rounded-b-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-surface)] p-4">
+      <div>
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-surface)] p-4">
           <div>
-            <h2 className="text-lg leading-tight font-bold">{title}</h2>
+            <h2 id={titleId} className="text-lg leading-tight font-bold">
+              {title}
+            </h2>
             {recipeSubtitle(recipe, language) && (
               <p className="mt-0.5 text-xs text-[var(--color-muted)] italic">
                 {recipeSubtitle(recipe, language)}
@@ -229,7 +244,7 @@ export default function RecipeModal({
           </button>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
 

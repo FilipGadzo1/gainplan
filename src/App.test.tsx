@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
@@ -73,6 +73,60 @@ describe('tab navigation', () => {
     expect(screen.getByRole('tab', { name: /mat & kök/i }).getAttribute('aria-selected')).toBe(
       'true',
     );
+  });
+});
+
+describe('resetting everything', () => {
+  const openSetup = async (user: ReturnType<typeof userEvent.setup>) =>
+    goToTab(user, 'Inställningar');
+
+  it('asks before erasing, in a dialog rather than the browser chrome', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openSetup(user);
+
+    await user.click(screen.getByRole('button', { name: /nollställ allt/i }));
+
+    // window.confirm blocks the thread, cannot be translated past its message,
+    // and is suppressed outright by some mobile browsers — which would have
+    // turned this button into a silent no-op.
+    const dialog = await screen.findByRole('dialog');
+    expect(within(dialog).getByText(/radera din profil och plan/i)).toBeTruthy();
+  });
+
+  it('keeps your week when you cancel', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openSetup(user);
+    // Read after mounting, not before: the legacy key seeded in beforeEach is
+    // migrated into the region-scoped one on App's first load.
+    const before = localStorage.getItem('gainplan.plan.se.v1');
+    expect(before).not.toBeNull();
+
+    await user.click(screen.getByRole('button', { name: /nollställ allt/i }));
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getByRole('button', { name: /avbryt/i }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(localStorage.getItem('gainplan.plan.se.v1')).toBe(before);
+  });
+
+  it('erases the profile and the plan when you confirm', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openSetup(user);
+
+    await user.click(screen.getByRole('button', { name: /nollställ allt/i }));
+    const dialog = await screen.findByRole('dialog');
+    await user.click(within(dialog).getAllByRole('button', { name: /nollställ allt/i })[0]);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(localStorage.getItem('gainplan.profile.v1')).toBeNull();
+    // The key is rewritten as the literal JSON `null` rather than removed —
+    // resetAll clears it, then the save effect fires once more on the emptied
+    // state. It reads back as "no plan", which is what matters, but asserting
+    // `toBeNull()` on the raw string would be asserting the wrong thing.
+    expect(JSON.parse(localStorage.getItem('gainplan.plan.se.v1') ?? 'null')).toBeNull();
   });
 });
 

@@ -119,17 +119,27 @@ describe('WeekView day selection', () => {
   });
 });
 
+/**
+ * The scope switch used to wear `role="tab"`, borrowed along with the styling
+ * it shared with the Setup tabs. It is not a tab set: "your plate" and "the
+ * whole pan" reveal no panels, they restate the numbers already on screen. They
+ * are pressed buttons in a named group, and these queries say so.
+ */
+const scopeButton = (name: RegExp) =>
+  within(screen.getByRole('group', { name: /mängder visas för/i })).getByRole('button', { name });
+
 describe('WeekView household switch', () => {
   it('is not offered when you only cook for yourself', () => {
     render(<Harness p={profile()} />);
     expect(screen.queryByRole('button', { name: /din tallrik/i })).toBeNull();
+    expect(screen.queryByRole('group', { name: /mängder visas för/i })).toBeNull();
   });
 
   it('is offered, and off by default, once someone else is added', () => {
     render(<Harness p={profile({ household: [ANNA] })} />);
 
-    const yours = screen.getByRole('tab', { name: /din tallrik/i });
-    expect(yours.getAttribute('aria-selected')).toBe('true');
+    expect(scopeButton(/din tallrik/i).getAttribute('aria-pressed')).toBe('true');
+    expect(scopeButton(/Anna/).getAttribute('aria-pressed')).toBe('false');
     expect(screen.queryByText(/hela pannan/i)).toBeNull();
   });
 
@@ -145,7 +155,7 @@ describe('WeekView household switch', () => {
 
     expect(screen.getAllByText(solo).length).toBeGreaterThan(0);
 
-    await user.click(screen.getByRole('tab', { name: /Anna/ }));
+    await user.click(scopeButton(/Anna/));
 
     expect(screen.getAllByText(shared).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/hela pannan/i).length).toBe(p.mealsPerDay);
@@ -161,7 +171,7 @@ describe('WeekView household switch', () => {
     render(<Harness p={p} />);
     expect(screen.getAllByText(yourKcal).length).toBeGreaterThan(0);
 
-    await user.click(screen.getByRole('tab', { name: /Anna/ }));
+    await user.click(scopeButton(/Anna/));
 
     // Still your plate's calories, not the pan's.
     expect(screen.getAllByText(yourKcal).length).toBeGreaterThan(0);
@@ -173,9 +183,34 @@ describe('WeekView household switch', () => {
 
     expect(screen.getAllByText(/hela pannan/i).length).toBeGreaterThan(0);
 
-    await user.click(screen.getByRole('tab', { name: /din tallrik/i }));
+    await user.click(scopeButton(/din tallrik/i));
 
     expect(screen.queryByText(/hela pannan/i)).toBeNull();
+  });
+
+  it('describes a truncated ingredient without renaming it', async () => {
+    const user = userEvent.setup();
+    render(<Harness p={profile()} />);
+
+    const link = screen
+      .getAllByRole('link')
+      .find((a) => a.getAttribute('href')?.includes('handlaprivatkund.ica.se'))!;
+    const name = link.textContent ?? '';
+
+    // Tooltip publishes its text as `aria-label` unless told otherwise, which
+    // would replace the link's name with the tooltip sentence. `describeChild`
+    // keeps the name and adds a description instead.
+    expect(link.getAttribute('aria-label')).toBeNull();
+
+    // Asserted through hover because jsdom's :focus-visible support is what
+    // MUI gates the focus listener on, and it does not survive the fake
+    // environment. The focus and touch paths are Tooltip's own, tested
+    // upstream; what is worth pinning here is that this app wires it up so the
+    // description exists at all and does not eat the name.
+    await user.hover(link);
+    const tip = await screen.findByRole('tooltip');
+    expect(tip.textContent).toContain(name.replace(/\s*↗\s*$/, '').trim());
+    expect(link.getAttribute('aria-describedby')).toBe(tip.getAttribute('id'));
   });
 
   it('links each ingredient to the ICA store search', () => {
