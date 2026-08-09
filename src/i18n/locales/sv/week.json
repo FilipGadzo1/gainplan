@@ -4,6 +4,7 @@
     "household": "{{label}} · {{factor}}×"
   },
   "rebalance": "Balansera om portioner",
+  "daysLabel": "Veckans dagar",
   "slots": {
     "breakfast": "Frukost",
     "lunch": "Lunch",

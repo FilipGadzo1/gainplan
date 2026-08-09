@@ -66,9 +66,6 @@ Online for the Gränby store.
 **Per-meal control.** Swap a meal for a different one, lock a meal so it survives a
 regenerate, nudge any portion by 5% at a time, or block a recipe permanently.
 
-**Weigh-in tracking.** Log your weight, see the trend, and get a concrete calorie
-adjustment based on your goal and your actual rate of change.
-
 ## Stack
 
 Vite + React 19 + TypeScript (strict) + Tailwind v4. Vitest for tests. No runtime

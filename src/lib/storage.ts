@@ -3,14 +3,20 @@ import { REGION_IDS } from '../types';
 import { DEFAULT_REGION, regionOf } from '../regions/registry';
 
 /**
- * Keys that hold the same thing whichever country you shop in — your body, your
- * goals, your weigh-ins.
+ * Keys that hold the same thing whichever country you shop in — your body and
+ * your goals.
  */
 const KEYS = {
   profile: 'gainplan.profile.v1',
-  weights: 'gainplan.weights.v1',
   showHousehold: 'gainplan.showHousehold.v1',
 } as const;
+
+/**
+ * Keys nothing writes any more, cleared by `resetAll` so a browser that used an
+ * older build does not keep data no screen can show. `weights` held the
+ * weigh-in log, removed along with the feature.
+ */
+const RETIRED_KEYS = ['gainplan.weights.v1'] as const;
 
 /**
  * Keys that mean something different per region. A Swedish week and a Croatian
@@ -137,20 +143,12 @@ export function loadChecked(region: RegionId): Set<string> {
 export const saveChecked = (region: RegionId, s: Set<string>) =>
   write(regionKey('checked', region), [...s]);
 
-export interface WeightEntry {
-  date: string;
-  kg: number;
-}
-
-export const loadWeights = () => read<WeightEntry[]>(KEYS.weights, []);
-export const saveWeights = (w: WeightEntry[]) => write(KEYS.weights, w);
-
 /** Whether quantities across the app are shown for the whole household. */
 export const loadShowHousehold = () => read<boolean>(KEYS.showHousehold, false);
 export const saveShowHousehold = (v: boolean) => write(KEYS.showHousehold, v);
 
 export function resetAll(): void {
-  for (const key of Object.values(KEYS)) localStorage.removeItem(key);
+  for (const key of [...Object.values(KEYS), ...RETIRED_KEYS]) localStorage.removeItem(key);
   for (const name of Object.keys(REGION_KEYS) as (keyof typeof REGION_KEYS)[]) {
     localStorage.removeItem(LEGACY_KEYS[name]);
     for (const region of REGION_IDS) localStorage.removeItem(regionKey(name, region));

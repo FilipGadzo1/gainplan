@@ -154,33 +154,9 @@
     "cookingNotePrefix": "Lagar",
     "cookingNoteSuffix": "av varje måltid."
   },
-  "weighIn": {
-    "title": "Invägning",
-    "hint": "På morgonen, efter toaletten, före mat. Det är trenden som räknas, inte ett enskilt värde.",
-    "placeholder": "kg",
-    "logToday": "Logga i dag",
-    "empty": "Logga fyra dagar eller fler så säger den här om du bör flytta ditt kalorimål, och hur mycket.",
-    "entries_one": "{{count}} post",
-    "entries_other": "{{count}} poster",
-    "latest": "senast",
-    "clear": "Rensa",
-    "perWeek": "{{value}} kg/vecka",
-    "trendLabel": "Vikttrend"
-  },
-  "trend": {
-    "cutSlow": "— går ner långsammare än en deff kräver. Sänk målet med ca 150 kcal.",
-    "cutFast": "— går ner så snabbt att det kostar muskler. Lägg på ca 200 kcal.",
-    "cutGood": "— det är rätt takt för en deff. Låt målet vara.",
-    "bulkNone": "— ökar inte. Lägg på ca 200 kcal och kolla igen om två veckor.",
-    "bulkFast": "— ökar så snabbt att mycket blir fett. Dra av ca 150 kcal.",
-    "bulkGood": "— bra ökningstakt. Ligg kvar här.",
-    "stable": "— stabilt, vilket är målet.",
-    "driftingUp": "— glider uppåt. Dra av ca 150 kcal.",
-    "driftingDown": "— glider nedåt. Lägg på ca 150 kcal."
-  },
   "poolWarning_one": "Bara {{count}} recept matchar dina restriktioner och tidsgräns. Veckan kommer att upprepa sig — lätta på något om du vill ha variation.",
   "poolWarning_other": "Bara {{count}} recept matchar dina restriktioner och tidsgräns. Veckan kommer att upprepa sig — lätta på något om du vill ha variation.",
   "rebuildWeek": "Bygg om veckan med de här inställningarna",
   "resetAll": "Nollställ allt",
-  "resetConfirm": "Radera din profil, plan och invägningar från den här webbläsaren?"
+  "resetConfirm": "Radera din profil och plan från den här webbläsaren?"
 }

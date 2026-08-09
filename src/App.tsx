@@ -11,14 +11,11 @@ import {
   loadPlan,
   loadProfile,
   loadShowHousehold,
-  loadWeights,
   resetAll,
   saveChecked,
   savePlan,
   saveProfile,
   saveShowHousehold,
-  saveWeights,
-  type WeightEntry,
 } from './lib/storage';
 import SetupPanel from './components/SetupPanel';
 import WeekView from './components/WeekView';
@@ -57,7 +54,6 @@ export default function App() {
   const region = profile.region;
   const [plan, setPlan] = useState<WeekPlan | null>(() => loadPlan(initialProfile.region));
   const [checked, setChecked] = useState<Set<string>>(() => loadChecked(initialProfile.region));
-  const [weights, setWeights] = useState<WeightEntry[]>(() => loadWeights());
   const [showHousehold, setShowHousehold] = useState(() => loadShowHousehold());
   const [tab, setTab] = useState<Tab>(() => (loadPlan(initialProfile.region) ? 'week' : 'setup'));
   const [modal, setModal] = useState<{ recipeId: string; scale: number } | null>(null);
@@ -91,7 +87,6 @@ export default function App() {
   useEffect(() => {
     if (inSync) saveChecked(region, checked);
   }, [inSync, region, checked]);
-  useEffect(() => saveWeights(weights), [weights]);
   useEffect(() => saveShowHousehold(showHousehold), [showHousehold]);
 
   // Keep the document itself in the chosen language, for screen readers,
@@ -258,12 +253,7 @@ export default function App() {
                 </div>
               )}
               <div className="lg:min-h-0 lg:flex-1">
-                <SetupPanel
-                  profile={profile}
-                  onChange={setProfile}
-                  weights={weights}
-                  onWeightsChange={setWeights}
-                />
+                <SetupPanel profile={profile} onChange={setProfile} />
               </div>
               {poolSize < 12 && (
                 <p className="shrink-0 rounded-lg border border-[var(--color-fat)]/40 bg-[var(--color-fat)]/10 p-3 text-xs">
@@ -284,7 +274,6 @@ export default function App() {
                     setProfile(DEFAULT_PROFILE);
                     setPlan(null);
                     setChecked(new Set());
-                    setWeights([]);
                     setHasOnboarded(false);
                   }}
                 >

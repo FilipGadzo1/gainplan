@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ActivityLevel, DietTag, Goal, HouseholdMember, Profile, Sex } from '../types';
 import {
@@ -14,7 +14,6 @@ import {
 } from '../lib/nutrition';
 import { useDayNames, useNumberFormat } from '../i18n/hooks';
 import { regionOf } from '../regions/registry';
-import type { WeightEntry } from '../lib/storage';
 import { Field, NumberField, SegmentedControl, SegmentedTabs, Toggle } from './ui';
 import ChainMark from './ChainMark';
 
@@ -60,10 +59,9 @@ const GOAL_KEYS = {
 type Section = 'body' | 'targets' | 'food';
 
 /**
- * Setup is six cards behind three tabs, two cards to a tab:
+ * Setup is five cards behind three tabs:
  *
- *   Body    — the measurements the calculation runs on, next to the weigh-in
- *             log that keeps the weight honest (logging one updates it).
+ *   Body    — the measurements the calculation runs on.
  *   Targets — the goal and which days get the bump, next to the macro split.
  *   Food    — what you eat and what you won't, next to how and for whom you cook.
  *
@@ -73,23 +71,18 @@ type Section = 'body' | 'targets' | 'food';
  * thirds is what actually makes a section fit, rather than trading scroll
  * against density.
  *
- * Three tabs, not the original four: Food and Kitchen were a card each, and a
- * one-card section is how this page ended up looking scattered and full of gaps
- * in the first place. Two cards is the smallest section that fills a row.
- *
  * The target readout sits above the tabs, visible from every section, so you can
  * always see what a change did without navigating back.
+ *
+ * Body is a single card since the weigh-in log was removed, which leaves that
+ * section half empty — the layout wants rebalancing across the three tabs.
  */
 export default function SetupPanel({
   profile,
   onChange,
-  weights,
-  onWeightsChange,
 }: {
   profile: Profile;
   onChange: (p: Profile) => void;
-  weights: WeightEntry[];
-  onWeightsChange: (w: WeightEntry[]) => void;
 }) {
   const { t } = useTranslation('setup');
   const days = useDayNames();
@@ -117,9 +110,9 @@ export default function SetupPanel({
 
       <div className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
         {section === 'body' && (
-          // Column flow rather than a grid: the two cards in a section are
-          // never the same height, and a grid would top-align them into a row
-          // and leave the short one trailing dead space to its bottom.
+          // Column flow rather than a grid: the cards in a section are never
+          // the same height, and a grid would top-align them into a row and
+          // leave the short one trailing dead space to its bottom.
           <div className="columns-1 gap-4 md:columns-2">
         <Card title={t('measurements.title')} hint={t('measurements.hint')}>
           <Field label={t('measurements.sex')} hint={t('measurements.sexHint')}>
@@ -175,13 +168,6 @@ export default function SetupPanel({
             />
           </Field>
         </Card>
-
-            <WeightLog
-              weights={weights}
-              onChange={onWeightsChange}
-              profile={profile}
-              onWeightSync={(kg) => set('weightKg', kg)}
-            />
           </div>
         )}
 
@@ -643,157 +629,5 @@ function Household({ profile, onChange }: { profile: Profile; onChange: (p: Prof
         </p>
       )}
     </div>
-  );
-}
-
-/**
- * Weekly weight trend, and what it implies about the calorie target. Scale
- * weight is noisy day to day, so the readout only fires once there are enough
- * entries to compare two halves.
- */
-function WeightLog({
-  weights,
-  onChange,
-  profile,
-  onWeightSync,
-}: {
-  weights: WeightEntry[];
-  onChange: (w: WeightEntry[]) => void;
-  profile: Profile;
-  onWeightSync: (kg: number) => void;
-}) {
-  const { t } = useTranslation('setup');
-  const { t: tc } = useTranslation('common');
-  const nf = useNumberFormat();
-  const [input, setInput] = useState('');
-  const today = new Date().toISOString().slice(0, 10);
-
-  const sorted = useMemo(() => [...weights].sort((a, b) => a.date.localeCompare(b.date)), [weights]);
-
-  const trend = useMemo(() => {
-    if (sorted.length < 4) return null;
-    const half = Math.floor(sorted.length / 2);
-    const older = sorted.slice(0, half);
-    const recent = sorted.slice(half);
-    const avg = (xs: WeightEntry[]) => xs.reduce((s, x) => s + x.kg, 0) / xs.length;
-    const days =
-      (Date.parse(recent[recent.length - 1].date) - Date.parse(older[0].date)) / 86_400_000 || 1;
-    return ((avg(recent) - avg(older)) / days) * 7;
-  }, [sorted]);
-
-  const add = () => {
-    const kg = Number(input.replace(',', '.'));
-    if (!Number.isFinite(kg) || kg < 35 || kg > 250) return;
-    onChange([...weights.filter((w) => w.date !== today), { date: today, kg }]);
-    onWeightSync(kg);
-    setInput('');
-  };
-
-  return (
-    <Card title={t('weighIn.title')} hint={t('weighIn.hint')}>
-      <div className="flex gap-2">
-        <input
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          placeholder={t('weighIn.placeholder')}
-          className="field tnum"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && add()}
-        />
-        <button type="button" className="btn btn-primary shrink-0" onClick={add}>
-          {t('weighIn.logToday')}
-        </button>
-      </div>
-
-      {sorted.length === 0 ? (
-        <p className="text-xs text-[var(--color-muted)]">{t('weighIn.empty')}</p>
-      ) : (
-        <div>
-          <Sparkline data={sorted.map((w) => w.kg)} label={t('weighIn.trendLabel')} />
-          <div className="mt-2 flex items-center justify-between text-xs">
-            <span className="text-[var(--color-muted)]">
-              {t('weighIn.entries', { count: sorted.length })} · {t('weighIn.latest')}{' '}
-              <span className="tnum font-semibold text-[var(--color-text)]">
-                {sorted[sorted.length - 1].kg} {tc('units.kilogram')}
-              </span>
-            </span>
-            <button
-              type="button"
-              className="text-[var(--color-muted)] underline underline-offset-2"
-              onClick={() => onChange([])}
-            >
-              {t('weighIn.clear')}
-            </button>
-          </div>
-          {trend !== null && (
-            <p className="mt-3 rounded-lg border border-[var(--color-line)] bg-[var(--color-raised)] p-3 text-xs leading-relaxed">
-              <span className="tnum font-bold text-[var(--color-accent)]">
-                {trend > 0 ? '+' : ''}
-                {t('weighIn.perWeek', { value: nf(trend, 2) })}
-              </span>{' '}
-              {t(trendAdviceKey(trend, profile))}
-            </p>
-          )}
-        </div>
-      )}
-    </Card>
-  );
-}
-
-type TrendKey =
-  | 'trend.cutSlow'
-  | 'trend.cutFast'
-  | 'trend.cutGood'
-  | 'trend.bulkNone'
-  | 'trend.bulkFast'
-  | 'trend.bulkGood'
-  | 'trend.stable'
-  | 'trend.driftingUp'
-  | 'trend.driftingDown';
-
-function trendAdviceKey(perWeek: number, profile: Profile): TrendKey {
-  const pct = (perWeek / profile.weightKg) * 100;
-  if (profile.goal === 'cut') {
-    if (pct > -0.2) return 'trend.cutSlow';
-    if (pct < -1) return 'trend.cutFast';
-    return 'trend.cutGood';
-  }
-  if (profile.goal === 'bulk' || profile.goal === 'lean-bulk') {
-    const ceiling = profile.goal === 'lean-bulk' ? 0.35 : 0.6;
-    if (pct < 0.1) return 'trend.bulkNone';
-    if (pct > ceiling) return 'trend.bulkFast';
-    return 'trend.bulkGood';
-  }
-  if (Math.abs(pct) < 0.2) return 'trend.stable';
-  return perWeek > 0 ? 'trend.driftingUp' : 'trend.driftingDown';
-}
-
-function Sparkline({ data, label }: { data: number[]; label: string }) {
-  if (data.length < 2) return null;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const span = max - min || 1;
-  const points = data
-    .map((v, i) => `${(i / (data.length - 1)) * 100},${30 - ((v - min) / span) * 26 - 2}`)
-    .join(' ');
-
-  return (
-    <svg
-      viewBox="0 0 100 30"
-      preserveAspectRatio="none"
-      className="mt-1 h-14 w-full"
-      role="img"
-      aria-label={label}
-    >
-      <polyline
-        points={points}
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="1.5"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
   );
 }

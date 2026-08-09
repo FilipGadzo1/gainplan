@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile } from '../types';
@@ -59,6 +59,20 @@ function heaviestAmount(p: Profile, dayIndex: number, mealIndex: number, factor:
     : `${Math.round(top.grams)} g`;
 }
 
+/**
+ * The seven tiles of the day picker.
+ *
+ * Scoped to the labelled group rather than matched on their text: a tile reads
+ * "Mån", and a meal card titled "Torskcurry med spenat" answers to /Tors/ just
+ * as well. Counting buttons by weekday abbreviation made this suite hostage to
+ * the recipe list.
+ */
+const dayTiles = () =>
+  within(screen.getByRole('group', { name: /veckans dagar/i })).getAllByRole('button');
+
+const dayTile = (name: RegExp) =>
+  within(screen.getByRole('group', { name: /veckans dagar/i })).getByRole('button', { name });
+
 describe('WeekView day selection', () => {
   it('shows one day at a time, with every meal of that day', () => {
     const p = profile();
@@ -66,7 +80,7 @@ describe('WeekView day selection', () => {
     render(<Harness p={p} />);
 
     // Seven day tiles, but only one day's meals rendered.
-    expect(screen.getAllByRole('button', { name: /Mån|Tis|Ons|Tors|Fre|Lör|Sön/ })).toHaveLength(7);
+    expect(dayTiles()).toHaveLength(7);
 
     const shown = plan.days.filter((d) =>
       d.meals.every((m) => screen.queryAllByText(getRecipe(m.recipeId).name).length > 0),
@@ -81,7 +95,7 @@ describe('WeekView day selection', () => {
     const plan = generatePlan(p, { seed: 2026 });
     render(<Harness p={p} />);
 
-    await user.click(screen.getByRole('button', { name: /^Ons/ }));
+    await user.click(dayTile(/^Ons/));
 
     for (const meal of plan.days[2].meals) {
       expect(screen.getAllByText(getRecipe(meal.recipeId).name).length).toBeGreaterThan(0);
@@ -92,7 +106,7 @@ describe('WeekView day selection', () => {
     const user = userEvent.setup();
     render(<Harness p={profile()} />);
 
-    const friday = screen.getByRole('button', { name: /^Fre/ });
+    const friday = dayTile(/^Fre/);
     await user.click(friday);
 
     expect(friday.getAttribute('aria-current')).toBe('true');

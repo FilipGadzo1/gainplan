@@ -154,33 +154,9 @@
     "cookingNotePrefix": "Cooking",
     "cookingNoteSuffix": "of every meal."
   },
-  "weighIn": {
-    "title": "Weigh-in",
-    "hint": "Morning, after the toilet, before food. The trend is what matters, not any single number.",
-    "placeholder": "kg",
-    "logToday": "Log today",
-    "empty": "Log four or more days and this will tell you whether to move your calorie target, and by how much.",
-    "entries_one": "{{count}} entry",
-    "entries_other": "{{count}} entries",
-    "latest": "latest",
-    "clear": "Clear",
-    "perWeek": "{{value}} kg/week",
-    "trendLabel": "Weight trend"
-  },
-  "trend": {
-    "cutSlow": "— losing slower than a cut needs. Drop the target by ~150 kcal.",
-    "cutFast": "— dropping fast enough to cost you muscle. Add ~200 kcal.",
-    "cutGood": "— that is the right rate for a cut. Leave the target alone.",
-    "bulkNone": "— not gaining. Add ~200 kcal and check again in two weeks.",
-    "bulkFast": "— gaining fast enough that much of it is fat. Trim ~150 kcal.",
-    "bulkGood": "— a good gaining rate. Hold here.",
-    "stable": "— stable, which is the goal.",
-    "driftingUp": "— drifting up. Trim ~150 kcal.",
-    "driftingDown": "— drifting down. Add ~150 kcal."
-  },
   "poolWarning_one": "Only {{count}} recipe matches your restrictions and time limit. The week will repeat itself — loosen something if you want variety.",
   "poolWarning_other": "Only {{count}} recipes match your restrictions and time limit. The week will repeat itself — loosen something if you want variety.",
   "rebuildWeek": "Rebuild week with these settings",
   "resetAll": "Reset everything",
-  "resetConfirm": "Erase your profile, plan and weigh-ins from this browser?"
+  "resetConfirm": "Erase your profile and plan from this browser?"
 }

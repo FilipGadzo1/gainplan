@@ -4,6 +4,7 @@
     "household": "{{label}} · {{factor}}×"
   },
   "rebalance": "Rebalance portions",
+  "daysLabel": "Days of the week",
   "slots": {
     "breakfast": "Breakfast",
     "lunch": "Lunch",

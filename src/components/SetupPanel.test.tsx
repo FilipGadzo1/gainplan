@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile } from '../types';
-import { DEFAULT_PROFILE, type WeightEntry } from '../lib/storage';
+import { DEFAULT_PROFILE } from '../lib/storage';
 import { baseKcal, macrosForKcal } from '../lib/nutrition';
 import i18n from '../i18n';
 import SetupPanel from './SetupPanel';
@@ -19,17 +19,10 @@ afterEach(cleanup);
 
 function Harness({ initial = DEFAULT_PROFILE }: { initial?: Profile }) {
   const [profile, setProfile] = useState<Profile>(initial);
-  const [weights, setWeights] = useState<WeightEntry[]>([]);
   return (
     <>
-      <SetupPanel
-        profile={profile}
-        onChange={setProfile}
-        weights={weights}
-        onWeightsChange={setWeights}
-      />
+      <SetupPanel profile={profile} onChange={setProfile} />
       <output data-testid="goal">{profile.goal}</output>
-      <output data-testid="weight">{profile.weightKg}</output>
     </>
   );
 }
@@ -48,13 +41,15 @@ describe('Setup structure', () => {
     expect(tabs).toEqual(['Kropp', 'Mål', 'Mat & kök']);
   });
 
-  it('gives every section two cards, since one card leaves the row half empty', async () => {
+  it('puts the right cards behind each tab', async () => {
     const user = userEvent.setup();
     render(<Harness />);
 
     const cardsInView = () => screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
 
-    expect(cardsInView()).toEqual(['Mått', 'Invägning']);
+    // Body is a single card since the weigh-in log went, which is the one
+    // section that no longer fills its row. Pending a rebalance across tabs.
+    expect(cardsInView()).toEqual(['Mått']);
     await openTab(user, /^mål$/i);
     expect(cardsInView()).toEqual(['Målsättning', 'Makrofördelning']);
     await openTab(user, /mat & kök/i);
@@ -67,17 +62,14 @@ describe('Setup structure', () => {
     expect(screen.getByText('Mått')).toBeTruthy();
   });
 
-  it('keeps the weigh-in log beside the weight it updates', async () => {
-    const user = userEvent.setup();
+  it('no longer carries the weigh-in log', () => {
     render(<Harness />);
 
-    // Both live in Body — logging a weigh-in is what keeps the number honest.
-    expect(screen.getByText('Invägning')).toBeTruthy();
-
-    await user.type(screen.getByPlaceholderText('kg'), '84.5');
-    await user.click(screen.getByRole('button', { name: /logga i dag/i }));
-
-    expect(screen.getByTestId('weight').textContent).toBe('84.5');
+    // Weight is now only ever typed into the measurements field; there is no
+    // second place that writes it, and no trend readout to keep in step.
+    expect(screen.queryByText('Invägning')).toBeNull();
+    expect(screen.queryByPlaceholderText('kg')).toBeNull();
+    expect(screen.queryByRole('button', { name: /logga i dag/i })).toBeNull();
   });
 
   it('groups household with how you cook rather than with meal settings', async () => {

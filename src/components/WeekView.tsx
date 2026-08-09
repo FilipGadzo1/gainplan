@@ -105,8 +105,17 @@ export default function WeekView({
           tiles wide with a hole beside it, and a week that reads as 4+3 is a
           week you have to reassemble in your head. The tile shrinks its type
           instead — below 360px it would start to crowd the kcal figure, which
-          is the one screen size where four columns is still the calmer read. */}
-      <div className="grid shrink-0 grid-cols-4 gap-1.5 min-[360px]:grid-cols-7 sm:gap-2">
+          is the one screen size where four columns is still the calmer read.
+
+          Labelled as a group so the seven tiles announce themselves as the day
+          picker rather than as seven loose buttons — and so anything asking for
+          "the day tiles" can name them, instead of matching their text. A tile
+          reads "Mån", and "Torskcurry" contains "Tors". */}
+      <div
+        role="group"
+        aria-label={t('daysLabel')}
+        className="grid shrink-0 grid-cols-4 gap-1.5 min-[360px]:grid-cols-7 sm:gap-2"
+      >
         {plan.days.map((d) => (
           <DayTile
             key={d.index}
