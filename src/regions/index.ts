@@ -8,10 +8,17 @@ import type { Language } from '../i18n';
  * catalogue all differ between countries; macro maths and portion optimisation
  * do not, and stay out of here.
  *
- * The rule that makes this tractable: a region owns exactly one non-English
- * language, and every data file it holds is written in that language plus
- * English. So the accessors in i18n/content.ts only ever ask "English or not",
- * and never have to know which region produced the row they were handed.
+ * The rule that makes this tractable: a region offers at most one non-English
+ * *interface* language — its `language` field, `'en'` meaning it offers none —
+ * and the accessors in i18n/content.ts only ever ask "English or not", never
+ * which region produced the row they were handed.
+ *
+ * `language` is about the interface, not the data. A region's own data files
+ * can still be written in another language even when `language` is `'en'` —
+ * Croatia is exactly that: `language: 'en'`, because its interface translation
+ * was retired, while `hr/ingredients.ts` and `hr/recipes.ts` are still written
+ * in Croatian throughout. `deptLabels` (below) is only ever reached for a
+ * region that *does* offer a non-English interface.
  */
 
 /**
@@ -43,7 +50,13 @@ export interface Chain {
 
 export interface Region {
   id: RegionId;
-  /** The region's own language. English is always available alongside it. */
+  /**
+   * The non-English interface language this region offers, or `'en'` if it
+   * offers none. English is always available alongside it. This is about the
+   * interface, not the data — a region can still hold non-English data (names,
+   * pack descriptions, recipe steps) while declaring `language: 'en'`; see the
+   * note above.
+   */
   language: Language;
   currency: Currency;
   /** Departments in the order you physically walk this region's stores. */

@@ -8,9 +8,9 @@ import { useLanguage } from '../i18n/hooks';
  * The language's own two-letter code, set in letterforms rather than a flag.
  *
  * The region switcher next to this one uses flags, and it is entitled to: a
- * region is a place. A language is not. English is not the United Kingdom and
- * Croatian is spoken well beyond Croatia, so a flag here would be both wrong
- * and — sitting inches from a control that also shows flags — unreadable.
+ * region is a place. A language is not — English is not the United Kingdom —
+ * so a flag here would be both wrong and, sitting inches from a control that
+ * also shows flags, unreadable.
  *
  * Letters against flags is the whole distinction between the two controls.
  */
@@ -30,7 +30,7 @@ function Code({ lang, active = false }: { lang: Language; active?: boolean }) {
 }
 
 /** Spelled out rather than built as `language.${lang}` so the keys stay typed. */
-const LABEL_KEY = { sv: 'language.sv', en: 'language.en', hr: 'language.hr' } as const;
+const LABEL_KEY = { sv: 'language.sv', en: 'language.en' } as const;
 
 export default function LanguageSwitcher() {
   const { t } = useTranslation('common');

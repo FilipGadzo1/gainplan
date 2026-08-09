@@ -1,14 +1,18 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import i18n, { DEFAULT_LANGUAGE } from '../i18n';
+import i18n from '../i18n';
 import { DEFAULT_PROFILE } from '../lib/storage';
 import LanguageSwitcher from './LanguageSwitcher';
 import RegionSwitcher from './RegionSwitcher';
 
 beforeEach(async () => {
   localStorage.clear();
-  await i18n.changeLanguage(DEFAULT_LANGUAGE);
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
 });
 afterEach(cleanup);
 
@@ -26,9 +30,17 @@ describe('RegionSwitcher', () => {
     render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
     await open(user);
 
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    expect(screen.getAllByRole('option')).toHaveLength(3);
     expect(screen.getByRole('option', { name: 'Sverige' }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('option', { name: 'Kroatien' }).getAttribute('aria-selected')).toBe('false');
+  });
+
+  it('lists the UAE alongside the other two', async () => {
+    const user = userEvent.setup();
+    render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
+    await open(user);
+    expect(screen.getAllByRole('option')).toHaveLength(3);
+    expect(screen.getByRole('option', { name: /Förenade Arabemiraten|United Arab Emirates/ })).toBeTruthy();
   });
 
   it('says what it changes when opened', async () => {
@@ -38,21 +50,41 @@ describe('RegionSwitcher', () => {
     expect(screen.getByText('Var du handlar')).toBeTruthy();
   });
 
-  it('switches region, clears the chain and takes the language with it', async () => {
+  it('switches region and clears the chain', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(
-      <RegionSwitcher profile={{ ...DEFAULT_PROFILE, chain: 'ica' }} onChange={onChange} />,
-    );
+    render(<RegionSwitcher profile={{ ...DEFAULT_PROFILE, chain: 'ica' }} onChange={onChange} />);
     await open(user);
     await user.click(screen.getByRole('option', { name: 'Kroatien' }));
 
     // The chain goes with the region: chain ids are scoped to one country, and
     // ICA means nothing in Croatia.
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ region: 'hr', chain: null }),
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ region: 'hr', chain: null }));
+  });
+
+  it('returns you to English when the new country cannot offer what you were reading', async () => {
+    const user = userEvent.setup();
+    render(<RegionSwitcher profile={DEFAULT_PROFILE} onChange={() => {}} />);
+    await open(user);
+    await user.click(screen.getByRole('option', { name: 'Kroatien' }));
+
+    // Croatia has no Swedish interface, so Swedish cannot survive the move.
+    // English can, and is where every region falls back to.
+    expect(i18n.resolvedLanguage).toBe('en');
+  });
+
+  it('leaves a language the new country does still offer alone', async () => {
+    const user = userEvent.setup();
+    await i18n.changeLanguage('en');
+    render(
+      <RegionSwitcher profile={{ ...DEFAULT_PROFILE, region: 'hr' }} onChange={() => {}} />,
     );
-    expect(i18n.resolvedLanguage).toBe('hr');
+    await user.click(screen.getByRole('button', { name: /var du handlar|where you shop/i }));
+    await user.click(screen.getByRole('option', { name: /Sverige|Sweden/ }));
+
+    // Sweden offers Swedish, but the reader did not ask for Swedish. Changing
+    // country is not a request to change language.
+    expect(i18n.resolvedLanguage).toBe('en');
   });
 
   it('leaves the language alone when the country does not change', async () => {

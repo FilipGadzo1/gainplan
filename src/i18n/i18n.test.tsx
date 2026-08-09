@@ -8,8 +8,21 @@ import { buildShoppingList } from '../lib/shopping';
 import { RECIPES } from '../data/recipes';
 import { INGREDIENTS, getIngredient } from '../data/ingredients';
 import { SWEDEN } from '../regions/se';
-import i18n, { DEFAULT_LANGUAGE, LANGUAGES, resources, type Language } from './index';
-import { deptLabel, packName, recipeName, recipeSteps, recipeSubtitle } from './content';
+import i18n, {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_STORAGE_KEY,
+  LANGUAGES,
+  resources,
+  type Language,
+} from './index';
+import {
+  deptLabel,
+  ingredientSubtitle,
+  packName,
+  recipeName,
+  recipeSteps,
+  recipeSubtitle,
+} from './content';
 import { useCurrencyFormat, useHouseholdLabel, useNumberFormat, useQuantityFormat } from './hooks';
 import { useShoppingFormat } from './useShoppingFormat';
 
@@ -44,16 +57,41 @@ describe('locale resources', () => {
     return Object.entries(value).flatMap(([k, v]) => leaves(v, prefix ? `${prefix}.${k}` : k));
   }
 
-  it('defaults to Swedish', () => {
-    expect(DEFAULT_LANGUAGE).toBe('sv');
-    expect(i18n.resolvedLanguage).toBe('sv');
+  it('lands a first-time visitor in English, whatever their country', async () => {
+    // The default country is Sweden and the default language is English, and
+    // that mismatch is deliberate: the plan you land on should be readable
+    // before you have chosen anything.
+    expect(DEFAULT_LANGUAGE).toBe('en');
+
+    localStorage.clear();
+    await act(async () => {
+      await i18n.changeLanguage(undefined);
+    });
+    expect(i18n.resolvedLanguage).toBe('en');
+  });
+
+  it('ships Swedish and English and nothing else', () => {
+    expect([...LANGUAGES]).toEqual(['sv', 'en']);
+  });
+
+  it('sends a reader with Croatian stored back to English, not to Swedish', async () => {
+    // Croatian was an interface language until it was dropped for being bad. A
+    // stored choice of it is no longer supported, so i18next falls through to
+    // fallbackLng. This asserts where that lands, because "works by accident"
+    // stops working the day someone edits fallbackLng.
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, 'hr');
+    await act(async () => {
+      await i18n.changeLanguage('hr');
+    });
+    expect(i18n.resolvedLanguage).toBe('en');
   });
 
   it('has the same keys in every language', () => {
-    // Plural suffixes are language property, not a key difference: Croatian
-    // needs a _few form that neither Swedish nor English has, and English
-    // needs no _few. Comparing the stems is what actually catches a key that
-    // was added to one bundle and forgotten in another.
+    // Plural suffixes are a language property, not a key difference: a stem
+    // can carry a different set of _one/_other forms per language without
+    // that being a missing key in either bundle. Comparing the stems is what
+    // actually catches a key that was added to one bundle and forgotten in
+    // another.
     const stems = (value: unknown) =>
       [...new Set(paths(value).map((p) => p.replace(/_(one|two|few|many|other)$/, '')))].sort();
 
@@ -72,7 +110,6 @@ describe('locale resources', () => {
     const required: Record<Language, string[]> = {
       sv: ['one', 'other'],
       en: ['one', 'other'],
-      hr: ['one', 'few', 'other'],
     };
 
     for (const lang of LANGUAGES) {
@@ -141,6 +178,36 @@ describe('content accessors', () => {
     const recipe = RECIPES[0];
     expect(recipeSubtitle(recipe, 'sv')).toBe(recipe.en);
     expect(recipeSubtitle(recipe, 'en')).toBe(recipe.name);
+  });
+
+  it('has no subtitle to give when both names are the same word', () => {
+    // A region whose own language is English carries the same string in `name`
+    // and `en`. There is no second name to show, and rendering the first one
+    // twice reads as a bug.
+    const ing = { ...getIngredient('lax'), name: 'Salmon fillet', en: 'Salmon fillet' };
+    expect(ingredientSubtitle(ing, 'en')).toBe('');
+    expect(ingredientSubtitle(ing, 'sv')).toBe('');
+
+    const recipe = { ...RECIPES[0], name: 'Shish tawook', en: 'Shish tawook' };
+    expect(recipeSubtitle(recipe, 'en')).toBe('');
+    expect(recipeSubtitle(recipe, 'sv')).toBe('');
+  });
+
+  it('still gives the other name where the two differ', () => {
+    // This half matters more than the half above: it is what proves Sweden and
+    // Croatia were not quietly stripped of their shelf names.
+    const lax = getIngredient('lax');
+    expect(ingredientSubtitle(lax, 'en')).toBe('Laxfilé');
+    expect(ingredientSubtitle(lax, 'sv')).toBe('Salmon fillet');
+  });
+
+  it('drops the duplicate for a row that is spelled the same in both languages', () => {
+    // Not hypothetical: "Bacon" is Bacon in Swedish, and eight rows across the
+    // shipping catalogues are like it. Printing the word twice was always noise.
+    const bacon = getIngredient('bacon');
+    expect(bacon.name).toBe(bacon.en);
+    expect(ingredientSubtitle(bacon, 'sv')).toBe('');
+    expect(ingredientSubtitle(bacon, 'en')).toBe('');
   });
 
   it('swaps pack descriptions and departments', () => {
@@ -269,5 +336,27 @@ describe('shopping list export', () => {
 
     const en = await withLanguage('en', () => useShoppingFormat());
     expect(en.result.current.quantity(staple)).toContain('need approx');
+  });
+
+  it('writes no empty brackets for an item with only one name', async () => {
+    const { result } = await withLanguage('en', () => useShoppingFormat());
+    const list = buildShoppingList(generatePlan(profile()), SWEDEN);
+    const single = { ...list.groups[0].items[0] };
+    single.ingredient = { ...single.ingredient, name: 'Salmon fillet', en: 'Salmon fillet' };
+    const text = result.current.listText(
+      { ...list, groups: [{ dept: list.groups[0].dept, items: [single] }] },
+      'You',
+    );
+
+    expect(text).toContain('- Salmon fillet — ');
+    expect(text).not.toContain('()');
+  });
+
+  it('keeps the other name in brackets where there is one', async () => {
+    const { result } = await withLanguage('en', () => useShoppingFormat());
+    const list = buildShoppingList(generatePlan(profile()), SWEDEN);
+    const text = result.current.listText(list, 'You');
+    // Swedish rows still carry their Swedish shelf name for an English reader.
+    expect(text).toMatch(/- .+ \(.+\) — /);
   });
 });

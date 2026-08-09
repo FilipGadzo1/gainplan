@@ -405,19 +405,6 @@ function cyclingHint(profile: Profile, t: SetupT): string {
 }
 
 /**
- * Where you shop, which everything else hangs off: the region picks the food,
- * the recipes, the currency and the language, and the chain picks the prices
- * and the order you walk the aisles.
- *
- * Changing region switches the language with it. The two are deliberately
- * coupled — a region's food data is written in exactly one non-English
- * language, so a Swedish interface listing Croatian products is not a state
- * worth reaching. English stays available afterwards from the header.
- *
- * The chain row only appears where there is a choice to make, so Sweden — one
- * store, by design — shows nothing extra.
- */
-/**
  * Which of the region's shops you are buying from, which sets the prices, the
  * pack sizes and the order of the aisles.
  *

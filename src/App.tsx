@@ -176,11 +176,11 @@ export default function App() {
             </nav>
 
             <div className="ml-auto flex items-center gap-3 md:ml-0">
-              {/* Country and language are one question — where you shop and what
-                  you read — so they sit tight against each other and the rule
-                  separates them from the action. Three evenly spaced controls
-                  read as three unrelated things, which is what made this corner
-                  look cluttered. */}
+              {/* Country and language sit tight against each other, with the
+                  rule separating them from the action — they are the two
+                  controls that shape the interface itself. Three evenly spaced
+                  controls read as three unrelated things, which is what made
+                  this corner look cluttered. */}
               <div className="flex items-center gap-1.5">
                 <RegionSwitcher profile={profile} onChange={setProfile} />
                 <LanguageSwitcher />

@@ -165,10 +165,14 @@ export default function ShoppingView({
                         htmlFor={boxId}
                         className="block cursor-pointer text-[11px] text-[var(--color-muted)]"
                       >
-                        <span className="italic">
-                          {ingredientSubtitle(item.ingredient, language)}
-                        </span>
-                        {' · '}
+                        {ingredientSubtitle(item.ingredient, language) && (
+                          <>
+                            <span className="italic">
+                              {ingredientSubtitle(item.ingredient, language)}
+                            </span>
+                            {' · '}
+                          </>
+                        )}
                         {quantity(item)}
                       </label>
                     </span>

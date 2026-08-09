@@ -26,10 +26,10 @@ export type DeptId = (typeof DEPT_IDS)[number];
  * id is a domain type, so that `Profile` can name a region without the types
  * module depending on the data.
  */
-export const REGION_IDS = ['se', 'hr'] as const;
+export const REGION_IDS = ['se', 'hr', 'ae'] as const;
 export type RegionId = (typeof REGION_IDS)[number];
 
-export type Currency = 'SEK' | 'EUR';
+export type Currency = 'SEK' | 'EUR' | 'AED';
 
 /** Restrictions a user can switch on. A recipe is excluded if it contains any flagged tag. */
 export type DietTag =
@@ -47,7 +47,7 @@ export interface Ingredient {
   id: string;
   /** Name in the region's own language, matching how it is labelled on the shelf. */
   name: string;
-  /** English name, shown as a subtitle. */
+  /** English name, shown as a subtitle — or as the primary name itself, for a region whose own language is English. */
   en: string;
   dept: DeptId;
   /** Per 100 g (or per 100 ml for liquids). */
@@ -147,9 +147,9 @@ export interface HouseholdMember {
 
 export interface Profile {
   /**
-   * Where you shop. Picks the catalogue, the recipes, the chains, the currency
-   * and the language — see src/regions. Everything else on this profile is
-   * about your body and is shared across regions.
+   * Where you shop. Picks the catalogue, the recipes, the chains and the
+   * currency — see src/regions. Everything else on this profile is about your
+   * body and is shared across regions.
    */
   region: RegionId;
   /**

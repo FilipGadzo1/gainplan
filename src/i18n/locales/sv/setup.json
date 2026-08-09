@@ -5,9 +5,10 @@
   },
   "region": {
     "title": "Var du handlar",
-    "hint": "Väljer varor, recept, butiker, valuta och språk.",
+    "hint": "Väljer varor, recept, butiker och valuta.",
     "se": "Sverige",
-    "hr": "Kroatien"
+    "hr": "Kroatien",
+    "ae": "Förenade Arabemiraten"
   },
   "chain": {
     "title": "Butik",

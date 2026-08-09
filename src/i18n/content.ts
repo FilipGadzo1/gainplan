@@ -19,8 +19,9 @@ export function recipeName(recipe: Recipe, lang: Language): string {
   return lang === 'en' ? recipe.en : recipe.name;
 }
 
-/** The name in the *other* language, shown as a subtitle beneath the title. */
+/** The name in the *other* language, or '' where both names are the same. */
 export function recipeSubtitle(recipe: Recipe, lang: Language): string {
+  if (recipe.name === recipe.en) return '';
   return lang === 'en' ? recipe.name : recipe.en;
 }
 
@@ -33,12 +34,20 @@ export function ingredientName(ingredient: Ingredient, lang: Language): string {
 }
 
 /**
- * The other language's name. Kept visible in both directions on purpose: an
- * English reader still has to find "Kycklingfilé" on the shelf at ICA, and a
- * local-language reader benefits from the English name when checking a macro
- * table.
+ * The name in the *other* language, shown as a subtitle beneath the title, or
+ * an empty string where there is no other language to show.
+ *
+ * Kept visible in both directions on purpose: an English reader still has to
+ * find "Kycklingfilé" on the shelf at ICA, and a local-language reader benefits
+ * from the English name when checking a macro table.
+ *
+ * A region whose own language is English carries the same string in both
+ * fields. That is honest data rather than a mistake — there really is only one
+ * name — so this returns nothing and every caller drops the line instead of
+ * printing the title twice.
  */
 export function ingredientSubtitle(ingredient: Ingredient, lang: Language): string {
+  if (ingredient.name === ingredient.en) return '';
   return lang === 'en' ? ingredient.name : ingredient.en;
 }
 

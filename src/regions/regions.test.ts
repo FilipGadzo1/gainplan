@@ -3,8 +3,10 @@ import type { DietTag, MealSlot } from '../types';
 import { DEPT_IDS, REGION_IDS } from '../types';
 import { recipeTags } from '../lib/nutrition';
 import { INGREDIENTS } from '../data/ingredients';
+import { RECIPES_BY_ID } from '../data/recipes';
 import { assertRegion, type Region } from './index';
 import { DEFAULT_REGION, REGIONS, regionOf } from './registry';
+import { resources } from '../i18n';
 
 const regions = Object.values(REGIONS);
 const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'dinner', 'snack'];
@@ -93,6 +95,12 @@ describe('ids are unique across regions, not just within one', () => {
         seen.set(recipe.id, region.id);
       }
     }
+    // The shared lookup must see exactly what the regions hold. Without this,
+    // a region's recipes can be absent from `RECIPES_BY_ID` while every other
+    // test still passes — the suite walks `region.recipes` directly, so nothing
+    // else exercises `getRecipe` with a real id. That is exactly how the UAE
+    // shipped unbuildable: the week generated, then threw on the first lookup.
+    expect(seen.size).toBe(Object.keys(RECIPES_BY_ID).length);
   });
 });
 
@@ -103,9 +111,10 @@ describe('ids are unique across regions, not just within one', () => {
  * slot — so it has to be asserted rather than waited for.
  *
  * The Croatian pool was written with this in mind and covers gluten-free plus
- * dairy-free at every slot. The Swedish one predates the check and scrapes
- * through breakfast and snack with a single recipe each, which is why the floor
- * here is one rather than something more comfortable.
+ * dairy-free at every slot; the UAE pool, written under the same check, does
+ * the same. The Swedish one predates the check and scrapes through breakfast
+ * and snack with a single recipe each, which is why the floor here is one
+ * rather than something more comfortable.
  */
 describe('every region can still feed a restricted eater', () => {
   const COMBOS: [string, DietTag[]][] = [
@@ -128,6 +137,22 @@ describe('every region can still feed a restricted eater', () => {
         }
       });
     }
+  }
+});
+
+/**
+ * The last per-region registry with no by-construction guard: nothing else
+ * asserts that every `REGION_IDS` entry has a `region.<id>` label in the
+ * locale files. Without this, a region added without one renders the raw key
+ * `region.xx` in the switcher — silent in the same way a missing department or
+ * a duplicate id used to be, until someone happens to look at the dropdown.
+ */
+describe('every region has a switcher label in every language', () => {
+  for (const lang of ['sv', 'en'] as const) {
+    it.each(REGION_IDS.map((id) => [id] as const))(`%s has a region.%s label in ${lang}`, (id) => {
+      const label = (resources[lang].setup.region as Record<string, string>)[id];
+      expect(label?.trim(), `${lang} / region.${id}`).toBeTruthy();
+    });
   }
 });
 
@@ -170,6 +195,21 @@ describe('chain search URLs keep the parameter each site expects', () => {
       ).toBe(true);
     }
   });
+
+  it('sends Union Coop q', () => {
+    const url = new URL(chainNamed('unioncoop')!.searchUrl!('chicken'));
+    expect(url.pathname).toBe('/catalogsearch/result/');
+    expect(url.searchParams.get('q')).toBe('chicken');
+  });
+
+  it('sends Lulu search_text, not q', () => {
+    // Lulu's own schema.org SearchAction is where this URL comes from; every
+    // guessable alternative 404s. See ./ae/chains.ts.
+    const url = new URL(chainNamed('lulu')!.searchUrl!('salmon'));
+    expect(url.pathname).toBe('/en-ae/list/');
+    expect(url.searchParams.get('search_text')).toBe('salmon');
+    expect(url.searchParams.get('q')).toBeNull();
+  });
 });
 
 describe('the registry', () => {
@@ -202,5 +242,13 @@ describe('the registry', () => {
       // A raw % or space would produce a malformed URL, not a failed search.
       expect(url.href, chain.id).toContain(encodeURIComponent('nötfärs 5%'));
     }
+  });
+
+  it('shops in three countries, in two currencies and two languages', () => {
+    expect([...REGION_IDS]).toEqual(['se', 'hr', 'ae']);
+    expect(regionOf('ae').currency).toBe('AED');
+    expect(regionOf('ae').language).toBe('en');
+    // Croatia keeps its shelves and loses its interface.
+    expect(regionOf('hr').language).toBe('en');
   });
 });

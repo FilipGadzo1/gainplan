@@ -13,6 +13,8 @@ const LOGOS: Record<string, string> = {
   ica: '/icons/ica_icon.webp',
   konzum: '/icons/konzum_icon.png',
   kaufland: '/icons/kaufland_icon.webp',
+  unioncoop: '/icons/unioncoop_icon.png',
+  lulu: '/icons/lulu_icon.png',
 };
 
 export default function ChainMark({

@@ -189,9 +189,11 @@ function SessionDetail({
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
             <h2 className="text-base leading-tight font-bold">{title}</h2>
-            <p className="text-[11px] text-[var(--color-muted)] italic">
-              {recipeSubtitle(recipe, language)}
-            </p>
+            {recipeSubtitle(recipe, language) && (
+              <p className="text-[11px] text-[var(--color-muted)] italic">
+                {recipeSubtitle(recipe, language)}
+              </p>
+            )}
           </div>
           <div className="flex shrink-0 gap-1.5">
             {recipe.sourceUrl && (
@@ -251,9 +253,11 @@ function SessionDetail({
                   <span className="block truncate text-[13px] font-medium">
                     <StoreLink ingredient={ing} />
                   </span>
-                  <span className="block truncate text-[10px] text-[var(--color-muted)] italic">
-                    {ingredientSubtitle(ing, language)}
-                  </span>
+                  {ingredientSubtitle(ing, language) && (
+                    <span className="block truncate text-[10px] text-[var(--color-muted)] italic">
+                      {ingredientSubtitle(ing, language)}
+                    </span>
+                  )}
                 </span>
                 <span className="tnum shrink-0 text-[13px] font-bold">
                   {ing.unitWeight && grams / ing.unitWeight >= 0.8

@@ -56,7 +56,9 @@ export function useShoppingFormat(): {
         for (const item of group.items) {
           const name = ingredientName(item.ingredient, language);
           const other = ingredientSubtitle(item.ingredient, language);
-          lines.push(`- ${name} (${other}) — ${quantity(item)}`);
+          // No brackets where there is no second name — "Salmon fillet ()" is
+          // worse than no brackets at all.
+          lines.push(`- ${name}${other ? ` (${other})` : ''} — ${quantity(item)}`);
         }
         lines.push('');
       }

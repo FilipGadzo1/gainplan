@@ -77,9 +77,11 @@ export default function RecipeModal({
         <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-[var(--color-line)] bg-[var(--color-surface)] p-4">
           <div>
             <h2 className="text-lg leading-tight font-bold">{title}</h2>
-            <p className="mt-0.5 text-xs text-[var(--color-muted)] italic">
-              {recipeSubtitle(recipe, language)}
-            </p>
+            {recipeSubtitle(recipe, language) && (
+              <p className="mt-0.5 text-xs text-[var(--color-muted)] italic">
+                {recipeSubtitle(recipe, language)}
+              </p>
+            )}
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Pill tone="accent">{t('portion', { pct: Math.round(scale * 100) })}</Pill>
               <Pill>
@@ -135,9 +137,11 @@ export default function RecipeModal({
                 <li key={ri.id} className="flex items-baseline justify-between gap-3 py-2">
                   <div className="min-w-0">
                     <StoreLink ingredient={ing} className="text-sm font-medium" />
-                    <span className="block text-[11px] text-[var(--color-muted)] italic">
-                      {ingredientSubtitle(ing, language)}
-                    </span>
+                    {ingredientSubtitle(ing, language) && (
+                      <span className="block text-[11px] text-[var(--color-muted)] italic">
+                        {ingredientSubtitle(ing, language)}
+                      </span>
+                    )}
                   </div>
                   <div className="shrink-0 text-right">
                     <span className="tnum text-sm font-semibold">

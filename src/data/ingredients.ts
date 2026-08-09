@@ -111,16 +111,17 @@ export const INGREDIENT_LIST: Ingredient[] = [
 ];
 
 import { HR_INGREDIENTS } from '../regions/hr/ingredients';
+import { AE_INGREDIENTS } from '../regions/ae/ingredients';
 
 /**
  * Every ingredient the app knows, across all regions. One table rather than one
- * per region: ids are unique region-wide (Croatian rows carry an `hr-` prefix),
- * and a shared lookup keeps `getIngredient` out of the business of knowing who
- * is asking. Which subset a plan may draw from is the region's job, not this
- * table's — see `eligibleRecipes`.
+ * per region: ids are unique region-wide (Croatian rows carry an `hr-` prefix,
+ * Emirati ones `ae-`), and a shared lookup keeps `getIngredient` out of the
+ * business of knowing who is asking. Which subset a plan may draw from is the
+ * region's job, not this table's — see `eligibleRecipes`.
  */
 export const INGREDIENTS: Record<string, Ingredient> = Object.fromEntries(
-  [...INGREDIENT_LIST, ...HR_INGREDIENTS].map((i) => [i.id, i]),
+  [...INGREDIENT_LIST, ...HR_INGREDIENTS, ...AE_INGREDIENTS].map((i) => [i.id, i]),
 );
 
 export function getIngredient(id: string): Ingredient {

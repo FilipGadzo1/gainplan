@@ -1,12 +1,23 @@
+/**
+ * Every test here forces a language rather than relying on the default. The
+ * default is English and the assertions are Swedish, and coupling the two
+ * would mean a change of default silently rewrites what these tests claim.
+ */
+
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import i18n, { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../i18n';
+import i18n, { LANGUAGE_STORAGE_KEY } from '../i18n';
+import { RegionProvider } from '../regions/context';
 import LanguageSwitcher from './LanguageSwitcher';
 
 beforeEach(async () => {
   localStorage.clear();
-  await i18n.changeLanguage(DEFAULT_LANGUAGE);
+  // Pinned rather than defaulted: these assert Swedish chrome, and the app's
+  // default language is English. What is under test here is the Swedish
+  // bundle, not what a first-time visitor lands in — that has its own test in
+  // i18n.test.tsx.
+  await i18n.changeLanguage('sv');
 });
 afterEach(cleanup);
 
@@ -98,5 +109,21 @@ describe('LanguageSwitcher', () => {
     render(<LanguageSwitcher />);
     await open(user);
     expect(screen.getByText('Språk')).toBeTruthy();
+  });
+
+  it('offers English alone in a region that has no language of its own', async () => {
+    const user = userEvent.setup();
+    await i18n.changeLanguage('en');
+    render(
+      <RegionProvider regionId="hr">
+        <LanguageSwitcher />
+      </RegionProvider>,
+    );
+    await user.click(screen.getByRole('button', { name: /language/i }));
+
+    // Croatia's data is still Croatian; its interface is not. `languagesFor`
+    // collapses to a single option, and the control has to survive that.
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    expect(screen.getByRole('option', { name: 'English' }).getAttribute('aria-selected')).toBe('true');
   });
 });

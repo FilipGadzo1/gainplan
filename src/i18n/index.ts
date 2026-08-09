@@ -9,13 +9,6 @@ import svShopping from './locales/sv/shopping.json';
 import svPrep from './locales/sv/prep.json';
 import svRecipe from './locales/sv/recipe.json';
 
-import hrCommon from './locales/hr/common.json';
-import hrSetup from './locales/hr/setup.json';
-import hrWeek from './locales/hr/week.json';
-import hrShopping from './locales/hr/shopping.json';
-import hrPrep from './locales/hr/prep.json';
-import hrRecipe from './locales/hr/recipe.json';
-
 import enCommon from './locales/en/common.json';
 import enSetup from './locales/en/setup.json';
 import enWeek from './locales/en/week.json';
@@ -26,17 +19,22 @@ import enRecipe from './locales/en/recipe.json';
 /**
  * Every language the app ships. Which of them you are actually offered depends
  * on your region — see `languagesFor` — because a region's food data is written
- * in exactly one non-English language, and a Swedish interface listing Croatian
+ * in at most one non-English language, and a Swedish interface listing Emirati
  * products would be worse than either language on its own.
  *
- * Swedish is the default because Sweden is the default region. The browser's
- * own locale is deliberately *not* consulted, so a visitor with an English
- * browser still lands on Swedish until they choose otherwise.
+ * English is the default even though Sweden is the default region. The two used
+ * to agree, and it read as tidy until the app grew a region whose own language
+ * *is* English: at that point "default country" and "default language" are
+ * simply different questions, and the second one wants the answer more readers
+ * can act on.
+ *
+ * The browser's own locale is deliberately still not consulted, so the landing
+ * language is a property of the app rather than of the visitor's machine.
  */
-export const LANGUAGES = ['sv', 'en', 'hr'] as const;
+export const LANGUAGES = ['sv', 'en'] as const;
 export type Language = (typeof LANGUAGES)[number];
 
-export const DEFAULT_LANGUAGE: Language = 'sv';
+export const DEFAULT_LANGUAGE: Language = 'en';
 
 /** Versioned alongside the other gainplan.* keys in localStorage. */
 export const LANGUAGE_STORAGE_KEY = 'gainplan.lang.v1';
@@ -61,14 +59,6 @@ export const resources = {
     shopping: svShopping,
     prep: svPrep,
     recipe: svRecipe,
-  },
-  hr: {
-    common: hrCommon,
-    setup: hrSetup,
-    week: hrWeek,
-    shopping: hrShopping,
-    prep: hrPrep,
-    recipe: hrRecipe,
   },
   en: {
     common: enCommon,
