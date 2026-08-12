@@ -2,6 +2,7 @@ import type { Region } from './index';
 import { assertRegion } from './index';
 import { INGREDIENT_LIST } from '../data/ingredients';
 import { RECIPES } from '../data/recipes';
+import { ICA_RECIPES } from '../data/recipes.ica';
 
 /**
  * ICA Kvantum Uppsala (Gränby Centrum, Marknadsgatan 1). One store, in ICA's
@@ -39,7 +40,11 @@ export const SWEDEN: Region = {
   },
   chains: [ICA_KVANTUM_UPPSALA],
   ingredients: INGREDIENT_LIST,
-  recipes: RECIPES,
+  // The hand-written pool plus what was imported from ica.se. Kept as two
+  // lists rather than merged into one file: the hand-written recipes stay
+  // readable and authoritative, and the import can be regenerated without
+  // producing a diff that touches them.
+  recipes: [...RECIPES, ...ICA_RECIPES],
 };
 
 assertRegion(SWEDEN);

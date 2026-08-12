@@ -1568,10 +1568,19 @@ export const RECIPES: Recipe[] = [
 
 import { HR_RECIPES } from '../regions/hr/recipes';
 import { AE_RECIPES } from '../regions/ae/recipes';
+import { ICA_RECIPES } from './recipes.ica';
 
-/** Every recipe across all regions, keyed by id. See INGREDIENTS for why. */
+/**
+ * Every recipe across all regions, keyed by id. See INGREDIENTS for why.
+ *
+ * `ICA_RECIPES` is generated from ica.se and belongs to Sweden; it is spread in
+ * here as well as into the region because `regions.test.ts` asserts this lookup
+ * holds exactly what the regions hold. Adding to one and not the other is how
+ * the UAE once shipped a region that generated a week and then threw on the
+ * first recipe lookup.
+ */
 export const RECIPES_BY_ID: Record<string, Recipe> = Object.fromEntries(
-  [...RECIPES, ...HR_RECIPES, ...AE_RECIPES].map((r) => [r.id, r]),
+  [...RECIPES, ...ICA_RECIPES, ...HR_RECIPES, ...AE_RECIPES].map((r) => [r.id, r]),
 );
 
 export function getRecipe(id: string): Recipe {
