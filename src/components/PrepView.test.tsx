@@ -24,7 +24,32 @@ afterEach(cleanup);
 
 const ANNA = { id: 'w', name: 'Anna', portionFactor: 0.65 };
 const profile = (over: Partial<Profile> = {}): Profile => ({ ...DEFAULT_PROFILE, ...over });
-const plan = () => generatePlan(profile(), { seed: 2026 });
+/**
+ * A week with at least two cook sessions in it, which is what a view that
+ * renders a list of them has to be tested against.
+ *
+ * Found by searching seeds rather than hardcoding one. Two hardcoded seeds have
+ * already gone stale here — 2026 and then 2027 — because how often a week
+ * repeats a batch-friendly dinner depends on the whole recipe pool, and the
+ * pool grows. About 59% of weeks qualify, so the search settles immediately;
+ * what it buys is that growing the pool again cannot turn a passing test into
+ * a confusing failure about a missing plural.
+ *
+ * Still deterministic: the same seed is found every run, so a fixture is stable
+ * within a run and across them.
+ */
+const SESSION_SEED = (() => {
+  for (let seed = 1; seed < 200; seed++) {
+    if (prepPlan(generatePlan(profile(), { seed })).length >= 2) return seed;
+  }
+  throw new Error('no seed in 200 produces a week with two cook sessions');
+})();
+
+const plan = () => generatePlan(profile(), { seed: SESSION_SEED });
+
+function manySessions(): WeekPlan {
+  return plan();
+}
 
 /** A week where the same non-batchable meal repeats, so nothing can be prepped. */
 function unbatchablePlan(): WeekPlan {
@@ -64,7 +89,7 @@ describe('PrepView', () => {
   });
 
   it('summarises the whole prep load', () => {
-    const p = plan();
+    const p = manySessions();
     const tasks = prepPlan(p);
     render(<PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />);
 
@@ -101,9 +126,8 @@ describe('PrepView', () => {
 
   it('switches the detail panel when another session is picked', async () => {
     const user = userEvent.setup();
-    const p = plan();
+    const p = manySessions();
     const tasks = prepPlan(p);
-    if (tasks.length < 2) throw new Error('fixture needs at least two sessions');
     render(<PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />);
 
     const second = getRecipe(tasks[1].recipeId);
@@ -119,7 +143,7 @@ describe('PrepView', () => {
 
   it('marks which session is being shown', async () => {
     const user = userEvent.setup();
-    const p = plan();
+    const p = manySessions();
     const tasks = prepPlan(p);
     render(<PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />);
 
@@ -141,12 +165,21 @@ describe('PrepView', () => {
       }))
       .sort((a, b) => b.solo - a.solo)[0];
 
+    // Mirrors `useQuantityFormat`, including its number formatting: these
+    // assertions run pinned to Swedish, where a kilo reads "1,1 kg" and not
+    // "1.1 kg". Writing the decimal with a point made this pass only for as
+    // long as no quantity here reached a kilo, which is not a property of the
+    // formatting under test but of whichever recipe the planner happened to
+    // batch first.
+    const sv = (value: number, decimals = 0) =>
+      new Intl.NumberFormat('sv', { maximumFractionDigits: decimals }).format(value);
+
     const amount = (grams: number) =>
       heaviest.ing.unitWeight && grams / heaviest.ing.unitWeight >= 0.8
         ? `${Math.round(grams / heaviest.ing.unitWeight)} st`
         : grams >= 1000
-          ? `${(grams / 1000).toFixed(1).replace('.0', '')} kg`
-          : `${Math.round(grams)} g`;
+          ? `${sv(grams / 1000, 1).replace(/[.,]0$/, '')} kg`
+          : `${sv(Math.round(grams))} g`;
 
     const { unmount } = render(
       <PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />,
@@ -165,7 +198,12 @@ describe('PrepView', () => {
     expect(screen.getByText(/håller 3–4 dagar|ät inom 2 dagar/i)).toBeTruthy();
   });
 
-  it('warns to eat fish batches sooner', () => {
+  it('warns to eat fish batches sooner', async () => {
+    // The guidance is shown for the *selected* session, so the fish one has to
+    // be selected before it can be asserted. Rendering and looking was enough
+    // only while the fish batch happened to sort first, which is a property of
+    // whichever recipes the planner picked rather than of the warning.
+    const user = userEvent.setup();
     const p = plan();
     const fishTask = prepPlan(p).find((t) =>
       getRecipe(t.recipeId).ingredients.some((ri) => getIngredient(ri.id).tags.includes('fish')),
@@ -173,6 +211,9 @@ describe('PrepView', () => {
     if (!fishTask) return; // No fish batch in this fixture; nothing to assert.
 
     render(<PrepView plan={p} profile={profile()} onOpenRecipe={() => {}} />);
+    await user.click(
+      screen.getByRole('button', { name: new RegExp(getRecipe(fishTask.recipeId).name, 'i') }),
+    );
     expect(screen.getByText(/ät inom 2 dagar/i)).toBeTruthy();
   });
 

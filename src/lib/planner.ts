@@ -139,10 +139,68 @@ function proteinDensity(m: Macros): number {
   return m.protein / Math.max(m.kcal / 100, 0.01);
 }
 
+/**
+ * The protein density the rest of the day still has to average to finish on
+ * target, given what is already on the plate.
+ *
+ * Judging every meal against the *day's* density instead of the remaining need
+ * quietly forbids meals from balancing each other, and the cost lands hardest
+ * on the densest food: against a 5.3 g/100kcal day, a 14.8 g/100kcal protein
+ * shake scored 1.28 on the excess penalty alone and could never be picked. Six
+ * of the seven recipes still unreachable after the stretch fix were exactly
+ * this — high-protein snacks rejected for being high-protein.
+ *
+ * Tracking the remainder makes the constraint honest: a lean breakfast raises
+ * what lunch should bring, a dense snack lowers it, and the day still lands
+ * where it was aimed.
+ */
+function remainingDensity(target: Macros, consumed: Macros): number {
+  const kcal = target.kcal - consumed.kcal;
+  const protein = target.protein - consumed.protein;
+  // Already over on one or both: fall back to the day's own shape rather than
+  // a negative or explosive ratio.
+  if (kcal <= 1 || protein <= 0) return proteinDensity(target);
+  return proteinDensity({ ...EMPTY_MACROS, kcal, protein });
+}
+
+/**
+ * How much worse than the best available fit a recipe may score and still be
+ * eligible to be picked.
+ *
+ * This is what makes a larger recipe pool actually show up on the plate. The
+ * old scoring added `rng() * 1.4` to each candidate and took the minimum, which
+ * sounds like exploration but is not: against a fit term weighted 3 the noise
+ * rarely changed the winner, and — the real problem — the amount of variety it
+ * produced did not depend on how many recipes existed. Importing hundreds of
+ * recipes would have surfaced roughly the week 65 already did.
+ *
+ * Sampling from a tolerance band instead ties variety to the pool. Where 65
+ * recipes leave two or three genuinely good fits for a slot, a few hundred
+ * leave dozens, and this picks among all of them. The band is deliberately
+ * narrow: everything inside it is a recipe the planner considers nearly as good
+ * as its favourite, so widening variety this way costs accuracy rather than
+ * quality, and `optimizePortions` absorbs the accuracy.
+ */
+const FIT_TOLERANCE = 0.6;
+
+/**
+ * The range of portion scaling that costs a recipe nothing when it is being
+ * chosen. Comfortably inside `SCALE_MIN`/`SCALE_MAX`, which are the hard limits
+ * on what `optimizePortions` may then do — this band is about which recipes
+ * look like reasonable candidates, not about how far a portion can legally go.
+ */
+const COMFORT_LOW = 0.7;
+const COMFORT_HIGH = 2;
+
+/** A typical main meal's share of a day, used to normalise size-scaled penalties. */
+const SHARE_REFERENCE = 0.3;
+
 function pickRecipe(
   candidates: Recipe[],
   slot: MealSlot,
   slotKcal: number,
+  /** This slot's share of the day, which decides how much its macros matter. */
+  slotShare: number,
   targetDensity: number,
   dayIndex: number,
   ctx: PickContext,
@@ -153,31 +211,62 @@ function pickRecipe(
 
   const scored = pool.map((r) => {
     const perServing = recipeMacros(r, 1);
-    // How far the portion has to stretch from its natural size. Deliberately
-    // uncapped so a recipe needing 3.5x scores worse than one needing 2x.
+    // How far the portion has to stretch from its natural size — but only
+    // counted once it leaves the range where scaling is ordinary.
+    //
+    // Penalising every deviation from 1.0, which is what `abs(log(needed))`
+    // did, treats resizing a portion as a defect. Resizing portions is what
+    // this app is for. The cost of that was measurable: 16 of 65 Swedish
+    // recipes never appeared in 200 generated weeks, and they were not the bad
+    // ones — they averaged 424 kcal against 605 for the recipes that did
+    // appear, at a *higher* protein density. They were simply small, and small
+    // lost every time. Six of them were snacks, which are small on purpose.
+    //
+    // So: free inside the band where a scaled portion is still recognisably
+    // the same dish, steep outside it, where a snack is being inflated into a
+    // dinner or a dinner shrunk into a garnish.
     const needed = slotKcal / Math.max(perServing.kcal, 1);
-    const stretch = Math.abs(Math.log(needed));
+    const stretch =
+      needed < COMFORT_LOW
+        ? Math.log(COMFORT_LOW / needed)
+        : needed > COMFORT_HIGH
+          ? Math.log(needed / COMFORT_HIGH)
+          : 0;
 
     // Portion scaling cannot change a recipe's macro ratio, so this is the only
     // place the day's protein/carb balance gets decided. Falling short of the
     // target density costs more than exceeding it, but running far above it is
     // penalised too — otherwise the planner always picks the leanest, priciest
     // meat on the shelf and lands at 3+ g/kg of protein.
+    // The excess penalty is scaled by how much of the day this meal carries.
+    // It exists to stop the planner leaning on the leanest, priciest meat for
+    // the meals that dominate a day's protein — but applied flat it also bans
+    // a 270 kcal protein shake from a snack slot, where being dense is the
+    // whole point and the day's totals barely move. `SHARE_REFERENCE` is a
+    // typical main-meal share, so mains score as they always did and only the
+    // small slots are relieved.
     const density = proteinDensity(perServing);
     const shortfall = Math.max(0, targetDensity - density) * 0.5;
-    const excess = Math.max(0, density - targetDensity * 1.6) * 0.2;
+    const excess =
+      Math.max(0, density - targetDensity * 1.6) * 0.2 * (slotShare / SHARE_REFERENCE);
 
+    // Repetition pressure stays outside the tolerance band on purpose: it is
+    // not a measure of how well the recipe fits the slot, it is the thing
+    // stopping the same good fit being chosen all week. Leaving it in the score
+    // means a recipe eaten yesterday has to be markedly better than the
+    // alternatives to come back today.
     const last = ctx.lastUsed.get(r.id);
     const daysSince = last === undefined ? 99 : dayIndex - last;
     const repeat = daysSince <= 1 ? 6 : daysSince <= 2 ? 2.5 : daysSince <= 3 ? 1 : 0;
     const overuse = (ctx.useCount.get(r.id) ?? 0) * 1.2;
 
-    const score = stretch * 3 + shortfall + excess + repeat + overuse + rng() * 1.4;
+    const score = stretch * 3 + shortfall + excess + repeat + overuse;
     return { r, score };
   });
 
-  scored.sort((a, b) => a.score - b.score);
-  return scored[0].r;
+  const best = scored.reduce((min, s) => (s.score < min ? s.score : min), Infinity);
+  const viable = scored.filter((s) => s.score <= best + FIT_TOLERANCE);
+  return viable[Math.floor(rng() * viable.length)].r;
 }
 
 export interface GenerateOptions {
@@ -197,7 +286,6 @@ export function generatePlan(profile: Profile, opts: GenerateOptions = {}): Week
 
   for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
     const target = targetForDay(profile, dayIndex);
-    const targetDensity = proteinDensity(target);
     const previousDay = days[dayIndex - 1];
     const prevLocked = opts.previous?.days[dayIndex]?.meals ?? [];
     ctx.usedToday = new Set();
@@ -240,8 +328,21 @@ export function generatePlan(profile: Profile, opts: GenerateOptions = {}): Week
         }
       }
 
-      // 3. Otherwise pick something new.
-      const recipe = pickRecipe(candidates, slot, slotKcal, targetDensity, dayIndex, ctx, rng);
+      // 3. Otherwise pick something new, against whatever the day still needs.
+      // Read off `meals` rather than kept in a running total: the two would
+      // have to agree across three push sites and a `continue`, and only one of
+      // them is the truth.
+      const placed = meals.reduce((acc, m) => addMacros(acc, mealMacros(m)), EMPTY_MACROS);
+      const recipe = pickRecipe(
+        candidates,
+        slot,
+        slotKcal,
+        share,
+        remainingDensity(target, placed),
+        dayIndex,
+        ctx,
+        rng,
+      );
       if (!recipe) continue;
 
       meals.push({
@@ -289,11 +390,19 @@ export function swapMeal(
     }
   }
 
+  // What the day needs once everything except the meal being replaced is
+  // counted — the same rule generatePlan picks under, so swapping into a slot
+  // and generating into it cannot disagree about what belongs there.
+  const kept = day.meals
+    .filter((_, i) => i !== mealIndex)
+    .reduce((acc, m) => addMacros(acc, mealMacros(m)), EMPTY_MACROS);
+
   const replacement = pickRecipe(
     eligibleRecipes(profile),
     meal.slot,
     target.kcal * share,
-    proteinDensity(target),
+    share,
+    remainingDensity(target, kept),
     dayIndex,
     ctx,
     rng,
